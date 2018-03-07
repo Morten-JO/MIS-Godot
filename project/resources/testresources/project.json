@@ -1,0 +1,1 @@
+{"general_settings":{"name":"testprojectname","target_engine":"Godot","minimum_build_version":0.01},"project_settings":{"list_type":"ARRAY","refresh_rate":60,"mmpcps":20,"ports":{"0":{"port":123,"protocol":"TCP"},"1":{"port":1234,"protocol":"UDP"}},"ports_n":2}}

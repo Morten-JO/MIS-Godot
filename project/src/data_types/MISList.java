@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import enums.MISListType;
+import project.MISProject;
 import settings.MISGeneralSettings;
 
 public class MISList {
@@ -12,7 +13,7 @@ public class MISList {
 	private List<MISVariable> list;
 	
 	public MISList(){
-		MISListType type = MISGeneralSettings.listType;
+		MISListType type = MISProject.project.listType;
 		if(type == MISListType.ARRAY){
 			list = new ArrayList<MISVariable>();
 		} else if(type == MISListType.LINKED){
