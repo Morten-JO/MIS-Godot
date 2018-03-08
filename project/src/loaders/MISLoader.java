@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
+import data_types.MISExternalResource;
 import data_types.MISNode;
 import data_types.MISScene;
 
@@ -26,9 +27,22 @@ public class MISLoader {
 			MISScene scene = new MISScene(1234);
 			String[] temp = location.split("/");
 			scene.name = temp[temp.length-1].split(".tscn")[0];
+			MISNode lastNode = null;
 			while((readLine = reader.readLine()) != null){
 				if(readLine.startsWith("[ext_resource")){
-					//add external resource
+					MISExternalResource externalResource = new MISExternalResource();
+					if(readLine.contains("path=\"")){
+						externalResource.path = readLine.split("path=\"")[1].split("\"")[0];
+						String[] values = externalResource.path.split("/");
+						externalResource.name = values[values.length-1];		
+					}
+					if(readLine.contains("type=\"")){
+						externalResource.type = readLine.split("type=\"")[1].split("\"")[0];
+					}
+					if(readLine.contains("id=")){
+						externalResource.id = Integer.parseInt(readLine.split("id=")[1].split("]")[0]);
+					}
+					scene.addExternalResource(externalResource);
 				} else if(readLine.startsWith("[node")){
 					MISNode node = new MISNode();
 					if(readLine.contains("name=\"")){
@@ -55,7 +69,27 @@ public class MISLoader {
 					if(readLine.contains("index=\"")){
 						node.index = Integer.parseInt(readLine.split("index=\"")[1].split("\"")[0]);
 					}
+					lastNode = node;
 					scene.addNode(node);
+				} else if(readLine.startsWith("script = ExtResource")){
+					if(lastNode != null){
+						readLine = readLine.replaceAll(" ", "");
+						String stringOfIndex = readLine.split("\\(")[1].split("\\)")[0];
+						lastNode.scriptAttached = true;
+						int index = Integer.parseInt(stringOfIndex);
+						for(MISExternalResource res : scene.externalResources){
+							if(index == res.id){
+								lastNode.scriptId = index;
+								lastNode.scriptName = res.name;
+								break;
+							}
+						}
+					}
+				} else if(readLine.startsWith("[gd_scene")){
+					String loadStepsString = readLine.split("load_steps=")[1].split(" ")[0];
+					scene.loadSteps = Integer.parseInt(loadStepsString);
+					String formatString = readLine.split("format=")[1].split("]")[0];
+					scene.format = Integer.parseInt(formatString);
 				}
 			}
 			reader.close();
