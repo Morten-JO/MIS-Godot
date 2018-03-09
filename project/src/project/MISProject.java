@@ -9,11 +9,15 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import data_types.MISExternalResource;
+import data_types.MISNode;
 import data_types.MISPort;
 import data_types.MISScene;
 import enums.MISListType;
 import enums.MISProtocol;
 import enums.MISType;
+import scene.MISBroadcast;
+import scene.MISBroadcastData;
 import settings.MISGeneralSettings;
 
 import static java.lang.Math.toIntExact;
@@ -30,6 +34,7 @@ public class MISProject {
 		maxMessagesPerClientPerSecond = MISGeneralSettings.STANDARD_MAX_MESSAGES_PER_CLIENT_PER_SECOND;
 		timeOutDuration = MISGeneralSettings.STANDARD_TIMEOUT;
 		ports = new ArrayList<MISPort>();
+		scenes = new ArrayList<MISScene>();
 	}
 	
 	public MISProject(String projectName, String projectLocation, MISType targetEngine){
@@ -62,18 +67,71 @@ public class MISProject {
 		projectGeneralSettingsObject.put("refresh_rate", MISProject.project.refreshRate);
 		projectGeneralSettingsObject.put("mmpcps", MISProject.project.maxMessagesPerClientPerSecond);
 		
+		JSONObject portsObjects = new JSONObject();
 		if(MISProject.project.ports != null && MISProject.project.ports.size() > 0){
-			JSONObject portsObjects = new JSONObject();
 			for(int i = 0; i < MISProject.project.ports.size(); i++){
 				JSONObject portObj = new JSONObject();
 				portObj.put("port", MISProject.project.ports.get(i).port);
 				portObj.put("protocol", MISProject.project.ports.get(i).protocol.toString());
 				portsObjects.put(i, portObj);
 			}
-			projectGeneralSettingsObject.put("ports", portsObjects);
-			projectGeneralSettingsObject.put("ports_n", MISProject.project.ports.size());
 		}
+		projectGeneralSettingsObject.put("ports", portsObjects);
+		projectGeneralSettingsObject.put("ports_n", MISProject.project.ports.size());
+		
 		mainObject.put("project_settings", projectGeneralSettingsObject);
+		
+		JSONObject scenesObject = new JSONObject();
+		mainObject.put("scenes_n", MISProject.project.scenes.size());
+		if(MISProject.project.scenes.size() > 0){
+			for(int i = 0; i < MISProject.project.scenes.size(); i++){
+				MISScene scene = MISProject.project.scenes.get(i);
+				JSONObject sceneObject = new JSONObject();
+				sceneObject.put("name", scene.name);
+				sceneObject.put("load_steps", scene.loadSteps);
+				sceneObject.put("format", scene.format);
+				sceneObject.put("id", scene.IDNumber);
+				if(scene.nodeList.size() > 0){
+					JSONObject nodesObject = new JSONObject();
+					for(int j = 0; j < scene.nodeList.size(); j++){
+						JSONObject nodeObject = new JSONObject();
+						MISNode node = scene.nodeList.get(j);
+						todo
+						//save the node
+					}
+				}
+				if(scene.broadcasts.size() > 0){
+					JSONObject broadcastsObject = new JSONObject();
+					for(int j = 0; j < scene.broadcasts.size(); j++){
+						JSONObject broadcastObject = new JSONObject();
+						MISBroadcast broadcast = scene.broadcasts.get(j);
+						//Not sure if the below line works.
+						broadcastObject.put("type", broadcast.getClass().getTypeName());
+						broadcastObject.put("sps", broadcast.secondsPerSend);
+						broadcastObject.put("data", broadcast.dataToSend());
+						broadcastsObject.put(""+j, broadcastObject);
+					}
+					sceneObject.put("broadcasts", broadcastsObject);
+				}
+				if(scene.externalResources.size() > 0){
+					JSONObject extresObject = new JSONObject();
+					for(int j = 0; j < scene.externalResources.size(); j++){
+						JSONObject resourceObject = new JSONObject();
+						MISExternalResource resource = scene.externalResources.get(j);
+						resourceObject.put("name", resource.name);
+						resourceObject.put("id", resource.id);
+						resourceObject.put("path", resource.path);
+						resourceObject.put("type", resource.type);
+						extresObject.put(""+j, resourceObject);
+					}
+					sceneObject.put("externalResources", extresObject);
+				}
+				scenesObject.put(""+i, sceneObject);
+				
+			}
+		}
+		mainObject.put("scenes", scenesObject);
+		
 		try {
 			FileWriter file = new FileWriter(MISProject.project.projectLocation+"/project.json");
 			file.write(mainObject.toJSONString());
@@ -131,6 +189,18 @@ public class MISProject {
 				MISProtocol protocol = MISProtocol.valueOf((String) port.get("protocol"));
 				MISPort dataPort = new MISPort(portNumber, protocol);
 				MISProject.project.ports.add(dataPort);
+			}
+			JSONObject scenes = (JSONObject) jsonObject.get("scenes");
+			int numberOfScenes = toIntExact((Long) jsonObject.get("scenes_n"));
+			for(int i = 0; i < numberOfScenes; i++){
+				JSONObject sceneObject = (JSONObject) scenes.get(""+i);
+				int id = toIntExact((Long) sceneObject.get("id"));
+				MISScene scene = new MISScene(id);
+				scene.format = toIntExact((Long) sceneObject.get("format"));
+				scene.loadSteps = toIntExact((Long) sceneObject.get("load_steps"));
+				scene.name = (String) sceneObject.get("name");
+				todo
+				//iterate over -> nodes, broadcasts, external resources
 			}
 		} catch (IOException | ParseException e) {
 			e.printStackTrace();
