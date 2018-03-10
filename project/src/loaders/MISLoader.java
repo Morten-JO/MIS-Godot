@@ -93,18 +93,6 @@ public class MISLoader {
 				}
 			}
 			reader.close();
-			System.out.println("SCENE DATA");
-			System.out.println("Scene name: "+scene.name);
-			for(int i = 0; i < scene.nodeList.size(); i++){
-				System.out.println();
-				System.out.println("For node #"+i);
-				System.out.println("Name: "+scene.nodeList.get(i).name);
-				System.out.println("Type: "+scene.nodeList.get(i).type);
-				if(scene.nodeList.get(i).parent != null){
-					System.out.println("Parent: "+scene.nodeList.get(i).parent.name);
-				}
-				System.out.println("index: "+scene.nodeList.get(i).index);
-			}
 			return scene;
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();

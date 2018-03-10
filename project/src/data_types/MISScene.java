@@ -64,7 +64,7 @@ public class MISScene {
 	}
 	
 	public void addBroadcast(MISBroadcast broadcast){
-		
+		broadcasts.add(broadcast);
 	}
 	
 	public void addSuccessCriteria(){

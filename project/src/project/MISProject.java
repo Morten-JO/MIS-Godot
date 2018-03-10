@@ -16,8 +16,11 @@ import data_types.MISScene;
 import enums.MISListType;
 import enums.MISProtocol;
 import enums.MISType;
+import loaders.MISLoader;
 import scene.MISBroadcast;
 import scene.MISBroadcastData;
+import scene.MISBroadcastValue;
+import scene.MISBroastcastMessage;
 import settings.MISGeneralSettings;
 
 import static java.lang.Math.toIntExact;
@@ -91,41 +94,56 @@ public class MISProject {
 				sceneObject.put("load_steps", scene.loadSteps);
 				sceneObject.put("format", scene.format);
 				sceneObject.put("id", scene.IDNumber);
-				if(scene.nodeList.size() > 0){
-					JSONObject nodesObject = new JSONObject();
-					for(int j = 0; j < scene.nodeList.size(); j++){
-						JSONObject nodeObject = new JSONObject();
-						MISNode node = scene.nodeList.get(j);
-						todo
-						//save the node
+				
+				JSONObject nodesObject = new JSONObject();
+				nodesObject.put("nodes_n", scene.nodeList.size());
+				for(int j = 0; j < scene.nodeList.size(); j++){
+					JSONObject nodeObject = new JSONObject();
+					MISNode node = scene.nodeList.get(j);
+					nodeObject.put("name", node.name);
+					nodeObject.put("type", node.type);
+					nodeObject.put("index", node.index);
+					nodeObject.put("script_attached", node.scriptAttached);
+					if(node.scriptAttached){
+						nodeObject.put("script_name", node.scriptName);
+						nodeObject.put("script_id", node.scriptId);
 					}
-				}
-				if(scene.broadcasts.size() > 0){
-					JSONObject broadcastsObject = new JSONObject();
-					for(int j = 0; j < scene.broadcasts.size(); j++){
-						JSONObject broadcastObject = new JSONObject();
-						MISBroadcast broadcast = scene.broadcasts.get(j);
-						//Not sure if the below line works.
-						broadcastObject.put("type", broadcast.getClass().getTypeName());
-						broadcastObject.put("sps", broadcast.secondsPerSend);
-						broadcastObject.put("data", broadcast.dataToSend());
-						broadcastsObject.put(""+j, broadcastObject);
+					nodeObject.put("parent", node.parent != null);
+					if(node.parent != null){
+						nodeObject.put("parent_name", node.parent.name);
+						nodeObject.put("parent_index", node.parent.index);
 					}
-					sceneObject.put("broadcasts", broadcastsObject);
+					nodesObject.put(""+j, nodeObject);
 				}
-				if(scene.externalResources.size() > 0){
-					JSONObject extresObject = new JSONObject();
-					for(int j = 0; j < scene.externalResources.size(); j++){
-						JSONObject resourceObject = new JSONObject();
-						MISExternalResource resource = scene.externalResources.get(j);
-						resourceObject.put("name", resource.name);
-						resourceObject.put("id", resource.id);
-						resourceObject.put("path", resource.path);
-						resourceObject.put("type", resource.type);
-						extresObject.put(""+j, resourceObject);
-					}
-					sceneObject.put("externalResources", extresObject);
+				sceneObject.put("nodes", nodesObject);
+				
+				JSONObject broadcastsObject = new JSONObject();
+				broadcastsObject.put("broadcast_n", scene.broadcasts.size());
+				for(int j = 0; j < scene.broadcasts.size(); j++){
+					JSONObject broadcastObject = new JSONObject();
+					MISBroadcast broadcast = scene.broadcasts.get(j);
+					//Not sure if the below line works.
+					broadcastObject.put("type", broadcast.getClass().getSimpleName());
+					broadcastObject.put("sps", broadcast.secondsPerSend);
+					broadcastObject.put("data", broadcast.dataToSend());
+					broadcastsObject.put(""+j, broadcastObject);
 				}
+				sceneObject.put("broadcasts", broadcastsObject);
+				
+				JSONObject extresObject = new JSONObject();
+				extresObject.put("external_resources_n", scene.externalResources.size());
+				
+				for(int j = 0; j < scene.externalResources.size(); j++){
+					JSONObject resourceObject = new JSONObject();
+					MISExternalResource resource = scene.externalResources.get(j);
+					resourceObject.put("name", resource.name);
+					resourceObject.put("id", resource.id);
+					resourceObject.put("path", resource.path);
+					resourceObject.put("type", resource.type);
+					extresObject.put(""+j, resourceObject);
+				}
+					
+				sceneObject.put("externalResources", extresObject);
 				scenesObject.put(""+i, sceneObject);
 				
 			}
@@ -147,13 +165,81 @@ public class MISProject {
 	}
 	
 	public static void main(String[] args) {
-		MISProject.project = new MISProject("testprojectname", "resources/testresources", MISType.Godot);
+		/*MISProject.project = new MISProject("testprojectname", "resources/testresources", MISType.Godot);
 		MISProject.project.ports.add(new MISPort(123, MISProtocol.TCP));
 		MISProject.project.ports.add(new MISPort(1234, MISProtocol.UDP));
+		MISProject.project.scenes.add(MISLoader.loadSceneByLocation("resources/testresources/Sce.tscn"));
+		for(int i = 0; i < MISProject.project.scenes.size(); i++){
+			MISProject.project.scenes.get(i).addBroadcast(new MISBroastcastMessage(1.0f, "testMessage"));
+		}
 		if(MISProject.saveProject()){
 			System.out.println("SAVED SUCCESSFULLY!");
-		}
+		}*/
 		loadProject("resources/testresources");
+		System.out.println("ProjectName: "+MISProject.project.projectName);
+		MISProject.printProjectData();
+	}
+	
+	public static void printProjectData(){
+		System.out.println();
+		System.out.println("Printing Project data!");
+		System.out.println("ProjectName: "+MISProject.project.projectName);
+		System.out.println("ProjectLocation: "+MISProject.project.projectLocation);
+		System.out.println("Refresh rate: "+MISProject.project.refreshRate);
+		System.out.println("mmpcps: "+MISProject.project.maxMessagesPerClientPerSecond);
+		System.out.println("minimum Build Version: "+MISProject.project.minimumBuildVersion);
+		System.out.println("Target engine: "+MISProject.project.targetEngine);
+		System.out.println("Timeout duration: "+MISProject.project.timeOutDuration);
+		System.out.println("List type: "+MISProject.project.listType);
+		for(int i  = 0; i < MISProject.project.ports.size(); i++){
+			System.out.println();
+			System.out.println("For port #"+i);
+			MISPort port = MISProject.project.ports.get(i);
+			System.out.println("Port: "+port.port);
+			System.out.println("Protocol: "+port.protocol);
+		}
+		for(int j = 0; j < MISProject.project.scenes.size(); j++){
+			System.out.println();
+			System.out.println("Scene data for #"+j);
+			MISScene scene = MISProject.project.scenes.get(j);
+			System.out.println("Scene name: "+scene.name);
+			System.out.println("Scene load_steps: "+scene.loadSteps);
+			System.out.println("Scene formats: "+scene.format);
+			System.out.println("Scene id_number: "+scene.IDNumber);
+			for(int i = 0; i < scene.nodeList.size(); i++){
+				MISNode node = scene.nodeList.get(i);
+				System.out.println();
+				System.out.println("For node #"+i);
+				System.out.println("Name: "+node.name);
+				System.out.println("Type: "+node.type);
+				if(node.parent != null){
+					System.out.println("Parent: "+node.parent.name);
+					System.out.println("Parent_Index: "+node.parent.index);
+				}
+				System.out.println("index: "+node.index);
+				if(node.scriptAttached){
+					System.out.println("Script_Name: "+node.scriptName);
+					System.out.println("Script_Id: "+node.scriptId);
+				}
+			}
+			for(int i = 0; i < scene.broadcasts.size(); i++){
+				MISBroadcast broadcast = scene.broadcasts.get(i);
+				System.out.println();
+				System.out.println("For broadcast #"+i);
+				System.out.println("sps: "+broadcast.secondsPerSend);
+				System.out.println("type: "+broadcast.getClass().getSimpleName());
+				System.out.println("data: "+broadcast.dataToSend());
+			}
+			for(int i = 0; i < scene.externalResources.size(); i++){
+				MISExternalResource resource = scene.externalResources.get(i);
+				System.out.println();
+				System.out.println("For resource #"+i);
+				System.out.println("name: "+resource.name);
+				System.out.println("path: "+resource.path);
+				System.out.println("type: "+resource.type);
+				System.out.println("id: "+resource.id);
+			}
+		}
 	}
 	
 	/**
@@ -162,10 +248,12 @@ public class MISProject {
 	 * @return true or false
 	 */
 	public static boolean loadProject(String projectLocation){
-		if(MISProject.project.isLoading){
-			return false;
+		if(MISProject.project != null){
+			if(MISProject.project.isLoading){
+				return false;
+			}
 		}
-		MISProject.project.isLoading = true;
+		
 		JSONParser parser = new JSONParser();
 		try {
 			Object obj = parser.parse(new FileReader(projectLocation+"/project.json"));
@@ -174,6 +262,9 @@ public class MISProject {
 			String projectName = (String) generalSettings.get("name");
 			MISType projectTargetEngine = MISType.valueOf((String) generalSettings.get("target_engine"));
 			MISProject.project = new MISProject(projectName, projectLocation, projectTargetEngine);
+			if(!MISProject.project.isLoading){
+				MISProject.project.isLoading = true;
+			}
 			MISProject.project.minimumBuildVersion = (double) generalSettings.get("minimum_build_version");
 			
 			JSONObject projectSettings = (JSONObject) jsonObject.get("project_settings");
@@ -199,8 +290,61 @@ public class MISProject {
 				scene.format = toIntExact((Long) sceneObject.get("format"));
 				scene.loadSteps = toIntExact((Long) sceneObject.get("load_steps"));
 				scene.name = (String) sceneObject.get("name");
-				todo
-				//iterate over -> nodes, broadcasts, external resources
+
+				JSONObject nodesObject = (JSONObject) sceneObject.get("nodes");
+				int amountNodes = toIntExact((Long) nodesObject.get("nodes_n"));
+				for(int j = 0; j < amountNodes; j++){
+					JSONObject nodeObject = (JSONObject) nodesObject.get(""+j);
+					MISNode node = new MISNode();
+					node.name = (String) nodeObject.get("name");
+					node.type = (String) nodeObject.get("type");
+					node.index = toIntExact((Long) nodeObject.get("index"));
+					node.scriptAttached = (Boolean) nodeObject.get("script_attached");
+					if(node.scriptAttached){
+						node.scriptName = (String) nodeObject.get("script_name");
+						node.scriptId = toIntExact((Long) nodeObject.get("script_id"));
+					}
+					boolean hasParent = (Boolean) nodeObject.get("parent");
+					if(hasParent){
+						node.parent = new MISNode();
+						node.parent.name = (String) nodeObject.get("parent_name");
+						node.parent.index = toIntExact((Long) nodeObject.get("parent_index"));
+					}
+					scene.addNode(node);
+				}
+				
+				JSONObject broadcastsObject = (JSONObject) sceneObject.get("broadcasts");
+				int amountBroadcasts = toIntExact((Long) broadcastsObject.get("broadcast_n"));
+				for(int j = 0; j < amountBroadcasts; j++){
+					JSONObject broadcastObject = (JSONObject) broadcastsObject.get(""+j);
+					String type = (String) broadcastObject.get("type");
+					float secondsPerSend = (float)((double) broadcastObject.get("sps"));
+					String data = (String) broadcastObject.get("data");
+					MISBroadcast broadcast = null;
+					if(type.equals(MISBroadcastData.class.getSimpleName())){
+						broadcast = new MISBroadcastData(secondsPerSend);
+					} else if(type.equals(MISBroadcastValue.class.getSimpleName())){
+						broadcast = new MISBroadcastValue(secondsPerSend);
+					} else if(type.equals(MISBroastcastMessage.class.getSimpleName())){
+						broadcast = new MISBroastcastMessage(secondsPerSend, data);
+					}
+					if(broadcast != null){
+						scene.addBroadcast(broadcast);
+					} 
+				}
+				
+				JSONObject externalResourcesObject = (JSONObject) sceneObject.get("externalResources");
+				int amountResources = toIntExact((Long) externalResourcesObject.get("external_resources_n"));
+				for(int j = 0; j < amountResources; j++){
+					JSONObject externalResourceObject = (JSONObject) externalResourcesObject.get(""+j);
+					MISExternalResource resource = new MISExternalResource();
+					resource.name = (String) externalResourceObject.get("name");
+					resource.path = (String) externalResourceObject.get("path");
+					resource.type = (String) externalResourceObject.get("type");
+					resource.id = toIntExact((Long) externalResourceObject.get("id"));
+					scene.addExternalResource(resource);
+				}
+				MISProject.project.scenes.add(scene);
 			}
 		} catch (IOException | ParseException e) {
 			e.printStackTrace();
