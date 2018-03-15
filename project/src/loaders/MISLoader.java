@@ -3,11 +3,14 @@ package loaders;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import data_types.MISExternalResource;
 import data_types.MISNode;
 import data_types.MISScene;
+import project.MISProject;
 
 public class MISLoader {
 
@@ -100,6 +103,43 @@ public class MISLoader {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	public static boolean saveProjectLocation(String[] locations){
+		FileWriter file;
+		try {
+			file = new FileWriter("resources/testresources/projectlocations.txt");
+			for(int i = 0; i < locations.length; i++){
+				file.write(locations[i]+System.lineSeparator());
+			}
+			file.flush();
+			file.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return false;
+		
+	}
+	
+	public static String[] loadProjectLocations(){
+		try {
+			BufferedReader reader = new BufferedReader(new FileReader("resources/testresources/projectlocations.txt"));
+			String readLine = "";
+			ArrayList<String> projectLocationsStrings = new ArrayList<String>();
+			while((readLine = reader.readLine()) != null){
+				projectLocationsStrings.add(readLine);
+			}
+			String[] returnArray = new String[projectLocationsStrings.size()];
+			for(int i = 0; i < returnArray.length; i++){
+				returnArray[i] = projectLocationsStrings.get(i);
+			}
+			reader.close();
+			return returnArray;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return new String[]{};
+		
 	}
 	
 }
