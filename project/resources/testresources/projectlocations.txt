@@ -1,1 +1,4 @@
-resources/testresources/
+resources/testresources/ 2018-03-16
+resources/superawesomeproject/ 2018-03-16
+resources/OwnageProject/ 2018-03-16
+C:\Users\Morten\Desktop\MIS-Godot\project\resources\NotACopy 2018-03-16

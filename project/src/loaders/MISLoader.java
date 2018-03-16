@@ -1,6 +1,7 @@
 package loaders;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -11,6 +12,7 @@ import data_types.MISExternalResource;
 import data_types.MISNode;
 import data_types.MISScene;
 import project.MISProject;
+import project.MISProjectInformation;
 
 public class MISLoader {
 
@@ -105,12 +107,12 @@ public class MISLoader {
 		return null;
 	}
 	
-	public static boolean saveProjectLocation(String[] locations){
+	public static boolean saveProjectLocation(String[] locations, String[] date){
 		FileWriter file;
 		try {
 			file = new FileWriter("resources/testresources/projectlocations.txt");
 			for(int i = 0; i < locations.length; i++){
-				file.write(locations[i]+System.lineSeparator());
+				file.write(locations[i]+" "+date[i]+System.lineSeparator());
 			}
 			file.flush();
 			file.close();
@@ -121,24 +123,54 @@ public class MISLoader {
 		
 	}
 	
-	public static String[] loadProjectLocations(){
+	public static boolean saveProjectLocation(ArrayList<MISProjectInformation> infos){
+		String[] locations = new String[infos.size()];
+		String[] dates = new String[infos.size()];
+		for(int i = 0; i < infos.size(); i++){
+			locations[i] = infos.get(i).getProjectLocation();
+			dates[i] = infos.get(i).getProjectDateCreation();
+		}
+		return saveProjectLocation(locations, dates);
+	}
+	
+	public static MISProjectInformation getInformationFromString(String str){
+		MISProjectInformation information = null;
+		String[] data = str.split(" ");
+		String projectPath = data[0];
+		String[] pathFolders = projectPath.split("/");
+		String projectName = "";
+		if(pathFolders.length > 0){
+			projectName = pathFolders[pathFolders.length-1].replaceAll("/", "");
+		}
+		String projectDate = data[1];
+		boolean found = false;
+		File file = new File(projectPath+"/project.json");
+		System.out.println("The path which was tried to load:"+file.getAbsolutePath());
+		if(file.exists() && !file.isDirectory()){
+			found = true;
+			System.out.println("Found the file");
+		} else{
+			System.out.println("Didn't find the file.");
+		}
+		information = new MISProjectInformation(projectName, projectPath, projectDate, found);
+		return information;
+	}
+	
+	public static ArrayList<MISProjectInformation> loadProjectLocations(){
+		ArrayList<MISProjectInformation> projectLocationsObjects = new ArrayList<MISProjectInformation>();
 		try {
 			BufferedReader reader = new BufferedReader(new FileReader("resources/testresources/projectlocations.txt"));
 			String readLine = "";
-			ArrayList<String> projectLocationsStrings = new ArrayList<String>();
 			while((readLine = reader.readLine()) != null){
-				projectLocationsStrings.add(readLine);
-			}
-			String[] returnArray = new String[projectLocationsStrings.size()];
-			for(int i = 0; i < returnArray.length; i++){
-				returnArray[i] = projectLocationsStrings.get(i);
+				MISProjectInformation info = MISLoader.getInformationFromString(readLine);
+				projectLocationsObjects.add(info);
 			}
 			reader.close();
-			return returnArray;
+			return projectLocationsObjects;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return new String[]{};
+		return projectLocationsObjects;
 		
 	}
 	
