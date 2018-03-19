@@ -11,6 +11,7 @@ import java.awt.Toolkit;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import java.awt.CardLayout;
 
 public class ApplicationWindow {
 
@@ -55,17 +56,24 @@ public class ApplicationWindow {
 		frame.setBounds(100, 100, 450, 300);
 		frame.setSize(700, 700);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.getContentPane().setLayout(new CardLayout(0, 0));
 		
-		JPanel panel = new StartMenuChooseProject();
-		GroupLayout groupLayout = new GroupLayout(frame.getContentPane());
-		groupLayout.setHorizontalGroup(
-			groupLayout.createParallelGroup(Alignment.LEADING)
-				.addComponent(panel, GroupLayout.DEFAULT_SIZE, 684, Short.MAX_VALUE)
-		);
-		groupLayout.setVerticalGroup(
-			groupLayout.createParallelGroup(Alignment.LEADING)
-				.addComponent(panel, GroupLayout.DEFAULT_SIZE, 661, Short.MAX_VALUE)
-		);
-		frame.getContentPane().setLayout(groupLayout);
+		JPanel startMenuPanel = new StartMenuChooseProject(this);
+		frame.getContentPane().add(startMenuPanel, "startMenuPanel");
+		
+		JPanel createProjectPanel = new CreateNewProject(this);
+		frame.getContentPane().add(createProjectPanel, "createProjectPanel");
+		
+		
+	}
+	
+	public void showStartMenu(){
+		CardLayout layout = (CardLayout) frame.getContentPane().getLayout();
+		layout.show(frame.getContentPane(), "startMenuPanel");
+	}
+	
+	public void showCreateProjectMenu(){
+		CardLayout layout = (CardLayout) frame.getContentPane().getLayout();
+		layout.show(frame.getContentPane(), "createProjectPanel");
 	}
 }

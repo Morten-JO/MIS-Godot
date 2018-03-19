@@ -24,6 +24,7 @@ import java.awt.Color;
 import javax.swing.ListSelectionModel;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.AbstractAction;
 import java.awt.event.ActionEvent;
 import javax.swing.Action;
@@ -58,16 +59,17 @@ public class StartMenuChooseProject extends JPanel {
 	private JButton btnRemoveProject;
 	private JButton btnImportProject;
 	private JButton btnRun;
+	private ApplicationWindow frame;
 	
 	/**
 	 * Create the panel.
 	 */
-	public StartMenuChooseProject() {
+	public StartMenuChooseProject(ApplicationWindow frame) {
 		this.setSize(700, 700);
 		
 		initializeComponents();
 		handleEvents();
-		
+		this.frame = frame;
 		
 	}
 
@@ -134,6 +136,7 @@ public class StartMenuChooseProject extends JPanel {
 		btnNewButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent arg0) {
+				frame.showCreateProjectMenu();
 			}
 		});
 		
