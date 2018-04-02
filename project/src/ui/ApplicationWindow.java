@@ -15,7 +15,7 @@ import java.awt.CardLayout;
 
 public class ApplicationWindow {
 
-	private JFrame frame;
+	public JFrame frame;
 
 	/**
 	 * Launch the application.

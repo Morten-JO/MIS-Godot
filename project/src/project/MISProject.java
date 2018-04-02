@@ -346,6 +346,8 @@ public class MISProject {
 				}
 				MISProject.project.scenes.add(scene);
 			}
+			MISProject.project.isLoading = false;
+			return true;
 		} catch (IOException | ParseException e) {
 			e.printStackTrace();
 		}

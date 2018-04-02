@@ -82,8 +82,12 @@ public class StartMenuChooseProject extends JPanel {
 					MISProjectInformation informationObject = list.getSelectedValue();
 					//Load the project selected
 					if(informationObject.isFoundProject()){
-						MISProject.loadProject(informationObject.getProjectLocation());
+						boolean success = MISProject.loadProject(informationObject.getProjectLocation());
 						MISProject.printProjectData();
+						if(success){
+							frame.frame.dispose();
+							new MainViewWindow();
+						}
 					} else{
 						JOptionPane.showMessageDialog(null, "Project wasn't found at specified location.");
 					}
