@@ -3,12 +3,14 @@ package data_types;
 import java.util.ArrayList;
 
 import scene.MISBroadcast;
+import scene.MISRule;
 
 public class MISScene {
 
 	//This is set when the scene is created
 	public int IDNumber;
 	public ArrayList<MISNode> nodeList;
+	public ArrayList<MISRule> ruleList;
 	public String name;
 	public int loadSteps;
 	public int format;
