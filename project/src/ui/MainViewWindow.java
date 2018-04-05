@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -49,6 +50,11 @@ public class MainViewWindow {
 	private JList<MISNode> nodeList;
 	private JList<MISRule> rulesList;
 	private JTextPane textPaneConsole;
+	private JLabel lblUserNode;
+	private JLabel lblUserScript;
+	private JLabel lblUserIndex;
+	private JLabel lblUserType;
+	private JLabel lblUserParent;
 
 	/**
 	 * Launch the application.
@@ -153,6 +159,7 @@ public class MainViewWindow {
 		mnHelp.add(mntmSuggestAnImprovement);
 		
 		JPanel MiddlePanel = new JPanel();
+		MiddlePanel.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Node-Information", TitledBorder.LEADING, TitledBorder.ABOVE_TOP, null, new Color(0, 0, 0)));
 		
 		createNodeList(scene);
 		
@@ -171,33 +178,115 @@ public class MainViewWindow {
 		groupLayout.setHorizontalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
 				.addGroup(groupLayout.createSequentialGroup()
-					.addComponent(nodeList, GroupLayout.PREFERRED_SIZE, 309, GroupLayout.PREFERRED_SIZE)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(MiddlePanel, GroupLayout.DEFAULT_SIZE, 577, Short.MAX_VALUE)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(rulesList, GroupLayout.PREFERRED_SIZE, 286, GroupLayout.PREFERRED_SIZE))
-				.addGroup(groupLayout.createSequentialGroup()
 					.addContainerGap()
 					.addComponent(lblNewLabel)
-					.addContainerGap(1138, Short.MAX_VALUE))
-				.addGroup(groupLayout.createSequentialGroup()
+					.addContainerGap(1110, Short.MAX_VALUE))
+				.addGroup(Alignment.TRAILING, groupLayout.createSequentialGroup()
 					.addContainerGap()
-					.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 1164, Short.MAX_VALUE)
-					.addContainerGap())
+					.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
+						.addComponent(scrollPane, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 1176, Short.MAX_VALUE)
+						.addGroup(groupLayout.createSequentialGroup()
+							.addComponent(nodeList, GroupLayout.PREFERRED_SIZE, 309, GroupLayout.PREFERRED_SIZE)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(MiddlePanel, GroupLayout.PREFERRED_SIZE, 565, Short.MAX_VALUE)
+							.addPreferredGap(ComponentPlacement.UNRELATED)
+							.addComponent(rulesList, GroupLayout.PREFERRED_SIZE, 276, GroupLayout.PREFERRED_SIZE)
+							.addPreferredGap(ComponentPlacement.RELATED)))
+					.addGap(28))
 		);
 		groupLayout.setVerticalGroup(
 			groupLayout.createParallelGroup(Alignment.TRAILING)
 				.addGroup(groupLayout.createSequentialGroup()
-					.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
-						.addComponent(nodeList, GroupLayout.DEFAULT_SIZE, 711, Short.MAX_VALUE)
-						.addComponent(MiddlePanel, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 711, Short.MAX_VALUE)
-						.addComponent(rulesList, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 711, Short.MAX_VALUE))
+					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+						.addComponent(rulesList, GroupLayout.DEFAULT_SIZE, 711, Short.MAX_VALUE)
+						.addComponent(nodeList, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 711, Short.MAX_VALUE)
+						.addComponent(MiddlePanel, GroupLayout.DEFAULT_SIZE, 711, Short.MAX_VALUE))
 					.addGap(11)
 					.addComponent(lblNewLabel)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 178, GroupLayout.PREFERRED_SIZE)
 					.addContainerGap())
 		);
+		
+		JLabel lblNode = new JLabel("Name:");
+		lblNode.setFont(new Font("Dialog", Font.PLAIN, 17));
+		
+		lblUserNode = new JLabel(" ");
+		lblUserNode.setFont(new Font("Dialog", Font.PLAIN, 11));
+		
+		JLabel lblScript = new JLabel("Script:");
+		
+		lblUserScript = new JLabel(" ");
+		
+		JLabel lblParent = new JLabel("Parent:");
+		lblParent.setFont(new Font("Dialog", Font.PLAIN, 17));
+		
+		lblUserParent = new JLabel(" ");
+		lblUserParent.setFont(new Font("Dialog", Font.PLAIN, 11));
+		
+		JLabel lblType = new JLabel("Type:");
+		lblType.setFont(new Font("Dialog", Font.PLAIN, 17));
+		
+		lblUserType = new JLabel(" ");
+		
+		JLabel lblIndex = new JLabel("Index:");
+		lblIndex.setFont(new Font("Dialog", Font.PLAIN, 17));
+		
+		lblUserIndex = new JLabel(" ");
+		lblUserIndex.setFont(new Font("Dialog", Font.PLAIN, 11));
+		GroupLayout gl_MiddlePanel = new GroupLayout(MiddlePanel);
+		gl_MiddlePanel.setHorizontalGroup(
+			gl_MiddlePanel.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_MiddlePanel.createSequentialGroup()
+					.addContainerGap()
+					.addGroup(gl_MiddlePanel.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_MiddlePanel.createSequentialGroup()
+							.addGap(10)
+							.addComponent(lblScript)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(lblUserScript, GroupLayout.DEFAULT_SIZE, 384, Short.MAX_VALUE))
+						.addGroup(gl_MiddlePanel.createSequentialGroup()
+							.addComponent(lblNode)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(lblUserNode, GroupLayout.PREFERRED_SIZE, 139, GroupLayout.PREFERRED_SIZE)
+							.addPreferredGap(ComponentPlacement.UNRELATED)
+							.addComponent(lblType)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(lblUserType, GroupLayout.PREFERRED_SIZE, 128, GroupLayout.PREFERRED_SIZE)
+							.addPreferredGap(ComponentPlacement.UNRELATED)
+							.addComponent(lblIndex))
+						.addGroup(gl_MiddlePanel.createSequentialGroup()
+							.addComponent(lblParent)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(lblUserParent, GroupLayout.DEFAULT_SIZE, 372, Short.MAX_VALUE)))
+					.addGap(112))
+				.addGroup(gl_MiddlePanel.createSequentialGroup()
+					.addGap(447)
+					.addComponent(lblUserIndex, GroupLayout.PREFERRED_SIZE, 79, GroupLayout.PREFERRED_SIZE)
+					.addContainerGap(27, Short.MAX_VALUE))
+		);
+		gl_MiddlePanel.setVerticalGroup(
+			gl_MiddlePanel.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_MiddlePanel.createSequentialGroup()
+					.addContainerGap()
+					.addGroup(gl_MiddlePanel.createParallelGroup(Alignment.BASELINE)
+						.addComponent(lblNode)
+						.addComponent(lblUserNode)
+						.addComponent(lblType)
+						.addComponent(lblUserType)
+						.addComponent(lblIndex)
+						.addComponent(lblUserIndex))
+					.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+					.addGroup(gl_MiddlePanel.createParallelGroup(Alignment.BASELINE)
+						.addComponent(lblScript)
+						.addComponent(lblUserScript))
+					.addGap(18)
+					.addGroup(gl_MiddlePanel.createParallelGroup(Alignment.BASELINE)
+						.addComponent(lblParent)
+						.addComponent(lblUserParent))
+					.addGap(591))
+		);
+		MiddlePanel.setLayout(gl_MiddlePanel);
 		
 		textPaneConsole = new JTextPane();
 		textPaneConsole.setFont(new Font("Dialog", Font.PLAIN, 11));
@@ -290,6 +379,7 @@ public class MainViewWindow {
 						@Override
 						public void actionPerformed(ActionEvent e) {
 							//call show function
+							showNode(nodeList.getSelectedValue());
 							addTextToConsole("Showed node-element #"+nodeList.getSelectedIndex());
 						}
 					});
@@ -319,6 +409,7 @@ public class MainViewWindow {
 					
 				} else if(SwingUtilities.isLeftMouseButton(arg0)){
 					//call show function
+					showNode(nodeList.getSelectedValue());
 					addTextToConsole("Showed node-element #"+nodeList.getSelectedIndex());
 				}
 			}
@@ -356,5 +447,44 @@ public class MainViewWindow {
 			}
 		});
 		
+	}
+	
+	public void showNode(MISNode node){
+		if(node.scriptAttached){
+			lblUserScript.setVisible(true);
+			lblUserScript.setVisible(true);
+			lblUserScript.setText(node.scriptName);
+		} else{
+			lblUserScript.setVisible(false);
+			lblUserScript.setVisible(false);
+			lblUserScript.setText("");
+		}
+		lblUserNode.setText(node.name);
+		lblUserIndex.setText(""+node.index);
+		lblUserType.setText(node.type);
+		if(node.parent != null){
+			lblUserParent.setText(node.parent.name);
+			lblUserParent.addMouseListener(new MouseListener() {
+				
+				@Override
+				public void mouseReleased(MouseEvent e) {}
+				
+				@Override
+				public void mousePressed(MouseEvent e) {
+					showNode(node.parent);
+				}
+				
+				@Override
+				public void mouseExited(MouseEvent e) {}
+				
+				@Override
+				public void mouseEntered(MouseEvent e) {}
+				
+				@Override
+				public void mouseClicked(MouseEvent e) {}
+			});
+		} else{
+			lblUserParent.setText("");
+		}
 	}
 }
