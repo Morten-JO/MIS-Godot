@@ -63,6 +63,7 @@ public class MISProject {
 		generalSettingsObject.put("name", MISProject.project.projectName);
 		generalSettingsObject.put("target_engine", MISProject.project.targetEngine.toString());
 		generalSettingsObject.put("minimum_build_version", MISProject.project.minimumBuildVersion);
+		generalSettingsObject.put("godot_project_location", MISProject.project.godotProjectLocation);
 		mainObject.put("general_settings", generalSettingsObject);
 		
 		JSONObject projectGeneralSettingsObject = new JSONObject();
@@ -266,6 +267,7 @@ public class MISProject {
 				MISProject.project.isLoading = true;
 			}
 			MISProject.project.minimumBuildVersion = (double) generalSettings.get("minimum_build_version");
+			MISProject.project.godotProjectLocation = (String) generalSettings.get("godot_project_location");
 			
 			JSONObject projectSettings = (JSONObject) jsonObject.get("project_settings");
 			MISProject.project.listType = MISListType.valueOf((String) projectSettings.get("list_type"));
@@ -372,4 +374,5 @@ public class MISProject {
 	 */
 	public String projectName;
 	public String projectLocation;
+	public String godotProjectLocation; 
 }

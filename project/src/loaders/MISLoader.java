@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import data_types.MISExternalResource;
 import data_types.MISNode;
@@ -18,6 +19,33 @@ public class MISLoader {
 
 	public static void main(String[] args) {
 		MISLoader.loadSceneByLocation("resources/testresources/Sce.tscn");
+	}
+	
+	public static ArrayList<MISScene> loadScenesByLocation(String location){
+		ArrayList<MISScene> scenes = new ArrayList<MISScene>();
+		File file = new File(location);
+		if(!file.isDirectory()){
+			System.err.println("Location isnt a directory in MISLoader");
+			return scenes;
+		} else{
+			System.out.println("Recursive search start!");
+			recursiveSearchForScenes(file, scenes);
+		}
+		return scenes;
+	}
+	
+	private static void recursiveSearchForScenes(File file, List<MISScene> scenes){
+		System.out.println("Recur on file: "+file.getName());
+		if(file.isDirectory()){
+			File[] files = file.listFiles();
+			for(int i = 0; i < files.length; i++){
+				recursiveSearchForScenes(files[i], scenes);
+			}
+		} else{
+			if(file.getName().contains(".tscn")){
+				scenes.add(loadSceneByLocation(file.getAbsolutePath()));
+			}
+		}
 	}
 	
 	/**

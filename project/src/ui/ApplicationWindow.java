@@ -17,6 +17,10 @@ public class ApplicationWindow {
 
 	public JFrame frame;
 
+	CreateNewProjectSettings createProjectSettings;
+	JPanel createProjectPanel;
+	JPanel startMenuPanel;
+	
 	/**
 	 * Launch the application.
 	 */
@@ -58,12 +62,14 @@ public class ApplicationWindow {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(new CardLayout(0, 0));
 		
-		JPanel startMenuPanel = new StartMenuChooseProject(this);
+		startMenuPanel = new StartMenuChooseProject(this);
 		frame.getContentPane().add(startMenuPanel, "startMenuPanel");
 		
-		JPanel createProjectPanel = new CreateNewProject(this);
+		createProjectPanel = new CreateNewProject(this);
 		frame.getContentPane().add(createProjectPanel, "createProjectPanel");
 		
+		createProjectSettings = new CreateNewProjectSettings(this);
+		frame.getContentPane().add(createProjectSettings, "createProjectSettingsPanel");
 		
 	}
 	
@@ -75,5 +81,11 @@ public class ApplicationWindow {
 	public void showCreateProjectMenu(){
 		CardLayout layout = (CardLayout) frame.getContentPane().getLayout();
 		layout.show(frame.getContentPane(), "createProjectPanel");
+	}
+	
+	public void showCreateProjectSettings(String projName, String projLoc, String godotLoc){
+		CardLayout layout = (CardLayout) frame.getContentPane().getLayout();
+		layout.show(frame.getContentPane(), "createProjectSettingsPanel");
+		createProjectSettings.putVariables(projName, projLoc, godotLoc);
 	}
 }

@@ -169,7 +169,7 @@ public class CreateNewProject extends JPanel {
 			@Override
 			public void mousePressed(MouseEvent arg0) {
 				if(checkProblems()){
-					//go to next
+					frame.showCreateProjectSettings(nameTextField.getText(), locationTextField.getText(), godotLocationTextField.getText());
 				}
 			}
 		});
