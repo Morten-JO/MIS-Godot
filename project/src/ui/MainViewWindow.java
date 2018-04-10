@@ -23,6 +23,7 @@ import javax.swing.GroupLayout.Alignment;
 import settings.MISProjectSettings;
 
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.JMenu;
 import javax.swing.JPanel;
@@ -55,6 +56,26 @@ public class MainViewWindow {
 	private JLabel lblUserIndex;
 	private JLabel lblUserType;
 	private JLabel lblUserParent;
+	private JMenuItem mntmSave;
+	private JMenuItem mntmLoadScene;
+	private JMenuItem mntmNewProject;
+	private JMenuItem mntmProjectSettings;
+	private JMenuItem mntmBuildSettings;
+	private JMenuItem mntmRun;
+	private JMenuItem mntmBuild;
+	private JMenuItem mntmQuit;
+	private boolean wasChanged = true;
+	private JMenu mnFile;
+	private JMenuItem mntmUndo;
+	private JMenuItem mntmRedo;
+	private JMenuItem mntmConsole;
+	private JMenuItem mntmAbout;
+	private JMenuItem mntmManual;
+	private JMenuItem mntmReportABug;
+	private JMenuItem mntmSuggestAnImprovement;
+	private JMenu mnEdit;
+	private JMenu mnWindow;
+	private JMenu mnHelp;
 
 	/**
 	 * Launch the application.
@@ -101,61 +122,75 @@ public class MainViewWindow {
 		JMenuBar menuBar = new JMenuBar();
 		frame.setJMenuBar(menuBar);
 		
-		JMenu mnNewMenu = new JMenu("File");
-		menuBar.add(mnNewMenu);
+		mnFile = new JMenu("File");
+		menuBar.add(mnFile);
 		
-		JMenuItem mntmSave = new JMenuItem("Save");
-		mnNewMenu.add(mntmSave);
+		mntmSave = new JMenuItem("Save");
+		mnFile.add(mntmSave);
 		
-		JMenuItem mntmLoadScene = new JMenuItem("Load Scene");
-		mnNewMenu.add(mntmLoadScene);
+		mntmLoadScene = new JMenuItem("Load Scene");
 		
-		JMenuItem mntmNewProject = new JMenuItem("New Project");
-		mnNewMenu.add(mntmNewProject);
+		mnFile.add(mntmLoadScene);
 		
-		JMenuItem mntmProjectSettings = new JMenuItem("Project Settings");
-		mnNewMenu.add(mntmProjectSettings);
+		mntmNewProject = new JMenuItem("New Project");
 		
-		JMenuItem mntmBuildSettings = new JMenuItem("Build Settings");
-		mnNewMenu.add(mntmBuildSettings);
+		mnFile.add(mntmNewProject);
 		
-		JMenuItem mntmRun = new JMenuItem("Run");
-		mnNewMenu.add(mntmRun);
+		mntmProjectSettings = new JMenuItem("Project Settings");
 		
-		JMenuItem mntmBuild = new JMenuItem("Build");
-		mnNewMenu.add(mntmBuild);
+		mnFile.add(mntmProjectSettings);
 		
-		JMenuItem mntmQuit = new JMenuItem("Quit");
-		mnNewMenu.add(mntmQuit);
+		mntmBuildSettings = new JMenuItem("Build Settings");
 		
-		JMenu mnEdit = new JMenu("Edit");
+		mnFile.add(mntmBuildSettings);
+		
+		mntmRun = new JMenuItem("Run");
+		
+		mnFile.add(mntmRun);
+		
+		mntmBuild = new JMenuItem("Build");
+		
+		mnFile.add(mntmBuild);
+		
+		mntmQuit = new JMenuItem("Quit");
+		
+		mnFile.add(mntmQuit);
+		
+		mnEdit = new JMenu("Edit");
 		menuBar.add(mnEdit);
 		
-		JMenuItem mntmUndo = new JMenuItem("Undo");
+		mntmUndo = new JMenuItem("Undo");
+		
 		mnEdit.add(mntmUndo);
 		
-		JMenuItem mntmRedo = new JMenuItem("Redo");
+		mntmRedo = new JMenuItem("Redo");
+		
 		mnEdit.add(mntmRedo);
 		
-		JMenu mnWindow = new JMenu("Window");
+		mnWindow = new JMenu("Window");
 		menuBar.add(mnWindow);
 		
-		JMenuItem mntmConsole = new JMenuItem("Console");
+		mntmConsole = new JMenuItem("Console");
+		
 		mnWindow.add(mntmConsole);
 		
-		JMenu mnHelp = new JMenu("Help");
+		mnHelp = new JMenu("Help");
 		menuBar.add(mnHelp);
 		
-		JMenuItem mntmAbout = new JMenuItem("About");
+		mntmAbout = new JMenuItem("About");
+		
 		mnHelp.add(mntmAbout);
 		
-		JMenuItem mntmManual = new JMenuItem("Manual");
+		mntmManual = new JMenuItem("Manual");
+		
 		mnHelp.add(mntmManual);
 		
-		JMenuItem mntmReportABug = new JMenuItem("Report a bug");
+		mntmReportABug = new JMenuItem("Report a bug");
+		
 		mnHelp.add(mntmReportABug);
 		
-		JMenuItem mntmSuggestAnImprovement = new JMenuItem("Suggest an improvement");
+		mntmSuggestAnImprovement = new JMenuItem("Suggest an improvement");
+		
 		mnHelp.add(mntmSuggestAnImprovement);
 		
 		JPanel MiddlePanel = new JPanel();
@@ -447,6 +482,166 @@ public class MainViewWindow {
 			}
 		});
 		
+		mntmSave.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent arg0) {
+				if(wasChanged){
+					MISProject.saveProject();
+					mntmSave.setEnabled(false);
+					wasChanged = false;
+					mnFile.getPopupMenu().setVisible(false);
+				}
+			}
+		});
+		
+		mntmLoadScene.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				String[] possiblities = new String[MISProject.project.scenes.size()];
+				for(int i = 0; i < possiblities.length; i++){
+					possiblities[i] = MISProject.project.scenes.get(i).name;
+				}
+				if(possiblities.length > 0){
+					String s = (String) JOptionPane.showInputDialog(frame, "Select scene to load:", "Load scene", JOptionPane.PLAIN_MESSAGE, null, possiblities, possiblities[0]);
+				
+					if ((s != null) && (s.length() > 0)) {
+						MISScene scene = null;
+						for(int i = 0; i < possiblities.length; i++){
+							if(possiblities[i].equals(s)){
+								scene = MISProject.project.scenes.get(i);
+								break;
+							}
+						}
+						if(scene != null){
+							createNodeList(scene);
+						}
+					    
+					}
+				}
+				
+			}
+		});
+		
+		mntmNewProject.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				MISProject.saveProject();
+				mntmSave.setEnabled(false);
+				wasChanged = false;
+				mnFile.getPopupMenu().setVisible(false);
+				frame.dispose();
+				String[] args = {};
+				ApplicationWindow.main(args);
+			}
+		});
+		
+		mntmProjectSettings.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				JOptionPane.showMessageDialog(null, "UI for Project Settings is not implemented yet!");
+				mnFile.getPopupMenu().setVisible(false);
+			}
+		});
+		
+		mntmBuildSettings.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				JOptionPane.showMessageDialog(null, "UI for Build Settings is not implemented yet!");
+				mnFile.getPopupMenu().setVisible(false);
+			}
+		});
+		
+		mntmRun.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				JOptionPane.showMessageDialog(null, "Run is not implemented yet!");
+				mnFile.getPopupMenu().setVisible(false);
+			}
+		});
+		
+		mntmBuild.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				JOptionPane.showMessageDialog(null, "Build is not implemented yet!");
+				mnFile.getPopupMenu().setVisible(false);
+			}
+		});
+		
+		mntmQuit.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				MISProject.saveProject();
+				mntmSave.setEnabled(false);
+				wasChanged = false;
+				mnFile.getPopupMenu().setVisible(false);
+				int dialogResult = JOptionPane.showConfirmDialog(null, "Are you sure you want to quit?");
+				if(dialogResult == JOptionPane.YES_OPTION){
+					frame.dispose();
+				}
+			}
+		});
+		
+		mntmUndo.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				JOptionPane.showMessageDialog(null, "Undo is not implemented yet!");
+				mnEdit.getPopupMenu().setVisible(false);
+			}
+		});
+		
+		mntmRedo.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				JOptionPane.showMessageDialog(null, "Redo is not implemented yet!");
+				mnEdit.getPopupMenu().setVisible(false);
+			}
+		});
+		
+		mntmConsole.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				JOptionPane.showMessageDialog(null, "Console ui is not implemented yet!");
+				mnWindow.getPopupMenu().setVisible(false);
+			}
+		});
+		
+		mntmAbout.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				JOptionPane.showMessageDialog(null, "About ui is not implemented yet!");
+				mnHelp.getPopupMenu().setVisible(false);
+			}
+		});
+		
+		mntmManual.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				JOptionPane.showMessageDialog(null, "Manual link is not ready!");
+				mnHelp.getPopupMenu().setVisible(false);
+			}
+		});
+		
+		mntmReportABug.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				JOptionPane.showMessageDialog(null, "Report a bug ui is not yet implemented!");
+				mnHelp.getPopupMenu().setVisible(false);
+			}
+		});
+		
+		mntmSuggestAnImprovement.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				JOptionPane.showMessageDialog(null, "Suggestion ui is not implemented yet!");
+				mnHelp.getPopupMenu().setVisible(false);
+			}
+		});
+		
+	}
+	
+	public void saveableActionTaken(){
+		mntmSave.setEnabled(true);
+		wasChanged = true;
 	}
 	
 	public void showNode(MISNode node){
