@@ -1,24 +1,35 @@
 package ui;
 
 import java.awt.Component;
+import java.awt.Desktop;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.SystemColor;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JMenuBar;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.ActionMap;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
+import javax.swing.InputMap;
+import javax.swing.JComponent;
 
 import settings.MISProjectSettings;
 
@@ -37,14 +48,13 @@ import data_types.MISScene;
 import project.MISProject;
 import scene.MISRule;
 
-import javax.swing.border.BevelBorder;
-import javax.swing.border.EtchedBorder;
-import javax.swing.border.LineBorder;
 import java.awt.Color;
-import javax.swing.border.MatteBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
+import javax.swing.KeyStroke;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.event.ListSelectionEvent;
 
 public class MainViewWindow {
 	private JFrame frame;
@@ -76,6 +86,7 @@ public class MainViewWindow {
 	private JMenu mnEdit;
 	private JMenu mnWindow;
 	private JMenu mnHelp;
+	private JMenuItem mntmBroadcasts;
 
 	/**
 	 * Launch the application.
@@ -122,6 +133,7 @@ public class MainViewWindow {
 		JMenuBar menuBar = new JMenuBar();
 		frame.setJMenuBar(menuBar);
 		
+		
 		mnFile = new JMenu("File");
 		menuBar.add(mnFile);
 		
@@ -161,18 +173,50 @@ public class MainViewWindow {
 		
 		mntmUndo = new JMenuItem("Undo");
 		
+		Action undo = new AbstractAction() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				undo();
+			}
+		};
+		
+		Action redo = new AbstractAction() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				redo();
+			}
+		};
+		
+		JPanel contentPane = (JPanel) frame.getContentPane();
+		
+		InputMap undoIMap = contentPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+		ActionMap undoAMap = contentPane.getActionMap();
+		undoIMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_Z, InputEvent.CTRL_MASK), "undo");
+		undoAMap.put("undo", undo);
+		
+		InputMap redoIMap = contentPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+		ActionMap redoAMap = contentPane.getActionMap();
+		redoIMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_Y, InputEvent.CTRL_MASK), "redo");
+		redoAMap.put("redo", redo);
+		
+		
 		mnEdit.add(mntmUndo);
 		
 		mntmRedo = new JMenuItem("Redo");
+		
+		mntmRedo.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_Y, InputEvent.CTRL_MASK), "redo");
 		
 		mnEdit.add(mntmRedo);
 		
 		mnWindow = new JMenu("Window");
 		menuBar.add(mnWindow);
 		
-		mntmConsole = new JMenuItem("Console");
+		mntmConsole = new JMenuItem("Clear Console");
 		
 		mnWindow.add(mntmConsole);
+		
+		mntmBroadcasts = new JMenuItem("Broadcasts");
+		mnWindow.add(mntmBroadcasts);
 		
 		mnHelp = new JMenu("Help");
 		menuBar.add(mnHelp);
@@ -442,11 +486,14 @@ public class MainViewWindow {
 					menu.add(remove);
 					menu.show(nodeList, arg0.getPoint().x, arg0.getPoint().y);
 					
-				} else if(SwingUtilities.isLeftMouseButton(arg0)){
-					//call show function
-					showNode(nodeList.getSelectedValue());
-					addTextToConsole("Showed node-element #"+nodeList.getSelectedIndex());
 				}
+			}
+		});
+		
+		nodeList.addListSelectionListener(new ListSelectionListener() {
+			public void valueChanged(ListSelectionEvent arg0) {
+				showNode(nodeList.getSelectedValue());
+				addTextToConsole("Showed node-element #"+nodeList.getSelectedIndex());
 			}
 		});
 		
@@ -486,10 +533,16 @@ public class MainViewWindow {
 			@Override
 			public void mousePressed(MouseEvent arg0) {
 				if(wasChanged){
-					MISProject.saveProject();
+					boolean saved = MISProject.saveProject();
 					mntmSave.setEnabled(false);
 					wasChanged = false;
 					mnFile.getPopupMenu().setVisible(false);
+					if(saved){
+						addTextToConsole("Saved project.");
+					} else{
+						addTextToConsole("Failed to save project.");
+					}
+					
 				}
 			}
 		});
@@ -514,6 +567,9 @@ public class MainViewWindow {
 						}
 						if(scene != null){
 							createNodeList(scene);
+							addTextToConsole("Loaded scene: "+scene.name);
+						} else{
+							addTextToConsole("Failed to load scene");
 						}
 					    
 					}
@@ -540,6 +596,7 @@ public class MainViewWindow {
 			public void mousePressed(MouseEvent e) {
 				JOptionPane.showMessageDialog(null, "UI for Project Settings is not implemented yet!");
 				mnFile.getPopupMenu().setVisible(false);
+				addTextToConsole("Opened project settings.");
 			}
 		});
 		
@@ -548,6 +605,7 @@ public class MainViewWindow {
 			public void mousePressed(MouseEvent e) {
 				JOptionPane.showMessageDialog(null, "UI for Build Settings is not implemented yet!");
 				mnFile.getPopupMenu().setVisible(false);
+				addTextToConsole("Opened build settings.");
 			}
 		});
 		
@@ -556,6 +614,7 @@ public class MainViewWindow {
 			public void mousePressed(MouseEvent e) {
 				JOptionPane.showMessageDialog(null, "Run is not implemented yet!");
 				mnFile.getPopupMenu().setVisible(false);
+				addTextToConsole("Ran project.");
 			}
 		});
 		
@@ -564,6 +623,7 @@ public class MainViewWindow {
 			public void mousePressed(MouseEvent e) {
 				JOptionPane.showMessageDialog(null, "Build is not implemented yet!");
 				mnFile.getPopupMenu().setVisible(false);
+				addTextToConsole("Opened build window.");
 			}
 		});
 		
@@ -584,24 +644,27 @@ public class MainViewWindow {
 		mntmUndo.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
-				JOptionPane.showMessageDialog(null, "Undo is not implemented yet!");
+				undo();
 				mnEdit.getPopupMenu().setVisible(false);
+				
 			}
 		});
 		
 		mntmRedo.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
-				JOptionPane.showMessageDialog(null, "Redo is not implemented yet!");
+				redo();
 				mnEdit.getPopupMenu().setVisible(false);
+				
 			}
 		});
 		
 		mntmConsole.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
-				JOptionPane.showMessageDialog(null, "Console ui is not implemented yet!");
+				textPaneConsole.setText("");
 				mnWindow.getPopupMenu().setVisible(false);
+				addTextToConsole("Console cleared.");
 			}
 		});
 		
@@ -610,14 +673,23 @@ public class MainViewWindow {
 			public void mousePressed(MouseEvent e) {
 				JOptionPane.showMessageDialog(null, "About ui is not implemented yet!");
 				mnHelp.getPopupMenu().setVisible(false);
+				addTextToConsole("Opened about page.");
 			}
 		});
 		
 		mntmManual.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
-				JOptionPane.showMessageDialog(null, "Manual link is not ready!");
-				mnHelp.getPopupMenu().setVisible(false);
+				try {
+					Desktop.getDesktop().browse(new URI("http://www.misgodot.com/manual"));
+					mnHelp.getPopupMenu().setVisible(false);
+					addTextToConsole("Opened browser link to manual.");
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				} catch (URISyntaxException e1) {
+					e1.printStackTrace();
+				}
+				
 			}
 		});
 		
@@ -626,6 +698,7 @@ public class MainViewWindow {
 			public void mousePressed(MouseEvent e) {
 				JOptionPane.showMessageDialog(null, "Report a bug ui is not yet implemented!");
 				mnHelp.getPopupMenu().setVisible(false);
+				addTextToConsole("Opened report a bug window.");
 			}
 		});
 		
@@ -634,6 +707,7 @@ public class MainViewWindow {
 			public void mousePressed(MouseEvent e) {
 				JOptionPane.showMessageDialog(null, "Suggestion ui is not implemented yet!");
 				mnHelp.getPopupMenu().setVisible(false);
+				addTextToConsole("Opened suggest an improvement window.");
 			}
 		});
 		
@@ -681,5 +755,13 @@ public class MainViewWindow {
 		} else{
 			lblUserParent.setText("");
 		}
+	}
+	
+	private void redo(){
+		addTextToConsole("Redo.");
+	}
+	
+	private void undo(){
+		addTextToConsole("Undo.");
 	}
 }
