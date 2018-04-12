@@ -45,6 +45,7 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 
 import data_types.MISNode;
 import data_types.MISScene;
+import jdk.nashorn.internal.ir.JoinPredecessorExpression;
 import project.MISProject;
 import scene.MISRule;
 
@@ -87,6 +88,7 @@ public class MainViewWindow {
 	private JMenu mnWindow;
 	private JMenu mnHelp;
 	private JMenuItem mntmBroadcasts;
+	private MISScene currentScene;
 
 	/**
 	 * Launch the application.
@@ -122,6 +124,7 @@ public class MainViewWindow {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize(MISScene scene) {
+		this.currentScene = scene;
 		frame = new JFrame();
 		frame.setIconImage(Toolkit.getDefaultToolkit().getImage(ApplicationWindow.class.getResource("/resources/MIS_Icon128.png")));
 		frame.setName("MIS for Godot - Version: "+MISProjectSettings.MIS_VERSION);
@@ -478,12 +481,23 @@ public class MainViewWindow {
 						@Override
 						public void actionPerformed(ActionEvent e) {
 							addTextToConsole("Add rule pressed on node-element #"+nodeList.getSelectedIndex());
+							RuleDialog dialog = new RuleDialog(currentScene.nodeList);
+							dialog.setVisible(true);
+							MISRule rule = dialog.getRuleFromDialog();
+							if(rule != null){
+								System.out.println("Rule is name: "+rule.ruleName);
+								currentScene.ruleList.add(rule);
+							} else{
+								System.out.println("Rule is fucking null");
+							}
+							
 							//open rule dialog box
 						}
 					});
 					
 					menu.add(show);
 					menu.add(remove);
+					menu.add(addRule);
 					menu.show(nodeList, arg0.getPoint().x, arg0.getPoint().y);
 					
 				}
