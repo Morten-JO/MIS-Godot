@@ -47,7 +47,7 @@ import data_types.MISNode;
 import data_types.MISScene;
 import jdk.nashorn.internal.ir.JoinPredecessorExpression;
 import project.MISProject;
-import scene.MISRule;
+import rules.MISRule;
 
 import java.awt.Color;
 import javax.swing.border.TitledBorder;
@@ -89,6 +89,7 @@ public class MainViewWindow {
 	private JMenu mnHelp;
 	private JMenuItem mntmBroadcasts;
 	private MISScene currentScene;
+	private DefaultListModel<MISRule> ruleModel;
 
 	/**
 	 * Launch the application.
@@ -247,9 +248,7 @@ public class MainViewWindow {
 		
 		nodeList.setBackground(SystemColor.menu);
 		
-		rulesList = new JList();
-		rulesList.setBorder(new TitledBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)), "Rules", TitledBorder.LEADING, TitledBorder.ABOVE_TOP, null, new Color(0, 0, 0)));
-		rulesList.setBackground(SystemColor.menu);
+		createRulesList(scene);
 		
 		JLabel lblNewLabel = new JLabel("Console:");
 		lblNewLabel.setFont(new Font("Dialog", Font.PLAIN, 17));
@@ -378,15 +377,15 @@ public class MainViewWindow {
 	}
 
 	public void createRulesList(MISScene scene){
-		DefaultListModel<MISRule> model = new DefaultListModel<>();
-		rulesList = new JList<MISRule>(model);
+		ruleModel = new DefaultListModel<>();
+		rulesList = new JList<MISRule>(ruleModel);
 		rulesList.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Rules", TitledBorder.LEADING, TitledBorder.ABOVE_TOP, null, new Color(0, 0, 0)));
 		rulesList.setFont(new Font("Dialog", Font.PLAIN, 17));
 		rulesList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		
 		for(int i = 0; i < scene.ruleList.size(); i++){
-			System.out.println("Rules added to model: "+scene.nodeList.get(i).name);
-			model.addElement(scene.ruleList.get(i));
+			System.out.println("Rules added to model: "+scene.ruleList.get(i).ruleName);
+			ruleModel.addElement(scene.ruleList.get(i));
 		}
 		rulesList.setBackground(SystemColor.menu);
 		rulesList.setCellRenderer(new DefaultListCellRenderer() {
@@ -481,12 +480,16 @@ public class MainViewWindow {
 						@Override
 						public void actionPerformed(ActionEvent e) {
 							addTextToConsole("Add rule pressed on node-element #"+nodeList.getSelectedIndex());
-							RuleDialog dialog = new RuleDialog(currentScene.nodeList);
-							dialog.setVisible(true);
+							RuleDialog dialog = new RuleDialog(frame ,currentScene.nodeList);
+							dialog.showDialog();
 							MISRule rule = dialog.getRuleFromDialog();
 							if(rule != null){
 								System.out.println("Rule is name: "+rule.ruleName);
 								currentScene.ruleList.add(rule);
+								if(ruleModel == null){
+									System.out.println("Rulemodel, fucking null?");
+								}
+								ruleModel.addElement(rule);
 							} else{
 								System.out.println("Rule is fucking null");
 							}

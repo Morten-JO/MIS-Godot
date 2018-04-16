@@ -2,8 +2,8 @@ package data_types;
 
 import java.util.ArrayList;
 
+import rules.MISRule;
 import scene.MISBroadcast;
-import scene.MISRule;
 
 public class MISScene {
 
@@ -29,6 +29,7 @@ public class MISScene {
 		nodeList = new ArrayList<MISNode>();
 		externalResources = new ArrayList<MISExternalResource>();
 		broadcasts = new ArrayList<MISBroadcast>();
+		ruleList = new ArrayList<MISRule>();
 	}
 	
 	public void addNode(MISNode node){
