@@ -17,6 +17,11 @@ import enums.MISListType;
 import enums.MISProtocol;
 import enums.MISType;
 import loaders.MISLoader;
+import rules.MISRule;
+import rules.MISRuleNode;
+import rules.MISRuleNodePosition;
+import rules.MISRuleNodeRotation;
+import rules.MISRuleNodeScale;
 import scene.MISBroadcast;
 import scene.MISBroadcastData;
 import scene.MISBroadcastValue;
@@ -143,8 +148,50 @@ public class MISProject {
 					resourceObject.put("type", resource.type);
 					extresObject.put(""+j, resourceObject);
 				}
+				
+				JSONObject rulesObject = new JSONObject();
+				rulesObject.put("rules_n", scene.ruleList.size());
+				
+				for(int j = 0; j < scene.ruleList.size(); j++){
+					JSONObject ruleObject = new JSONObject();
+					MISRule rule = scene.ruleList.get(i);
+					ruleObject.put("name", rule.ruleName);
+					ruleObject.put("class", rule.getClass());
+					if(rule instanceof MISRuleNode){
+						int index = -1;
+						for(int z = 0; z < scene.nodeList.size(); z++){
+							if(scene.nodeList.get(i) == ((MISRuleNode)rule).node){
+								index = z;
+								break;
+							}
+						}
+						ruleObject.put("node_index", ""+index);
+						ruleObject.put("option", ((MISRuleNode)rule).option);
+						if(rule instanceof MISRuleNodePosition){
+							MISRuleNodePosition pos = (MISRuleNodePosition)rule;
+							ruleObject.put("xmin", pos.xBounds.min);
+							ruleObject.put("xmax", pos.xBounds.max);
+							ruleObject.put("ymin", pos.yBounds.min);
+							ruleObject.put("ymax", pos.yBounds.max);
+							ruleObject.put("zmin", pos.zBounds.min);
+							ruleObject.put("zmax", pos.zBounds.max);
+						} else if(rule instanceof MISRuleNodeRotation){
+							MISRuleNodeRotation rot = (MISRuleNodeRotation)rule;
+							ruleObject.put("rotMin", rot.rotationBounds.min);
+							ruleObject.put("rotMax", rot.rotationBounds.max);
+						} else if(rule instanceof MISRuleNodeScale){
+							MISRuleNodeScale scale = (MISRuleNodeScale)rule;
+							ruleObject.put("xmin", scale.xBounds.min);
+							ruleObject.put("xmax", scale.xBounds.max);
+							ruleObject.put("ymin", scale.yBounds.min);
+							ruleObject.put("ymax", scale.yBounds.max);
+						}
+					}
+					rulesObject.put(""+j, ruleObject);
+				}
 					
 				sceneObject.put("externalResources", extresObject);
+				sceneObject.put("rules", rulesObject);
 				scenesObject.put(""+i, sceneObject);
 				
 			}

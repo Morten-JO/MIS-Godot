@@ -48,6 +48,10 @@ import data_types.MISScene;
 import jdk.nashorn.internal.ir.JoinPredecessorExpression;
 import project.MISProject;
 import rules.MISRule;
+import rules.MISRuleNode;
+import rules.MISRuleNodePosition;
+import rules.MISRuleNodeRotation;
+import rules.MISRuleNodeScale;
 
 import java.awt.Color;
 import javax.swing.border.TitledBorder;
@@ -56,6 +60,8 @@ import javax.swing.JTextPane;
 import javax.swing.KeyStroke;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.ListSelectionEvent;
+import java.awt.CardLayout;
+import java.awt.FlowLayout;
 
 public class MainViewWindow {
 	private JFrame frame;
@@ -90,6 +96,15 @@ public class MainViewWindow {
 	private JMenuItem mntmBroadcasts;
 	private MISScene currentScene;
 	private DefaultListModel<MISRule> ruleModel;
+	private JPanel nodeInformationPanel;
+	private JPanel ruleInformationPanel;
+	private JLabel lblRuleNodeUserInput;
+	private JLabel lblRuleNodeUserProperty;
+	private JLabel lblRuleNodeUserType;
+	private JLabel lblRuleNodeUserName;
+	private JLabel lblRuleUserType;
+	private JLabel lblRuleUserName;
+	private JPanel middlePanel;
 
 	/**
 	 * Launch the application.
@@ -241,8 +256,8 @@ public class MainViewWindow {
 		
 		mnHelp.add(mntmSuggestAnImprovement);
 		
-		JPanel MiddlePanel = new JPanel();
-		MiddlePanel.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Node-Information", TitledBorder.LEADING, TitledBorder.ABOVE_TOP, null, new Color(0, 0, 0)));
+		middlePanel = new JPanel();
+		middlePanel.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Node-Information", TitledBorder.LEADING, TitledBorder.ABOVE_TOP, null, new Color(0, 0, 0)));
 		
 		createNodeList(scene);
 		
@@ -269,7 +284,7 @@ public class MainViewWindow {
 						.addGroup(groupLayout.createSequentialGroup()
 							.addComponent(nodeList, GroupLayout.PREFERRED_SIZE, 309, GroupLayout.PREFERRED_SIZE)
 							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(MiddlePanel, GroupLayout.PREFERRED_SIZE, 565, Short.MAX_VALUE)
+							.addComponent(middlePanel, GroupLayout.PREFERRED_SIZE, 565, Short.MAX_VALUE)
 							.addPreferredGap(ComponentPlacement.UNRELATED)
 							.addComponent(rulesList, GroupLayout.PREFERRED_SIZE, 276, GroupLayout.PREFERRED_SIZE)
 							.addPreferredGap(ComponentPlacement.RELATED)))
@@ -281,29 +296,27 @@ public class MainViewWindow {
 					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 						.addComponent(rulesList, GroupLayout.DEFAULT_SIZE, 711, Short.MAX_VALUE)
 						.addComponent(nodeList, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 711, Short.MAX_VALUE)
-						.addComponent(MiddlePanel, GroupLayout.DEFAULT_SIZE, 711, Short.MAX_VALUE))
+						.addComponent(middlePanel, GroupLayout.DEFAULT_SIZE, 711, Short.MAX_VALUE))
 					.addGap(11)
 					.addComponent(lblNewLabel)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 178, GroupLayout.PREFERRED_SIZE)
 					.addContainerGap())
 		);
+		middlePanel.setLayout(new CardLayout(0, 0));
+		
+		nodeInformationPanel = new JPanel();
+		middlePanel.add(nodeInformationPanel, "nodeInformation");
+		
+		JLabel lblScript = new JLabel("Script:");
+		
+		lblUserScript = new JLabel(" ");
 		
 		JLabel lblNode = new JLabel("Name:");
 		lblNode.setFont(new Font("Dialog", Font.PLAIN, 17));
 		
 		lblUserNode = new JLabel(" ");
 		lblUserNode.setFont(new Font("Dialog", Font.PLAIN, 11));
-		
-		JLabel lblScript = new JLabel("Script:");
-		
-		lblUserScript = new JLabel(" ");
-		
-		JLabel lblParent = new JLabel("Parent:");
-		lblParent.setFont(new Font("Dialog", Font.PLAIN, 17));
-		
-		lblUserParent = new JLabel(" ");
-		lblUserParent.setFont(new Font("Dialog", Font.PLAIN, 11));
 		
 		JLabel lblType = new JLabel("Type:");
 		lblType.setFont(new Font("Dialog", Font.PLAIN, 17));
@@ -313,61 +326,202 @@ public class MainViewWindow {
 		JLabel lblIndex = new JLabel("Index:");
 		lblIndex.setFont(new Font("Dialog", Font.PLAIN, 17));
 		
+		JLabel lblParent = new JLabel("Parent:");
+		lblParent.setFont(new Font("Dialog", Font.PLAIN, 17));
+		
+		lblUserParent = new JLabel(" ");
+		lblUserParent.setFont(new Font("Dialog", Font.PLAIN, 11));
+		
 		lblUserIndex = new JLabel(" ");
 		lblUserIndex.setFont(new Font("Dialog", Font.PLAIN, 11));
-		GroupLayout gl_MiddlePanel = new GroupLayout(MiddlePanel);
-		gl_MiddlePanel.setHorizontalGroup(
-			gl_MiddlePanel.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_MiddlePanel.createSequentialGroup()
-					.addContainerGap()
-					.addGroup(gl_MiddlePanel.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_MiddlePanel.createSequentialGroup()
-							.addGap(10)
-							.addComponent(lblScript)
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(lblUserScript, GroupLayout.DEFAULT_SIZE, 384, Short.MAX_VALUE))
-						.addGroup(gl_MiddlePanel.createSequentialGroup()
+		GroupLayout gl_nodeInformationPanel = new GroupLayout(nodeInformationPanel);
+		gl_nodeInformationPanel.setHorizontalGroup(
+			gl_nodeInformationPanel.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_nodeInformationPanel.createSequentialGroup()
+					.addGroup(gl_nodeInformationPanel.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_nodeInformationPanel.createSequentialGroup()
+							.addContainerGap()
 							.addComponent(lblNode)
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(lblUserNode, GroupLayout.PREFERRED_SIZE, 139, GroupLayout.PREFERRED_SIZE)
-							.addPreferredGap(ComponentPlacement.UNRELATED)
+							.addGap(4)
+							.addComponent(lblUserNode, GroupLayout.PREFERRED_SIZE, 149, GroupLayout.PREFERRED_SIZE)
+							.addGap(13)
 							.addComponent(lblType)
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(lblUserType, GroupLayout.PREFERRED_SIZE, 128, GroupLayout.PREFERRED_SIZE)
-							.addPreferredGap(ComponentPlacement.UNRELATED)
-							.addComponent(lblIndex))
-						.addGroup(gl_MiddlePanel.createSequentialGroup()
+							.addGap(3)
+							.addComponent(lblUserType, GroupLayout.PREFERRED_SIZE, 119, GroupLayout.PREFERRED_SIZE)
+							.addGap(9)
+							.addComponent(lblIndex)
+							.addGap(6)
+							.addComponent(lblUserIndex, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE))
+						.addGroup(gl_nodeInformationPanel.createSequentialGroup()
+							.addGap(18)
+							.addComponent(lblScript)
+							.addGap(4)
+							.addComponent(lblUserScript, GroupLayout.PREFERRED_SIZE, 252, GroupLayout.PREFERRED_SIZE))
+						.addGroup(gl_nodeInformationPanel.createSequentialGroup()
+							.addContainerGap()
 							.addComponent(lblParent)
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(lblUserParent, GroupLayout.DEFAULT_SIZE, 372, Short.MAX_VALUE)))
-					.addGap(112))
-				.addGroup(gl_MiddlePanel.createSequentialGroup()
-					.addGap(447)
-					.addComponent(lblUserIndex, GroupLayout.PREFERRED_SIZE, 79, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap(27, Short.MAX_VALUE))
+							.addGap(3)
+							.addComponent(lblUserParent, GroupLayout.PREFERRED_SIZE, 116, GroupLayout.PREFERRED_SIZE)))
+					.addContainerGap(86, Short.MAX_VALUE))
 		);
-		gl_MiddlePanel.setVerticalGroup(
-			gl_MiddlePanel.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_MiddlePanel.createSequentialGroup()
+		gl_nodeInformationPanel.setVerticalGroup(
+			gl_nodeInformationPanel.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_nodeInformationPanel.createSequentialGroup()
+					.addGroup(gl_nodeInformationPanel.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_nodeInformationPanel.createSequentialGroup()
+							.addGroup(gl_nodeInformationPanel.createParallelGroup(Alignment.LEADING)
+								.addGroup(gl_nodeInformationPanel.createSequentialGroup()
+									.addGap(7)
+									.addComponent(lblNode))
+								.addGroup(gl_nodeInformationPanel.createSequentialGroup()
+									.addGap(14)
+									.addComponent(lblUserNode))
+								.addGroup(gl_nodeInformationPanel.createSequentialGroup()
+									.addGap(6)
+									.addComponent(lblType))
+								.addGroup(gl_nodeInformationPanel.createSequentialGroup()
+									.addGap(12)
+									.addComponent(lblUserType)))
+							.addGroup(gl_nodeInformationPanel.createParallelGroup(Alignment.LEADING)
+								.addGroup(gl_nodeInformationPanel.createSequentialGroup()
+									.addGap(8)
+									.addComponent(lblScript))
+								.addGroup(gl_nodeInformationPanel.createSequentialGroup()
+									.addGap(9)
+									.addComponent(lblUserScript)))
+							.addGroup(gl_nodeInformationPanel.createParallelGroup(Alignment.LEADING)
+								.addGroup(gl_nodeInformationPanel.createSequentialGroup()
+									.addGap(14)
+									.addComponent(lblParent))
+								.addGroup(gl_nodeInformationPanel.createSequentialGroup()
+									.addGap(20)
+									.addComponent(lblUserParent))))
+						.addGroup(gl_nodeInformationPanel.createSequentialGroup()
+							.addGap(6)
+							.addComponent(lblIndex))
+						.addGroup(gl_nodeInformationPanel.createSequentialGroup()
+							.addContainerGap()
+							.addComponent(lblUserIndex)))
+					.addContainerGap(596, Short.MAX_VALUE))
+		);
+		nodeInformationPanel.setLayout(gl_nodeInformationPanel);
+		
+		ruleInformationPanel = new JPanel();
+		middlePanel.add(ruleInformationPanel, "ruleInformation");
+		
+		JLabel lblRuleName = new JLabel("Rule Name:");
+		lblRuleName.setFont(new Font("Dialog", Font.PLAIN, 17));
+		
+		lblRuleUserName = new JLabel(" ");
+		
+		JLabel lblRuleType = new JLabel("Rule type:");
+		lblRuleType.setFont(new Font("Dialog", Font.PLAIN, 17));
+		
+		lblRuleUserType = new JLabel(" ");
+		
+		JPanel ruleInformationSubPanel = new JPanel();
+		GroupLayout gl_ruleInformationPanel = new GroupLayout(ruleInformationPanel);
+		gl_ruleInformationPanel.setHorizontalGroup(
+			gl_ruleInformationPanel.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_ruleInformationPanel.createSequentialGroup()
 					.addContainerGap()
-					.addGroup(gl_MiddlePanel.createParallelGroup(Alignment.BASELINE)
-						.addComponent(lblNode)
-						.addComponent(lblUserNode)
-						.addComponent(lblType)
-						.addComponent(lblUserType)
-						.addComponent(lblIndex)
-						.addComponent(lblUserIndex))
-					.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-					.addGroup(gl_MiddlePanel.createParallelGroup(Alignment.BASELINE)
-						.addComponent(lblScript)
-						.addComponent(lblUserScript))
-					.addGap(18)
-					.addGroup(gl_MiddlePanel.createParallelGroup(Alignment.BASELINE)
-						.addComponent(lblParent)
-						.addComponent(lblUserParent))
-					.addGap(591))
+					.addGroup(gl_ruleInformationPanel.createParallelGroup(Alignment.LEADING)
+						.addComponent(ruleInformationSubPanel, GroupLayout.DEFAULT_SIZE, 533, Short.MAX_VALUE)
+						.addGroup(gl_ruleInformationPanel.createSequentialGroup()
+							.addGap(9)
+							.addComponent(lblRuleName)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(lblRuleUserName, GroupLayout.PREFERRED_SIZE, 119, GroupLayout.PREFERRED_SIZE)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(lblRuleType)
+							.addGap(18)
+							.addComponent(lblRuleUserType, GroupLayout.PREFERRED_SIZE, 132, GroupLayout.PREFERRED_SIZE)))
+					.addContainerGap())
 		);
-		MiddlePanel.setLayout(gl_MiddlePanel);
+		gl_ruleInformationPanel.setVerticalGroup(
+			gl_ruleInformationPanel.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_ruleInformationPanel.createSequentialGroup()
+					.addContainerGap()
+					.addGroup(gl_ruleInformationPanel.createParallelGroup(Alignment.BASELINE)
+						.addComponent(lblRuleUserName)
+						.addComponent(lblRuleUserType)
+						.addComponent(lblRuleName)
+						.addComponent(lblRuleType))
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addComponent(ruleInformationSubPanel, GroupLayout.PREFERRED_SIZE, 149, GroupLayout.PREFERRED_SIZE)
+					.addContainerGap(492, Short.MAX_VALUE))
+		);
+		ruleInformationSubPanel.setLayout(new CardLayout(0, 0));
+		
+		JPanel ruleInformationSubPanelNode = new JPanel();
+		ruleInformationSubPanel.add(ruleInformationSubPanelNode, "name_5638847767634");
+		
+		JLabel lblRuleNodeName = new JLabel("Node:");
+		lblRuleNodeName.setFont(new Font("Dialog", Font.PLAIN, 17));
+		
+		lblRuleNodeUserName = new JLabel(" ");
+		
+		JLabel lblRuleNodeType = new JLabel("Node Rule Type:");
+		lblRuleNodeType.setFont(new Font("Dialog", Font.PLAIN, 17));
+		
+		lblRuleNodeUserType = new JLabel(" ");
+		
+		JLabel lblRuleNodeProperty = new JLabel("Node Property:");
+		lblRuleNodeProperty.setFont(new Font("Dialog", Font.PLAIN, 17));
+		
+		lblRuleNodeUserProperty = new JLabel(" ");
+		
+		JLabel lblRuleNodeInput = new JLabel("Node User Input:");
+		lblRuleNodeInput.setFont(new Font("Dialog", Font.PLAIN, 17));
+		
+		lblRuleNodeUserInput = new JLabel(" ");
+		GroupLayout gl_ruleInformationSubPanelNode = new GroupLayout(ruleInformationSubPanelNode);
+		gl_ruleInformationSubPanelNode.setHorizontalGroup(
+			gl_ruleInformationSubPanelNode.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_ruleInformationSubPanelNode.createSequentialGroup()
+					.addContainerGap()
+					.addGroup(gl_ruleInformationSubPanelNode.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_ruleInformationSubPanelNode.createSequentialGroup()
+							.addGroup(gl_ruleInformationSubPanelNode.createParallelGroup(Alignment.LEADING, false)
+								.addGroup(gl_ruleInformationSubPanelNode.createSequentialGroup()
+									.addComponent(lblRuleNodeName)
+									.addPreferredGap(ComponentPlacement.RELATED)
+									.addComponent(lblRuleNodeUserName, GroupLayout.PREFERRED_SIZE, 153, GroupLayout.PREFERRED_SIZE)
+									.addPreferredGap(ComponentPlacement.UNRELATED)
+									.addComponent(lblRuleNodeType))
+								.addGroup(gl_ruleInformationSubPanelNode.createSequentialGroup()
+									.addComponent(lblRuleNodeProperty)
+									.addPreferredGap(ComponentPlacement.RELATED)
+									.addComponent(lblRuleNodeUserProperty, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(lblRuleNodeUserType, GroupLayout.DEFAULT_SIZE, 178, Short.MAX_VALUE))
+						.addGroup(gl_ruleInformationSubPanelNode.createSequentialGroup()
+							.addComponent(lblRuleNodeInput)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(lblRuleNodeUserInput, GroupLayout.DEFAULT_SIZE, 384, Short.MAX_VALUE)))
+					.addContainerGap())
+		);
+		gl_ruleInformationSubPanelNode.setVerticalGroup(
+			gl_ruleInformationSubPanelNode.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_ruleInformationSubPanelNode.createSequentialGroup()
+					.addContainerGap()
+					.addGroup(gl_ruleInformationSubPanelNode.createParallelGroup(Alignment.BASELINE)
+						.addComponent(lblRuleNodeName)
+						.addComponent(lblRuleNodeUserName)
+						.addComponent(lblRuleNodeUserType)
+						.addComponent(lblRuleNodeType))
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addGroup(gl_ruleInformationSubPanelNode.createParallelGroup(Alignment.BASELINE)
+						.addComponent(lblRuleNodeProperty)
+						.addComponent(lblRuleNodeUserProperty))
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addGroup(gl_ruleInformationSubPanelNode.createParallelGroup(Alignment.BASELINE)
+						.addComponent(lblRuleNodeInput)
+						.addComponent(lblRuleNodeUserInput))
+					.addContainerGap(57, Short.MAX_VALUE))
+		);
+		ruleInformationSubPanelNode.setLayout(gl_ruleInformationSubPanelNode);
+		ruleInformationPanel.setLayout(gl_ruleInformationPanel);
 		
 		textPaneConsole = new JTextPane();
 		textPaneConsole.setFont(new Font("Dialog", Font.PLAIN, 11));
@@ -527,6 +681,7 @@ public class MainViewWindow {
 						
 						@Override
 						public void actionPerformed(ActionEvent e) {
+							showRule(rulesList.getSelectedValue());
 							addTextToConsole("Showed rule-element #"+rulesList.getSelectedIndex());
 						}
 					});
@@ -535,7 +690,21 @@ public class MainViewWindow {
 						
 						@Override
 						public void actionPerformed(ActionEvent e) {
-							addTextToConsole("Removed rule-element #"+rulesList.getSelectedIndex());
+							MISRule rule = null;
+							for(int i = 0; i < ruleModel.size(); i++){
+								if(ruleModel.getElementAt(i) == rulesList.getSelectedValue()){
+									rule = ruleModel.getElementAt(i);
+									ruleModel.remove(i);
+									break;
+								}
+							}
+							for(int i = 0; i < currentScene.ruleList.size(); i++){
+								if(currentScene.ruleList.get(i) == rule){
+									addTextToConsole("Removed rule: "+currentScene.ruleList.get(i).ruleName);
+									currentScene.ruleList.remove(i);
+									break;
+								}
+							}
 						}
 					});
 					menu.add(show);
@@ -735,7 +904,42 @@ public class MainViewWindow {
 		wasChanged = true;
 	}
 	
+	public void showRule(MISRule rule){
+		((TitledBorder)middlePanel.getBorder()).setTitle("Rule Information");
+		CardLayout layout = (CardLayout) middlePanel.getLayout();
+		layout.show(middlePanel, "ruleInformation");
+		lblRuleUserName.setText(rule.ruleName);
+		if(rule instanceof MISRuleNode){
+			lblRuleUserType.setText("Node");
+			lblRuleNodeUserName.setText(((MISRuleNode)rule).node.name);
+			if(rule instanceof MISRuleNodePosition){
+				MISRuleNodePosition positionRule = (MISRuleNodePosition) rule;
+				lblRuleNodeUserProperty.setText("Position");
+				lblRuleNodeUserType.setText(positionRule.option.name());
+				lblRuleNodeUserInput.setText(positionRule.getUserInput());
+			} else if(rule instanceof MISRuleNodeRotation){
+				MISRuleNodeRotation rotationRule = (MISRuleNodeRotation) rule;
+				lblRuleNodeUserProperty.setText("Rotation");
+				lblRuleNodeUserType.setText(rotationRule.option.name());
+				lblRuleNodeUserInput.setText(rotationRule.getUserInput());
+			} else if(rule instanceof MISRuleNodeScale){
+				MISRuleNodeScale scaleRule = (MISRuleNodeScale) rule;
+				lblRuleNodeUserProperty.setText("Scale");
+				lblRuleNodeUserType.setText(scaleRule.option.name());
+				lblRuleNodeUserInput.setText(scaleRule.getUserInput());
+			} else{
+				System.out.println("DOKGDKFGODKFGODKFOGDFKGOKFD");
+				System.out.println(rule.getClass());
+			}
+		} else{
+			System.out.println("Else........");
+		}
+	}
+	
 	public void showNode(MISNode node){
+		((TitledBorder)middlePanel.getBorder()).setTitle("Node Information");
+		CardLayout layout = (CardLayout) middlePanel.getLayout();
+		layout.show(middlePanel, "nodeInformation");
 		if(node.scriptAttached){
 			lblUserScript.setVisible(true);
 			lblUserScript.setVisible(true);

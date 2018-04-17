@@ -432,32 +432,35 @@ public class RuleDialog extends JDialog {
 		if(!nameTextField.getText().isEmpty()){
 			MISRuleType type = MISRuleType.valueOf((String)propertyComboBox.getSelectedItem());
 			MISNode node = null;
-			MISRule rule;
+			MISRule rule = null;
 			if(type == MISRuleType.NodeProperty || type == MISRuleType.NodeStructure){
 				node = (MISNode)nodeComboBox.getSelectedItem();
 				String ruleType = (String)nodeRuleTypeComboBox.getSelectedItem();
 				if(ruleType.equals("Bounds")){
 					String propertyType = (String)nodePropertyComboBox.getSelectedItem();
 					if(propertyType.equals("Position")){
-						MISRuleNodePosition tempRule = new MISRuleNodePosition(nameTextField.getText(), node);
+						MISRuleNodePosition tempRule = new MISRuleNodePosition(nameTextField.getText(), node, MISRuleNode.options.valueOf((String)nodeRuleTypeComboBox.getSelectedItem()));
 						tempRule.xBounds = new MISBounds(Float.parseFloat(userBoundsXMin.getText()), Float.parseFloat(userBoundsXMax.getText()));
 						tempRule.yBounds = new MISBounds(Float.parseFloat(userBoundsYMin.getText()), Float.parseFloat(userBoundsYMax.getText()));
 						tempRule.zBounds = new MISBounds(Float.parseFloat(userBoundsZMin.getText()), Float.parseFloat(userBoundsZMax.getText()));
 						rule = tempRule;
 					} else if(propertyType.equals("Rotation")){
-						MISRuleNodeRotation tempRule = new MISRuleNodeRotation(nameTextField.getText(), node);
+						MISRuleNodeRotation tempRule = new MISRuleNodeRotation(nameTextField.getText(), node, MISRuleNode.options.valueOf((String)nodeRuleTypeComboBox.getSelectedItem()));
 						tempRule.rotationBounds = new MISBounds(Float.parseFloat(userBoundsRotationMin.getText()), Float.parseFloat(userBoundsRotationMax.getText()));
 						rule = tempRule;
 					} else if(propertyType.equals("Scale")){
-						MISRuleNodeScale tempRule = new MISRuleNodeScale(nameTextField.getText(), node);
+						MISRuleNodeScale tempRule = new MISRuleNodeScale(nameTextField.getText(), node, MISRuleNode.options.valueOf((String)nodeRuleTypeComboBox.getSelectedItem()));
 						tempRule.xBounds = new MISBounds(Float.parseFloat(userBoundsScaleXMin.getText()), Float.parseFloat(userBoundsScaleXMax.getText()));
 						tempRule.yBounds = new MISBounds(Float.parseFloat(userBoundsScaleYMin.getText()), Float.parseFloat(userBoundsScaleYMax.getText()));
 						rule = tempRule;
 					}
+					if(rule != null){
+						return rule;
+					}
 				} else{
 					System.out.println("Control not implemented yet.");
 				}
-				rule = new MISRuleNode(nameTextField.getText(), node);
+				rule = new MISRuleNode(nameTextField.getText(), node, MISRuleNode.options.Bounds);
 			}else{
 				rule = new MISRule(nameTextField.getText());
 			}
