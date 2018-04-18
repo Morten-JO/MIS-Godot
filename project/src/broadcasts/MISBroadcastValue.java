@@ -1,9 +1,9 @@
-package scene;
+package broadcasts;
 
 public class MISBroadcastValue extends MISBroadcast{
 
-	public MISBroadcastValue(float secondsPerSend) {
-		super(secondsPerSend);
+	public MISBroadcastValue(String broadcastName, float timesPerMinute) {
+		super(broadcastName, timesPerMinute);
 		// TODO Auto-generated constructor stub
 	}
 

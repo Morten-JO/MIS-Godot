@@ -9,6 +9,11 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import broadcasts.MISBroadcast;
+import broadcasts.MISBroadcastData;
+import broadcasts.MISBroadcastValue;
+import broadcasts.MISBroastcastMessage;
+import data_types.MISBounds;
 import data_types.MISExternalResource;
 import data_types.MISNode;
 import data_types.MISPort;
@@ -22,10 +27,6 @@ import rules.MISRuleNode;
 import rules.MISRuleNodePosition;
 import rules.MISRuleNodeRotation;
 import rules.MISRuleNodeScale;
-import scene.MISBroadcast;
-import scene.MISBroadcastData;
-import scene.MISBroadcastValue;
-import scene.MISBroastcastMessage;
 import settings.MISGeneralSettings;
 
 import static java.lang.Math.toIntExact;
@@ -129,8 +130,9 @@ public class MISProject {
 					JSONObject broadcastObject = new JSONObject();
 					MISBroadcast broadcast = scene.broadcasts.get(j);
 					//Not sure if the below line works.
+					broadcastObject.put("name", broadcast.getBroadcastName());
 					broadcastObject.put("type", broadcast.getClass().getSimpleName());
-					broadcastObject.put("sps", broadcast.secondsPerSend);
+					broadcastObject.put("sps", broadcast.timesPerMinute);
 					broadcastObject.put("data", broadcast.dataToSend());
 					broadcastsObject.put(""+j, broadcastObject);
 				}
@@ -156,7 +158,7 @@ public class MISProject {
 					JSONObject ruleObject = new JSONObject();
 					MISRule rule = scene.ruleList.get(i);
 					ruleObject.put("name", rule.ruleName);
-					ruleObject.put("class", rule.getClass());
+					ruleObject.put("class", rule.getClass().getName());
 					if(rule instanceof MISRuleNode){
 						int index = -1;
 						for(int z = 0; z < scene.nodeList.size(); z++){
@@ -165,8 +167,8 @@ public class MISProject {
 								break;
 							}
 						}
-						ruleObject.put("node_index", ""+index);
-						ruleObject.put("option", ((MISRuleNode)rule).option);
+						ruleObject.put("node_index", index);
+						ruleObject.put("option", ((MISRuleNode)rule).option.name());
 						if(rule instanceof MISRuleNodePosition){
 							MISRuleNodePosition pos = (MISRuleNodePosition)rule;
 							ruleObject.put("xmin", pos.xBounds.min);
@@ -274,7 +276,7 @@ public class MISProject {
 				MISBroadcast broadcast = scene.broadcasts.get(i);
 				System.out.println();
 				System.out.println("For broadcast #"+i);
-				System.out.println("sps: "+broadcast.secondsPerSend);
+				System.out.println("sps: "+broadcast.timesPerMinute);
 				System.out.println("type: "+broadcast.getClass().getSimpleName());
 				System.out.println("data: "+broadcast.dataToSend());
 			}
@@ -366,16 +368,17 @@ public class MISProject {
 				int amountBroadcasts = toIntExact((Long) broadcastsObject.get("broadcast_n"));
 				for(int j = 0; j < amountBroadcasts; j++){
 					JSONObject broadcastObject = (JSONObject) broadcastsObject.get(""+j);
+					String name = (String) broadcastObject.get("name");
 					String type = (String) broadcastObject.get("type");
 					float secondsPerSend = (float)((double) broadcastObject.get("sps"));
 					String data = (String) broadcastObject.get("data");
 					MISBroadcast broadcast = null;
 					if(type.equals(MISBroadcastData.class.getSimpleName())){
-						broadcast = new MISBroadcastData(secondsPerSend);
+						broadcast = new MISBroadcastData(name, secondsPerSend);
 					} else if(type.equals(MISBroadcastValue.class.getSimpleName())){
-						broadcast = new MISBroadcastValue(secondsPerSend);
+						broadcast = new MISBroadcastValue(name, secondsPerSend);
 					} else if(type.equals(MISBroastcastMessage.class.getSimpleName())){
-						broadcast = new MISBroastcastMessage(secondsPerSend, data);
+						broadcast = new MISBroastcastMessage(name, secondsPerSend, data);
 					}
 					if(broadcast != null){
 						scene.addBroadcast(broadcast);
@@ -393,6 +396,52 @@ public class MISProject {
 					resource.id = toIntExact((Long) externalResourceObject.get("id"));
 					scene.addExternalResource(resource);
 				}
+				
+				JSONObject rulesObject = (JSONObject) sceneObject.get("rules");
+				if(rulesObject != null){
+					int amountOfRules = toIntExact((Long) rulesObject.get("rules_n"));
+					for(int j = 0; j < amountOfRules; j++){
+						JSONObject ruleObject = (JSONObject) rulesObject.get(""+j);
+						MISRule rule;
+						String ruleName = (String) ruleObject.get("name");
+						String type = (String) ruleObject.get("class");
+						if(MISRuleNodePosition.class.getName().equals(type)){
+							int nodeIndex = toIntExact((Long) ruleObject.get("node_index"));
+							String option = (String) ruleObject.get("option");
+							rule = new MISRuleNodePosition(ruleName, scene.nodeList.get(nodeIndex), MISRuleNode.options.valueOf(option));
+							float xMin = ((Double)(ruleObject.get("xmin"))).floatValue();
+							float xMax = ((Double)(ruleObject.get("xmax"))).floatValue();
+							((MISRuleNodePosition)rule).xBounds = new MISBounds(xMin, xMax);
+							float yMin = ((Double)(ruleObject.get("ymin"))).floatValue();
+							float yMax = ((Double)(ruleObject.get("ymax"))).floatValue();
+							((MISRuleNodePosition)rule).yBounds = new MISBounds(yMin, yMax);
+							float zMin = ((Double)(ruleObject.get("zmin"))).floatValue();
+							float zMax = ((Double)(ruleObject.get("zmax"))).floatValue();
+							((MISRuleNodePosition)rule).zBounds = new MISBounds(zMin, zMax);
+							scene.addRule(rule);
+						} else if(MISRuleNodeRotation.class.getName().equals(type)){
+							int nodeIndex = toIntExact((Long) ruleObject.get("node_index"));
+							String option = (String) ruleObject.get("option");
+							rule = new MISRuleNodeRotation(ruleName, scene.nodeList.get(nodeIndex), MISRuleNode.options.valueOf(option));
+							float rotMin = ((Double)(ruleObject.get("rotmin"))).floatValue();
+							float rotMax = ((Double)(ruleObject.get("rotmax"))).floatValue();
+							((MISRuleNodeRotation)rule).rotationBounds = new MISBounds(rotMin, rotMax);
+							scene.addRule(rule);
+						} else if(MISRuleNodeScale.class.getName().equals(type)){
+							int nodeIndex = toIntExact((Long) ruleObject.get("node_index"));
+							String option = (String) ruleObject.get("option");
+							rule = new MISRuleNodeScale(ruleName, scene.nodeList.get(nodeIndex), MISRuleNode.options.valueOf(option));
+							float xMin = ((Double)(ruleObject.get("xmin"))).floatValue();
+							float xMax = ((Double)(ruleObject.get("xmax"))).floatValue();
+							((MISRuleNodeScale)rule).xBounds = new MISBounds(xMin, xMax);
+							float yMin = ((Double)(ruleObject.get("ymin"))).floatValue();
+							float yMax = ((Double)(ruleObject.get("ymax"))).floatValue();
+							((MISRuleNodeScale)rule).yBounds = new MISBounds(yMin, yMax);
+							scene.addRule(rule);
+						}
+					}
+				}
+				
 				MISProject.project.scenes.add(scene);
 			}
 			MISProject.project.isLoading = false;

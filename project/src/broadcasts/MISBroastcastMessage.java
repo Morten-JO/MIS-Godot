@@ -1,11 +1,11 @@
-package scene;
+package broadcasts;
 
 public class MISBroastcastMessage extends MISBroadcast{
 
 	public String message;
 	
-	public MISBroastcastMessage(float secondsPerSend, String message) {
-		super(secondsPerSend);
+	public MISBroastcastMessage(String broadcastName, float timesPerMinute, String message) {
+		super(broadcastName, timesPerMinute);
 		this.message = message;
 	}
 	

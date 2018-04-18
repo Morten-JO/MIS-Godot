@@ -16,7 +16,7 @@ public class MISRuleNodePosition extends MISRuleNode {
 	
 	@Override
 	public String getUserInput(){
-		return "(min,max):x("+xBounds.min+","+xBounds.max+") - y("+yBounds.min+","+yBounds.max+") - z("+zBounds.min+","+yBounds.max+")";
+		return "(min,max):x("+xBounds.min+","+xBounds.max+") - y("+yBounds.min+","+yBounds.max+") - z("+zBounds.min+","+zBounds.max+")";
 	}
 
 }

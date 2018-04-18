@@ -67,6 +67,7 @@ public class RuleDialog extends JDialog {
 	private JPanel clUserBoundsPosition;
 	private JPanel clUserBoundsRotation;
 	private JPanel clUserBoundsScale;
+	private boolean cancel = false;
 
 	/**
 	 * Create the dialog.
@@ -414,6 +415,7 @@ public class RuleDialog extends JDialog {
 					public void actionPerformed(ActionEvent e) {
 						setVisible(false);
 						dispose();
+						cancel = true;
 					}
 				});
 				
@@ -429,6 +431,9 @@ public class RuleDialog extends JDialog {
 	
 	
 	public MISRule getRuleFromDialog(){
+		if(cancel){
+			return null;
+		}
 		if(!nameTextField.getText().isEmpty()){
 			MISRuleType type = MISRuleType.valueOf((String)propertyComboBox.getSelectedItem());
 			MISNode node = null;
