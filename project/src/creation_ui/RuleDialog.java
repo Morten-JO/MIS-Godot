@@ -1,4 +1,4 @@
-package ui;
+package creation_ui;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;

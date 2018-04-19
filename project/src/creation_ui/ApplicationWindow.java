@@ -1,4 +1,4 @@
-package ui;
+package creation_ui;
 
 import java.awt.EventQueue;
 

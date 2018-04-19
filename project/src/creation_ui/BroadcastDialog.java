@@ -1,4 +1,4 @@
-package ui;
+package creation_ui;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -12,9 +12,13 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import broadcasts.MISBroadcast;
+import broadcasts.MISBroadcastData;
+import broadcasts.MISBroadcastValue;
 import broadcasts.MISBroastcastMessage;
-import data_types.MISReceiver;
-import data_types.MISReceiverAll;
+import receivers.MISReceiver;
+import receivers.MISReceiverAll;
+import receivers.MISReceiverPerson;
+import receivers.MISReceiverTeam;
 import rules.MISRule;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -39,6 +43,8 @@ public class BroadcastDialog extends JDialog {
 	private JTextField textFieldFrequency;
 	private JTextField textFieldMessagePanelMessage;
 	private boolean cancel = false;
+	private JPanel typeDataPanel;
+	private JPanel typeValuePanel;
 
 	/**
 	 * Create the dialog.
@@ -62,7 +68,25 @@ public class BroadcastDialog extends JDialog {
 		lblBroadcastType.setFont(new Font("Dialog", Font.PLAIN, 17));
 		
 		comboBoxBroadcastType = new JComboBox();
-		comboBoxBroadcastType.setModel(new DefaultComboBoxModel(new String[] {"Data", "Value", "Message"}));
+		comboBoxBroadcastType.setModel(new DefaultComboBoxModel(new String[] {"Message", "Data", "Value"}));
+		
+		comboBoxBroadcastType.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String propertyType = (String)comboBoxBroadcastType.getSelectedItem();
+				if(propertyType.equals("Message")){
+					CardLayout layout = (CardLayout) typeCardPanel.getLayout();
+					layout.show(typeCardPanel, "messagePanel");
+				} else if(propertyType.equals("Data")){
+					CardLayout layout = (CardLayout) typeCardPanel.getLayout();
+					layout.show(typeCardPanel, "dataPanel");
+				} else if(propertyType.equals("Value")){
+					CardLayout layout = (CardLayout) typeCardPanel.getLayout();
+					layout.show(typeCardPanel, "valuePanel");
+				}
+			}
+		});
 		
 		JLabel lblBroadcastReceivers = new JLabel("Broadcast receivers:");
 		lblBroadcastReceivers.setFont(new Font("Dialog", Font.PLAIN, 17));
@@ -131,7 +155,7 @@ public class BroadcastDialog extends JDialog {
 		typeCardPanel.setLayout(new CardLayout(0, 0));
 		
 		typeMessagePanel = new JPanel();
-		typeCardPanel.add(typeMessagePanel, "name_103386201152226");
+		typeCardPanel.add(typeMessagePanel, "messagePanel");
 		
 		JLabel lblMessagePanelMessage = new JLabel("Message:");
 		lblMessagePanelMessage.setFont(new Font("Dialog", Font.PLAIN, 17));
@@ -159,11 +183,11 @@ public class BroadcastDialog extends JDialog {
 		);
 		typeMessagePanel.setLayout(gl_typeMessagePanel);
 		
-		JPanel typeDataPanel = new JPanel();
-		typeCardPanel.add(typeDataPanel, "name_105111410123258");
+		typeDataPanel = new JPanel();
+		typeCardPanel.add(typeDataPanel, "dataPanel");
 		
-		JPanel typeValuePanel = new JPanel();
-		typeCardPanel.add(typeValuePanel, "name_105123477429562");
+		typeValuePanel = new JPanel();
+		typeCardPanel.add(typeValuePanel, "valuePanel");
 		contentPanel.setLayout(gl_contentPanel);
 		{
 			JPanel buttonPane = new JPanel();
@@ -214,9 +238,9 @@ public class BroadcastDialog extends JDialog {
 		if(receivers.equals("All")){
 			receiver = new MISReceiverAll();
 		} else if(receivers.equals("Team")){
-			
+			receiver = new MISReceiverTeam();
 		} else if(receivers.equals("Person")){
-			
+			receiver = new MISReceiverPerson();
 		}
 		if(type.equals("Message")){
 			String message = textFieldMessagePanelMessage.getText();
@@ -224,9 +248,15 @@ public class BroadcastDialog extends JDialog {
 			broadcast.receiver = receiver;
 			return broadcast;
 		} else if(type.equals("Data")){
-			
+			System.out.println("Error, Data broadcast not implemented yet, BroadcastDialog, adding temp broadcast");
+			MISBroadcastData broadcast = new MISBroadcastData(broadcastName, timesPerMinute);
+			broadcast.receiver = receiver;
+			return broadcast;
 		} else if(type.equals("Value")){
-			
+			System.out.println("Error, Value broadcast not implemented yet, BroadcastDialog, adding temp broadcast");
+			MISBroadcastValue broadcast = new MISBroadcastValue(broadcastName, timesPerMinute);
+			broadcast.receiver = receiver;
+			return broadcast;
 		}
 		return null;
 	}

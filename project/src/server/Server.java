@@ -17,10 +17,13 @@ public class Server implements Runnable{
 	public int port;
 	List<Client> clientList;
 	
-	public Server(int port){
+	public Server(int port, boolean ui){
 		this.port = port;
 		clientList = new ArrayList<Client>();
 		thread = new Thread(this);
+		if(ui){
+			
+		}
 	}
 	
 	public boolean startServer(){
@@ -45,6 +48,7 @@ public class Server implements Runnable{
 				PrintWriter writer = new PrintWriter(client.getOutputStream(), true);
 				Client clientObject = new Client(client, reader, writer);
 				clientList.add(clientObject);
+				clientObject.startThreads();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

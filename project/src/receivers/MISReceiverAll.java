@@ -1,4 +1,4 @@
-package data_types;
+package receivers;
 
 public class MISReceiverAll extends MISReceiver{
 

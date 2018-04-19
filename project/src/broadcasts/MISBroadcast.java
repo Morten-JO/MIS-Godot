@@ -1,6 +1,6 @@
 package broadcasts;
 
-import data_types.MISReceiver;
+import receivers.MISReceiver;
 
 public abstract class MISBroadcast {
 	

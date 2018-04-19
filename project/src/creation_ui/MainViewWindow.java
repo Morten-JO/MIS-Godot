@@ -1,4 +1,4 @@
-package ui;
+package creation_ui;
 
 import java.awt.Component;
 import java.awt.Desktop;
@@ -59,6 +59,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 import javax.swing.KeyStroke;
 import javax.swing.event.ListSelectionListener;
+
+import broadcasts.MISBroadcast;
+
 import javax.swing.event.ListSelectionEvent;
 import java.awt.CardLayout;
 import java.awt.FlowLayout;
@@ -105,6 +108,7 @@ public class MainViewWindow {
 	private JLabel lblRuleUserType;
 	private JLabel lblRuleUserName;
 	private JPanel middlePanel;
+	private JMenuItem mntmAddBroadcast;
 
 	/**
 	 * Launch the application.
@@ -236,6 +240,9 @@ public class MainViewWindow {
 		
 		mntmBroadcasts = new JMenuItem("Broadcasts");
 		mnWindow.add(mntmBroadcasts);
+		
+		mntmAddBroadcast = new JMenuItem("Add Broadcast");
+		mnWindow.add(mntmAddBroadcast);
 		
 		mnHelp = new JMenu("Help");
 		menuBar.add(mnHelp);
@@ -894,6 +901,23 @@ public class MainViewWindow {
 				JOptionPane.showMessageDialog(null, "Suggestion ui is not implemented yet!");
 				mnHelp.getPopupMenu().setVisible(false);
 				addTextToConsole("Opened suggest an improvement window.");
+			}
+		});
+		
+		mntmAddBroadcast.addMouseListener(new MouseAdapter() {
+			
+			@Override
+			public void mousePressed(MouseEvent e) {
+				addTextToConsole("Add broadcast pressed on node-element #"+nodeList.getSelectedIndex());
+				BroadcastDialog dialog = new BroadcastDialog();
+				dialog.showDialog();
+				MISBroadcast broadcast = dialog.getRuleFromDialog();
+				if(broadcast != null){
+					currentScene.broadcasts.add(broadcast);
+					System.out.println("Broadcast added!");
+				} else{
+					System.out.println("Broadcast is fucking null");
+				}
 			}
 		});
 		

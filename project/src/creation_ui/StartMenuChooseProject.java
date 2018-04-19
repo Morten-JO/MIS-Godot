@@ -1,4 +1,4 @@
-package ui;
+package creation_ui;
 
 import javax.swing.JPanel;
 import javax.swing.JLabel;
