@@ -12,7 +12,7 @@ import org.json.simple.parser.ParseException;
 import broadcasts.MISBroadcast;
 import broadcasts.MISBroadcastData;
 import broadcasts.MISBroadcastValue;
-import broadcasts.MISBroastcastMessage;
+import broadcasts.MISBroadcastMessage;
 import data_types.MISBounds;
 import data_types.MISExternalResource;
 import data_types.MISNode;
@@ -76,6 +76,8 @@ public class MISProject {
 		projectGeneralSettingsObject.put("list_type", MISProject.project.listType.toString());
 		projectGeneralSettingsObject.put("refresh_rate", MISProject.project.refreshRate);
 		projectGeneralSettingsObject.put("mmpcps", MISProject.project.maxMessagesPerClientPerSecond);
+		projectGeneralSettingsObject.put("base_port", project.basePort.port);
+		projectGeneralSettingsObject.put("base_protocol", project.basePort.protocol.toString());
 		
 		JSONObject portsObjects = new JSONObject();
 		if(MISProject.project.ports != null && MISProject.project.ports.size() > 0){
@@ -322,6 +324,10 @@ public class MISProject {
 			MISProject.project.listType = MISListType.valueOf((String) projectSettings.get("list_type"));
 			MISProject.project.refreshRate = toIntExact((Long) projectSettings.get("refresh_rate"));
 			MISProject.project.maxMessagesPerClientPerSecond = toIntExact((Long) projectSettings.get("mmpcps"));
+			MISProtocol baseProtocol = MISProtocol.valueOf((String) projectSettings.get("base_protocol"));
+			int basePortNumber = toIntExact((Long) projectSettings.get("base_port"));
+			MISPort basePort = new MISPort(basePortNumber, baseProtocol);
+			MISProject.project.basePort = basePort;
 			
 			JSONObject ports = (JSONObject) projectSettings.get("ports");
 			int numberOfPorts = toIntExact((Long) projectSettings.get("ports_n"));
@@ -377,8 +383,8 @@ public class MISProject {
 						broadcast = new MISBroadcastData(name, secondsPerSend);
 					} else if(type.equals(MISBroadcastValue.class.getSimpleName())){
 						broadcast = new MISBroadcastValue(name, secondsPerSend);
-					} else if(type.equals(MISBroastcastMessage.class.getSimpleName())){
-						broadcast = new MISBroastcastMessage(name, secondsPerSend, data);
+					} else if(type.equals(MISBroadcastMessage.class.getSimpleName())){
+						broadcast = new MISBroadcastMessage(name, secondsPerSend, data);
 					}
 					if(broadcast != null){
 						scene.addBroadcast(broadcast);
@@ -463,6 +469,7 @@ public class MISProject {
 	public int maxMessagesPerClientPerSecond;
 	public int timeOutDuration;
 	public ArrayList<MISPort> ports;
+	public MISPort basePort;
 	public double minimumBuildVersion = 0.01;
 	public ArrayList<MISScene> scenes; //todo add to save/load
 	/*

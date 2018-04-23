@@ -52,6 +52,8 @@ import rules.MISRuleNode;
 import rules.MISRuleNodePosition;
 import rules.MISRuleNodeRotation;
 import rules.MISRuleNodeScale;
+import server.Server;
+import server_ui.ServerApplicationWindow;
 
 import java.awt.Color;
 import javax.swing.border.TitledBorder;
@@ -805,6 +807,7 @@ public class MainViewWindow {
 		mntmRun.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
+				Server server = new Server(MISProject.project.basePort.port, true, false);
 				JOptionPane.showMessageDialog(null, "Run is not implemented yet!");
 				mnFile.getPopupMenu().setVisible(false);
 				addTextToConsole("Ran project.");

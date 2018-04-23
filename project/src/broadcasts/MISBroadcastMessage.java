@@ -1,10 +1,10 @@
 package broadcasts;
 
-public class MISBroastcastMessage extends MISBroadcast{
+public class MISBroadcastMessage extends MISBroadcast{
 
 	public String message;
 	
-	public MISBroastcastMessage(String broadcastName, float timesPerMinute, String message) {
+	public MISBroadcastMessage(String broadcastName, float timesPerMinute, String message) {
 		super(broadcastName, timesPerMinute);
 		this.message = message;
 	}

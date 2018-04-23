@@ -1,10 +1,11 @@
 package server;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import broadcasts.MISBroadcastData;
 import broadcasts.MISBroadcastValue;
-import broadcasts.MISBroastcastMessage;
+import broadcasts.MISBroadcastMessage;
 import data_types.MISScene;
 import receivers.MISReceiverAll;
 
@@ -16,10 +17,27 @@ public class Room {
 	
 	private boolean broadcastRunning = true;
 	
-	private List<Client> clientsInRoom;
+	public List<Client> clientsInRoom;
 	
-	public Room(MISScene scene){
+	private int roomSize;
+	
+	private int roomId;
+	private static int globalRoomID;
+	
+	public Room(MISScene scene, int roomSize){
+		this.scene = scene;
+		roomId = globalRoomID;
+		globalRoomID++;
 		createBroadcastThread();
+		this.roomSize = roomSize;
+		clientsInRoom = new ArrayList<Client>();
+	}
+	
+	public Room(MISScene scene, int roomSize, Client... client){
+		this(scene, roomSize);
+		for(int i = 0; i < client.length; i++){
+			clientsInRoom.add(client[i]);
+		}
 	}
 	
 	private void createBroadcastThread(){
@@ -30,8 +48,8 @@ public class Room {
 					for(int i = 0; i < scene.broadcasts.size(); i++){
 						if(scene.broadcasts.get(i).shouldSend()){
 							String dataToSend = "";
-							if(scene.broadcasts.get(i) instanceof MISBroastcastMessage){
-								dataToSend = ((MISBroastcastMessage)scene.broadcasts.get(i)).message;
+							if(scene.broadcasts.get(i) instanceof MISBroadcastMessage){
+								dataToSend = ((MISBroadcastMessage)scene.broadcasts.get(i)).message;
 							} else if(scene.broadcasts.get(i) instanceof MISBroadcastData){
 								dataToSend = "broadcastDatanot imeplement";
 							} else if(scene.broadcasts.get(i) instanceof MISBroadcastValue){
@@ -39,24 +57,44 @@ public class Room {
 							}
 							if(scene.broadcasts.get(i).receiver instanceof MISReceiverAll){
 								for(int j = 0; j < clientsInRoom.size(); j++){
-									clientsInRoom.get(i).addMessageToSend(dataToSend);
+									clientsInRoom.get(j).addMessageToSend(dataToSend);
 								}
 							}
 						}
 					}
-					try {
-						Thread.sleep(25);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
+					Long timeSleep = 500L;
+					if(scene.broadcasts.size() > 0){
+						timeSleep = scene.broadcasts.get(0).getTimeForNextSend();
+					}
+					for(int i = 0; i < scene.broadcasts.size(); i++){
+						if(scene.broadcasts.get(i).getTimeForNextSend() < timeSleep){
+							timeSleep = scene.broadcasts.get(i).getTimeForNextSend();
+						}
+					}
+					if(timeSleep > 0L){
+						try {
+							Thread.sleep(timeSleep);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
 					}
 				}
 			}
 		});
 	}
 	
-	private void startBroadcastThread(){
+	public void startBroadcastThread(){
 		broadcastRunning = true;
 		broadcastThread.start();
+	}
+	
+	public int getRoomID(){
+		return roomId;
+	}
+	
+	public boolean closeRoom(){
+		broadcastRunning = false;
+		return true;
 	}
 	
 }

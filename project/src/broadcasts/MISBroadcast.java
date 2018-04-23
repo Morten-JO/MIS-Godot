@@ -20,10 +20,15 @@ public abstract class MISBroadcast {
 	public abstract String dataToSend();
 	
 	public boolean shouldSend(){
-		if(System.currentTimeMillis() > (millisTimeLastSend + (long)(timesPerMinute * 1000))){
+		if(System.currentTimeMillis() > (millisTimeLastSend + (long)(60000 / timesPerMinute))){
+			millisTimeLastSend = System.currentTimeMillis();
 			return true;
 		}
 		return false;
+	}
+	
+	public Long getTimeForNextSend(){
+		return (millisTimeLastSend + (long)(60000 / timesPerMinute)) - System.currentTimeMillis();
 	}
 	
 	public String getBroadcastName(){

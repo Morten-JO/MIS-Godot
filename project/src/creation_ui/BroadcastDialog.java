@@ -14,7 +14,7 @@ import javax.swing.border.EmptyBorder;
 import broadcasts.MISBroadcast;
 import broadcasts.MISBroadcastData;
 import broadcasts.MISBroadcastValue;
-import broadcasts.MISBroastcastMessage;
+import broadcasts.MISBroadcastMessage;
 import receivers.MISReceiver;
 import receivers.MISReceiverAll;
 import receivers.MISReceiverPerson;
@@ -244,7 +244,7 @@ public class BroadcastDialog extends JDialog {
 		}
 		if(type.equals("Message")){
 			String message = textFieldMessagePanelMessage.getText();
-			MISBroastcastMessage broadcast = new MISBroastcastMessage(broadcastName, timesPerMinute, message);
+			MISBroadcastMessage broadcast = new MISBroadcastMessage(broadcastName, timesPerMinute, message);
 			broadcast.receiver = receiver;
 			return broadcast;
 		} else if(type.equals("Data")){
