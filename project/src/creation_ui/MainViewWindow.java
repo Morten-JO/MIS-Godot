@@ -808,8 +808,6 @@ public class MainViewWindow {
 			@Override
 			public void mousePressed(MouseEvent e) {
 				Server server = new Server(MISProject.project.basePort.port, true, false);
-				JOptionPane.showMessageDialog(null, "Run is not implemented yet!");
-				mnFile.getPopupMenu().setVisible(false);
 				addTextToConsole("Ran project.");
 			}
 		});
