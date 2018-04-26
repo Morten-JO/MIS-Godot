@@ -11,7 +11,11 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
+import enums.MISListType;
+import project.MISProject;
 import rules.MISRule;
 import settings.MISProjectSettings;
 import javax.swing.GroupLayout;
@@ -19,6 +23,7 @@ import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
@@ -42,7 +47,7 @@ public class ProjectSettingsFrame extends JDialog {
 	/**
 	 * Create the frame.
 	 */
-	public ProjectSettingsFrame(JFrame owner) {
+	public ProjectSettingsFrame(JFrame owner, MISProject project) {
 		super(owner);
 		setTitle("Project settings");
 		try {
@@ -63,46 +68,110 @@ public class ProjectSettingsFrame extends JDialog {
 		
 		textFieldProjectName = new JTextField();
 		textFieldProjectName.setColumns(10);
+		textFieldProjectName.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				wasAnythingChanged = true;
+				btnSave.setEnabled(true);
+			}
+		});
 		
 		JLabel lblProjectMinimumVersion = new JLabel("Project minimum version:");
 		
 		textFieldProjectMinimumVersion = new JTextField();
 		textFieldProjectMinimumVersion.setColumns(10);
+		textFieldProjectMinimumVersion.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				wasAnythingChanged = true;
+				btnSave.setEnabled(true);
+			}
+		});
 		
 		JLabel lblListType = new JLabel("List type:");
 		
 		comboBoxListType = new JComboBox();
 		comboBoxListType.setModel(new DefaultComboBoxModel(new String[] {"ARRAY", "LINKED"}));
+		comboBoxListType.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				wasAnythingChanged = true;
+				btnSave.setEnabled(true);
+			}
+		});
 		
 		JLabel lblRefreshRate = new JLabel("Refresh rate:");
 		
 		spinnerRefreshRate = new JSpinner();
+		spinnerRefreshRate.addChangeListener(new ChangeListener() {
+			
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				wasAnythingChanged = true;
+				btnSave.setEnabled(true);
+			}
+		});
 		
 		JLabel lblMm = new JLabel("Mmpcps:");
 		lblMm.setToolTipText("Max messages per client per second");
 		
 		spinnerMMPCPS = new JSpinner();
+		spinnerMMPCPS.addChangeListener(new ChangeListener() {
+			
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				wasAnythingChanged = true;
+				btnSave.setEnabled(true);
+			}
+		});
 		
 		JLabel lblBasePort = new JLabel("Base port:");
 		
 		textFieldBasePort = new JTextField();
 		textFieldBasePort.setColumns(10);
+		textFieldBasePort.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				wasAnythingChanged = true;
+				btnSave.setEnabled(true);
+			}
+		});
 		
 		JLabel lblSessionTimeout = new JLabel("Session timeout:");
 		
 		spinnerSessionTimeout = new JSpinner();
 		spinnerSessionTimeout.setToolTipText("in seconds");
+		spinnerSessionTimeout.addChangeListener(new ChangeListener() {
+			
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				wasAnythingChanged = true;
+				btnSave.setEnabled(true);
+			}
+		});
 		
-		btnCancel = new JButton("Cancel");
+		btnCancel = new JButton("Exit");
 		
 		btnSave = new JButton("Save");
-		
+		btnSave.setEnabled(false);
 		btnCancel.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				
+				if(wasAnythingChanged){
+					int dialogResult = JOptionPane.showConfirmDialog(null, "You have unsaved changes, are you sure you want discard the changes?");
+					if(dialogResult == JOptionPane.YES_OPTION){
+						dispose();
+						setVisible(false);
+					}
+				} else{
+					dispose();
+					setVisible(false);
+				}
 			}
 		});
 		
@@ -111,7 +180,9 @@ public class ProjectSettingsFrame extends JDialog {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if(wasAnythingChanged){
-					
+					updateValues();
+					saveProject();
+					btnSave.setEnabled(false);
 				}
 			}
 		});
@@ -189,8 +260,42 @@ public class ProjectSettingsFrame extends JDialog {
 						.addComponent(btnSave)))
 		);
 		contentPane.setLayout(gl_contentPane);
+		
+		setValues(project);
 	}
 	
+	
+	
+	protected void saveProject() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+	protected void updateValues() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+	private void setValues(MISProject project) {
+		textFieldProjectName.setText(project.projectName);
+		textFieldProjectMinimumVersion.setText(""+project.minimumBuildVersion);
+		textFieldBasePort.setText(""+project.basePort.port);
+		spinnerRefreshRate.getModel().setValue(project.refreshRate);
+		spinnerMMPCPS.getModel().setValue(project.maxMessagesPerClientPerSecond);
+		spinnerSessionTimeout.getModel().setValue(project.timeOutDuration);
+		if(project.listType.equals(MISListType.ARRAY)){
+			comboBoxListType.setSelectedIndex(0);
+		} else{
+			comboBoxListType.setSelectedIndex(1);
+		}
+	}
+
+
+
 	public void showDialog(){
 		setVisible(true);
 	}
