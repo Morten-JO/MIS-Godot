@@ -8,8 +8,10 @@ import java.awt.Font;
 import javax.swing.ImageIcon;
 import javax.swing.SwingConstants;
 
+import data_types.MISPort;
 import data_types.MISScene;
 import enums.MISListType;
+import enums.MISProtocol;
 import enums.MISType;
 import loaders.MISLoader;
 import project.MISProject;
@@ -54,6 +56,7 @@ public class CreateNewProjectSettings extends JPanel {
 	private JSpinner spinnerRefreshRate;
 	private JRadioButton rdbtnServerside;
 	private JRadioButton rdbtnClientSide;
+	private JTextField textFieldBasePort;
 	
 	public void putVariables(String projName, String projLoc, String godotLoc){
 		this.projectName = projName;
@@ -141,6 +144,11 @@ public class CreateNewProjectSettings extends JPanel {
 		btnCreate = new JButton("Create");
 		
 		btnCreate.setFont(new Font("Dialog", Font.PLAIN, 17));
+		
+		JLabel lblBaseport = new JLabel("Baseport:");
+		
+		textFieldBasePort = new JTextField();
+		textFieldBasePort.setColumns(10);
 		GroupLayout groupLayout = new GroupLayout(this);
 		groupLayout.setHorizontalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
@@ -168,7 +176,11 @@ public class CreateNewProjectSettings extends JPanel {
 									.addGroup(groupLayout.createSequentialGroup()
 										.addComponent(lblNewLabel)
 										.addPreferredGap(ComponentPlacement.RELATED)
-										.addComponent(textFieldClientBuild, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+										.addComponent(textFieldClientBuild, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+									.addGroup(groupLayout.createSequentialGroup()
+										.addComponent(lblBaseport)
+										.addPreferredGap(ComponentPlacement.RELATED)
+										.addComponent(textFieldBasePort, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
 								.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING, false)
 									.addGroup(groupLayout.createSequentialGroup()
 										.addComponent(lblSessionTimeout)
@@ -184,7 +196,7 @@ public class CreateNewProjectSettings extends JPanel {
 											.addComponent(comboBoxSavingType, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 											.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING, false)
 												.addComponent(spinnerRefreshRate, Alignment.LEADING)
-												.addComponent(spinnerMMPSPC, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 39, Short.MAX_VALUE))))))
+												.addComponent(spinnerMMPSPC, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 51, Short.MAX_VALUE))))))
 							.addPreferredGap(ComponentPlacement.RELATED, 307, Short.MAX_VALUE)))
 					.addContainerGap())
 				.addGroup(groupLayout.createSequentialGroup()
@@ -235,7 +247,11 @@ public class CreateNewProjectSettings extends JPanel {
 					.addComponent(lblProtocols)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(listProtocols)
-					.addPreferredGap(ComponentPlacement.RELATED, 173, Short.MAX_VALUE)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+						.addComponent(lblBaseport)
+						.addComponent(textFieldBasePort, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+					.addPreferredGap(ComponentPlacement.RELATED, 147, Short.MAX_VALUE)
 					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(btnBack)
 						.addComponent(btnCreate))
@@ -264,6 +280,8 @@ public class CreateNewProjectSettings extends JPanel {
 					project.projectLocation = projectLocation;
 					project.godotProjectLocation = godotLocation;
 					project.minimumBuildVersion = Double.parseDouble(textFieldClientBuild.getText());
+					MISPort port = new MISPort(Integer.parseInt(textFieldBasePort.getText()), MISProtocol.TCP);
+					project.basePort = port;
 					project.listType = MISListType.ARRAY;
 					project.targetEngine = MISType.Godot;
 					project.scenes = scenes;
@@ -334,6 +352,17 @@ public class CreateNewProjectSettings extends JPanel {
 		if(listProtocols.isSelectionEmpty()){
 			System.out.println("protocols problems");
 			return false;
+		}
+		if(textFieldBasePort.getText().isEmpty()){
+			System.out.println("baseport problems");
+			return false;
+		} else{
+			try{
+				Integer.parseInt(textFieldBasePort.getText());
+			} catch(NumberFormatException e){
+				System.out.println("baseport problems");
+				return false;
+			}
 		}
 		return true;
 		

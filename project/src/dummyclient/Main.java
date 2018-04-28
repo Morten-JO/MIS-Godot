@@ -13,7 +13,7 @@ public class Main {
 
 	public static void main(String[] args) {
 		try {
-			Socket socket = new Socket("localhost", 1000);
+			Socket socket = new Socket("localhost", 1234);
 			BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
 			List<String> received = new ArrayList<String>();

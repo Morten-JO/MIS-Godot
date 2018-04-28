@@ -16,6 +16,8 @@ public class MISScene {
 	public int format;
 	public ArrayList<MISExternalResource> externalResources;
 	
+	private static int globalID = 0;
+	
 	//indentification number
 	//an array of nodes
 	
@@ -24,28 +26,28 @@ public class MISScene {
 	public ArrayList<MISBroadcast> broadcasts;
 	//a successcriteria, which when something happens, do something
 	
-	public MISScene(int id){
-		this.IDNumber = id;
+	public MISScene(){
+		this.IDNumber = globalID;
+		globalID++;
 		nodeList = new ArrayList<MISNode>();
 		externalResources = new ArrayList<MISExternalResource>();
 		broadcasts = new ArrayList<MISBroadcast>();
 		ruleList = new ArrayList<MISRule>();
 	}
 	
+	public MISScene(int id){
+		this.IDNumber = id;
+		globalID = id + 1;
+		nodeList = new ArrayList<MISNode>();
+		externalResources = new ArrayList<MISExternalResource>();
+		broadcasts = new ArrayList<MISBroadcast>();
+		ruleList = new ArrayList<MISRule>();
+	}
+	
+	
 	public void addNode(MISNode node){
-		boolean exists = false;
-		for(MISNode tempNode : nodeList){
-			if(tempNode.name.equals(node.name)){
-				if(tempNode.index == node.index){
-					if(tempNode.type.equals(node.type)){
-						exists = true;
-					}
-				}
-			}
-		}
-		if(!exists){
-			nodeList.add(node);
-		}
+		node.index = nodeList.size();
+		nodeList.add(node);
 	}
 	
 	public void addExternalResource(MISExternalResource resource){

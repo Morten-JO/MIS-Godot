@@ -62,145 +62,150 @@ public class MISProject {
 		if(MISProject.project.isSaving){
 			return false;
 		}
-		MISProject.project.isSaving = true;
 		JSONObject mainObject = new JSONObject();
-		
-		JSONObject generalSettingsObject = new JSONObject();
-		generalSettingsObject.put("name", MISProject.project.projectName);
-		generalSettingsObject.put("target_engine", MISProject.project.targetEngine.toString());
-		generalSettingsObject.put("minimum_build_version", MISProject.project.minimumBuildVersion);
-		generalSettingsObject.put("godot_project_location", MISProject.project.godotProjectLocation);
-		mainObject.put("general_settings", generalSettingsObject);
-		
-		JSONObject projectGeneralSettingsObject = new JSONObject();
-		projectGeneralSettingsObject.put("list_type", MISProject.project.listType.toString());
-		projectGeneralSettingsObject.put("refresh_rate", MISProject.project.refreshRate);
-		projectGeneralSettingsObject.put("mmpcps", MISProject.project.maxMessagesPerClientPerSecond);
-		projectGeneralSettingsObject.put("base_port", project.basePort.port);
-		projectGeneralSettingsObject.put("base_protocol", project.basePort.protocol.toString());
-		
-		JSONObject portsObjects = new JSONObject();
-		if(MISProject.project.ports != null && MISProject.project.ports.size() > 0){
-			for(int i = 0; i < MISProject.project.ports.size(); i++){
-				JSONObject portObj = new JSONObject();
-				portObj.put("port", MISProject.project.ports.get(i).port);
-				portObj.put("protocol", MISProject.project.ports.get(i).protocol.toString());
-				portsObjects.put(i, portObj);
+		try{
+			MISProject.project.isSaving = true;
+			
+			JSONObject generalSettingsObject = new JSONObject();
+			generalSettingsObject.put("name", MISProject.project.projectName);
+			generalSettingsObject.put("target_engine", MISProject.project.targetEngine.toString());
+			generalSettingsObject.put("minimum_build_version", MISProject.project.minimumBuildVersion);
+			generalSettingsObject.put("godot_project_location", MISProject.project.godotProjectLocation);
+			mainObject.put("general_settings", generalSettingsObject);
+			
+			JSONObject projectGeneralSettingsObject = new JSONObject();
+			projectGeneralSettingsObject.put("list_type", MISProject.project.listType.toString());
+			projectGeneralSettingsObject.put("refresh_rate", MISProject.project.refreshRate);
+			projectGeneralSettingsObject.put("mmpcps", MISProject.project.maxMessagesPerClientPerSecond);
+			projectGeneralSettingsObject.put("base_port", project.basePort.port);
+			projectGeneralSettingsObject.put("base_protocol", project.basePort.protocol.toString());
+			
+			JSONObject portsObjects = new JSONObject();
+			if(MISProject.project.ports != null && MISProject.project.ports.size() > 0){
+				for(int i = 0; i < MISProject.project.ports.size(); i++){
+					JSONObject portObj = new JSONObject();
+					portObj.put("port", MISProject.project.ports.get(i).port);
+					portObj.put("protocol", MISProject.project.ports.get(i).protocol.toString());
+					portsObjects.put(i, portObj);
+				}
 			}
-		}
-		projectGeneralSettingsObject.put("ports", portsObjects);
-		projectGeneralSettingsObject.put("ports_n", MISProject.project.ports.size());
-		
-		mainObject.put("project_settings", projectGeneralSettingsObject);
-		
-		JSONObject scenesObject = new JSONObject();
-		mainObject.put("scenes_n", MISProject.project.scenes.size());
-		if(MISProject.project.scenes.size() > 0){
-			for(int i = 0; i < MISProject.project.scenes.size(); i++){
-				MISScene scene = MISProject.project.scenes.get(i);
-				JSONObject sceneObject = new JSONObject();
-				sceneObject.put("name", scene.name);
-				sceneObject.put("load_steps", scene.loadSteps);
-				sceneObject.put("format", scene.format);
-				sceneObject.put("id", scene.IDNumber);
-				
-				JSONObject nodesObject = new JSONObject();
-				nodesObject.put("nodes_n", scene.nodeList.size());
-				for(int j = 0; j < scene.nodeList.size(); j++){
-					JSONObject nodeObject = new JSONObject();
-					MISNode node = scene.nodeList.get(j);
-					nodeObject.put("name", node.name);
-					nodeObject.put("type", node.type);
-					nodeObject.put("index", node.index);
-					nodeObject.put("script_attached", node.scriptAttached);
-					if(node.scriptAttached){
-						nodeObject.put("script_name", node.scriptName);
-						nodeObject.put("script_id", node.scriptId);
+			projectGeneralSettingsObject.put("ports", portsObjects);
+			projectGeneralSettingsObject.put("ports_n", MISProject.project.ports.size());
+			
+			mainObject.put("project_settings", projectGeneralSettingsObject);
+			
+			JSONObject scenesObject = new JSONObject();
+			mainObject.put("scenes_n", MISProject.project.scenes.size());
+			if(MISProject.project.scenes.size() > 0){
+				for(int i = 0; i < MISProject.project.scenes.size(); i++){
+					MISScene scene = MISProject.project.scenes.get(i);
+					JSONObject sceneObject = new JSONObject();
+					sceneObject.put("name", scene.name);
+					sceneObject.put("load_steps", scene.loadSteps);
+					sceneObject.put("format", scene.format);
+					sceneObject.put("id", scene.IDNumber);
+					
+					JSONObject nodesObject = new JSONObject();
+					nodesObject.put("nodes_n", scene.nodeList.size());
+					for(int j = 0; j < scene.nodeList.size(); j++){
+						JSONObject nodeObject = new JSONObject();
+						MISNode node = scene.nodeList.get(j);
+						nodeObject.put("name", node.name);
+						nodeObject.put("type", node.type);
+						nodeObject.put("index", node.index);
+						nodeObject.put("script_attached", node.scriptAttached);
+						if(node.scriptAttached){
+							nodeObject.put("script_name", node.scriptName);
+							nodeObject.put("script_id", node.scriptId);
+						}
+						nodeObject.put("parent", node.parent != null);
+						if(node.parent != null){
+							nodeObject.put("parent_name", node.parent.name);
+							nodeObject.put("parent_index", node.parent.index);
+						}
+						nodesObject.put(""+j, nodeObject);
 					}
-					nodeObject.put("parent", node.parent != null);
-					if(node.parent != null){
-						nodeObject.put("parent_name", node.parent.name);
-						nodeObject.put("parent_index", node.parent.index);
+					sceneObject.put("nodes", nodesObject);
+					
+					JSONObject broadcastsObject = new JSONObject();
+					broadcastsObject.put("broadcast_n", scene.broadcasts.size());
+					for(int j = 0; j < scene.broadcasts.size(); j++){
+						JSONObject broadcastObject = new JSONObject();
+						MISBroadcast broadcast = scene.broadcasts.get(j);
+						//Not sure if the below line works.
+						broadcastObject.put("name", broadcast.getBroadcastName());
+						broadcastObject.put("type", broadcast.getClass().getSimpleName());
+						broadcastObject.put("sps", broadcast.timesPerMinute);
+						broadcastObject.put("data", broadcast.dataToSend());
+						broadcastsObject.put(""+j, broadcastObject);
 					}
-					nodesObject.put(""+j, nodeObject);
-				}
-				sceneObject.put("nodes", nodesObject);
-				
-				JSONObject broadcastsObject = new JSONObject();
-				broadcastsObject.put("broadcast_n", scene.broadcasts.size());
-				for(int j = 0; j < scene.broadcasts.size(); j++){
-					JSONObject broadcastObject = new JSONObject();
-					MISBroadcast broadcast = scene.broadcasts.get(j);
-					//Not sure if the below line works.
-					broadcastObject.put("name", broadcast.getBroadcastName());
-					broadcastObject.put("type", broadcast.getClass().getSimpleName());
-					broadcastObject.put("sps", broadcast.timesPerMinute);
-					broadcastObject.put("data", broadcast.dataToSend());
-					broadcastsObject.put(""+j, broadcastObject);
-				}
-				sceneObject.put("broadcasts", broadcastsObject);
-				
-				JSONObject extresObject = new JSONObject();
-				extresObject.put("external_resources_n", scene.externalResources.size());
-				
-				for(int j = 0; j < scene.externalResources.size(); j++){
-					JSONObject resourceObject = new JSONObject();
-					MISExternalResource resource = scene.externalResources.get(j);
-					resourceObject.put("name", resource.name);
-					resourceObject.put("id", resource.id);
-					resourceObject.put("path", resource.path);
-					resourceObject.put("type", resource.type);
-					extresObject.put(""+j, resourceObject);
-				}
-				
-				JSONObject rulesObject = new JSONObject();
-				rulesObject.put("rules_n", scene.ruleList.size());
-				
-				for(int j = 0; j < scene.ruleList.size(); j++){
-					JSONObject ruleObject = new JSONObject();
-					MISRule rule = scene.ruleList.get(i);
-					ruleObject.put("name", rule.ruleName);
-					ruleObject.put("class", rule.getClass().getName());
-					if(rule instanceof MISRuleNode){
-						int index = -1;
-						for(int z = 0; z < scene.nodeList.size(); z++){
-							if(scene.nodeList.get(i) == ((MISRuleNode)rule).node){
-								index = z;
-								break;
+					sceneObject.put("broadcasts", broadcastsObject);
+					
+					JSONObject extresObject = new JSONObject();
+					extresObject.put("external_resources_n", scene.externalResources.size());
+					
+					for(int j = 0; j < scene.externalResources.size(); j++){
+						JSONObject resourceObject = new JSONObject();
+						MISExternalResource resource = scene.externalResources.get(j);
+						resourceObject.put("name", resource.name);
+						resourceObject.put("id", resource.id);
+						resourceObject.put("path", resource.path);
+						resourceObject.put("type", resource.type);
+						extresObject.put(""+j, resourceObject);
+					}
+					
+					JSONObject rulesObject = new JSONObject();
+					rulesObject.put("rules_n", scene.ruleList.size());
+					
+					for(int j = 0; j < scene.ruleList.size(); j++){
+						JSONObject ruleObject = new JSONObject();
+						MISRule rule = scene.ruleList.get(i);
+						ruleObject.put("name", rule.ruleName);
+						ruleObject.put("class", rule.getClass().getName());
+						if(rule instanceof MISRuleNode){
+							int index = -1;
+							for(int z = 0; z < scene.nodeList.size(); z++){
+								if(scene.nodeList.get(i) == ((MISRuleNode)rule).node){
+									index = z;
+									break;
+								}
+							}
+							ruleObject.put("node_index", index);
+							ruleObject.put("option", ((MISRuleNode)rule).option.name());
+							if(rule instanceof MISRuleNodePosition){
+								MISRuleNodePosition pos = (MISRuleNodePosition)rule;
+								ruleObject.put("xmin", pos.xBounds.min);
+								ruleObject.put("xmax", pos.xBounds.max);
+								ruleObject.put("ymin", pos.yBounds.min);
+								ruleObject.put("ymax", pos.yBounds.max);
+								ruleObject.put("zmin", pos.zBounds.min);
+								ruleObject.put("zmax", pos.zBounds.max);
+							} else if(rule instanceof MISRuleNodeRotation){
+								MISRuleNodeRotation rot = (MISRuleNodeRotation)rule;
+								ruleObject.put("rotMin", rot.rotationBounds.min);
+								ruleObject.put("rotMax", rot.rotationBounds.max);
+							} else if(rule instanceof MISRuleNodeScale){
+								MISRuleNodeScale scale = (MISRuleNodeScale)rule;
+								ruleObject.put("xmin", scale.xBounds.min);
+								ruleObject.put("xmax", scale.xBounds.max);
+								ruleObject.put("ymin", scale.yBounds.min);
+								ruleObject.put("ymax", scale.yBounds.max);
 							}
 						}
-						ruleObject.put("node_index", index);
-						ruleObject.put("option", ((MISRuleNode)rule).option.name());
-						if(rule instanceof MISRuleNodePosition){
-							MISRuleNodePosition pos = (MISRuleNodePosition)rule;
-							ruleObject.put("xmin", pos.xBounds.min);
-							ruleObject.put("xmax", pos.xBounds.max);
-							ruleObject.put("ymin", pos.yBounds.min);
-							ruleObject.put("ymax", pos.yBounds.max);
-							ruleObject.put("zmin", pos.zBounds.min);
-							ruleObject.put("zmax", pos.zBounds.max);
-						} else if(rule instanceof MISRuleNodeRotation){
-							MISRuleNodeRotation rot = (MISRuleNodeRotation)rule;
-							ruleObject.put("rotMin", rot.rotationBounds.min);
-							ruleObject.put("rotMax", rot.rotationBounds.max);
-						} else if(rule instanceof MISRuleNodeScale){
-							MISRuleNodeScale scale = (MISRuleNodeScale)rule;
-							ruleObject.put("xmin", scale.xBounds.min);
-							ruleObject.put("xmax", scale.xBounds.max);
-							ruleObject.put("ymin", scale.yBounds.min);
-							ruleObject.put("ymax", scale.yBounds.max);
-						}
+						rulesObject.put(""+j, ruleObject);
 					}
-					rulesObject.put(""+j, ruleObject);
-				}
+						
+					sceneObject.put("externalResources", extresObject);
+					sceneObject.put("rules", rulesObject);
+					scenesObject.put(""+i, sceneObject);
 					
-				sceneObject.put("externalResources", extresObject);
-				sceneObject.put("rules", rulesObject);
-				scenesObject.put(""+i, sceneObject);
-				
+				}
 			}
+			mainObject.put("scenes", scenesObject);
+		} catch(Exception e){
+			e.printStackTrace();
+			return false;
 		}
-		mainObject.put("scenes", scenesObject);
 		
 		try {
 			FileWriter file = new FileWriter(MISProject.project.projectLocation+"/project.json");
@@ -363,9 +368,14 @@ public class MISProject {
 					}
 					boolean hasParent = (Boolean) nodeObject.get("parent");
 					if(hasParent){
-						node.parent = new MISNode();
-						node.parent.name = (String) nodeObject.get("parent_name");
-						node.parent.index = toIntExact((Long) nodeObject.get("parent_index"));
+						String parentName = (String) nodeObject.get("parent_name");
+						int parentIndex = toIntExact((Long) nodeObject.get("parent_index"));
+						for(int x = 0; x < scene.nodeList.size(); x++){
+							if(scene.nodeList.get(x).name.equals(parentName) && scene.nodeList.get(x).index == parentIndex ){
+								node.parent = scene.nodeList.get(x);
+								break;
+							}
+						}
 					}
 					scene.addNode(node);
 				}
@@ -452,7 +462,7 @@ public class MISProject {
 			}
 			MISProject.project.isLoading = false;
 			return true;
-		} catch (IOException | ParseException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
@@ -471,7 +481,9 @@ public class MISProject {
 	public ArrayList<MISPort> ports;
 	public MISPort basePort;
 	public double minimumBuildVersion = 0.01;
-	public ArrayList<MISScene> scenes; //todo add to save/load
+	public ArrayList<MISScene> scenes;
+	
+	
 	/*
 	 * General settings
 	 */

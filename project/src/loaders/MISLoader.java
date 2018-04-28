@@ -8,6 +8,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import data_types.MISExternalResource;
 import data_types.MISNode;
@@ -57,9 +58,17 @@ public class MISLoader {
 		try {
 			BufferedReader reader = new BufferedReader(new FileReader(location));
 			String readLine = "";
-			MISScene scene = new MISScene(1234);
-			String[] temp = location.split("/");
-			scene.name = temp[temp.length-1].split(".tscn")[0];
+			MISScene scene = new MISScene();
+			if(location.contains("/")){
+				String[] temp = location.split("/");
+				scene.name = temp[temp.length-1].split(".tscn")[0];
+			} else if(location.contains("\\")){
+				String[] temp = location.split(Pattern.quote("\\"));
+				scene.name = temp[temp.length-1].split(".tscn")[0];
+			} else {
+				scene.name = location;
+			}
+			
 			MISNode lastNode = null;
 			while((readLine = reader.readLine()) != null){
 				if(readLine.startsWith("[ext_resource")){
@@ -97,10 +106,9 @@ public class MISLoader {
 									break;
 								}
 							}
+						} else{
+							node.parent = scene.nodeList.get(0);
 						}
-					}
-					if(readLine.contains("index=\"")){
-						node.index = Integer.parseInt(readLine.split("index=\"")[1].split("\"")[0]);
 					}
 					lastNode = node;
 					scene.addNode(node);
@@ -165,10 +173,26 @@ public class MISLoader {
 		MISProjectInformation information = null;
 		String[] data = str.split(" ");
 		String projectPath = data[0];
-		String[] pathFolders = projectPath.split("/");
+		System.out.println("project path: "+projectPath);
 		String projectName = "";
-		if(pathFolders.length > 0){
-			projectName = pathFolders[pathFolders.length-1].replaceAll("/", "");
+		if(projectPath.contains("\\")){
+			String[] pathFolders = projectPath.split(Pattern.quote("\\"));
+			
+			if(pathFolders.length > 0){
+				projectName = pathFolders[pathFolders.length-1].replaceAll(Pattern.quote("\\"), "");
+			} else{
+				projectName = projectPath;
+			}
+		} else if(projectPath.contains("/")){
+			String[] pathFolders = projectPath.split("/");
+			
+			if(pathFolders.length > 0){
+				projectName = pathFolders[pathFolders.length-1].replaceAll("/", "");
+			} else{
+				projectName = projectPath;
+			}
+		} else{
+			projectName = projectPath;
 		}
 		String projectDate = data[1];
 		boolean found = false;

@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import broadcasts.MISBroadcastMessage;
+import data_types.MISQueue;
 import data_types.MISScene;
 import receivers.MISReceiverAll;
 import server_ui.ServerApplicationWindow;
@@ -26,6 +27,7 @@ public class Server implements Runnable{
 	public int totalPlayers = 0;
 	public Long timeStartedInMillis;
 	private List<Room> rooms;
+	private List<MISQueue> queues;
 	
 	
 	public Server(int port, boolean ui, boolean autoStart){
@@ -33,6 +35,7 @@ public class Server implements Runnable{
 		clientList = new ArrayList<Client>();
 		thread = new Thread(this);
 		rooms = new ArrayList<Room>();
+		queues = new ArrayList<MISQueue>();
 		this.ui = ui;
 		if(this.ui){
 			serverUI = new ServerApplicationWindow(this, autoStart);
@@ -141,6 +144,30 @@ public class Server implements Runnable{
 			}
 		}
 		
+	}
+
+	public boolean notifyServerQueueStart(Client client, int sceneQueue) {
+		boolean exists = false;
+		for(int i = 0; i < queues.size(); i++){
+			if(queues.get(i).client == client){
+				exists = true;
+			}
+		}
+		if(!exists){
+			queues.add(new MISQueue(client, sceneQueue));
+			return true;
+		}
+		return false;
+	}
+
+	public boolean notifyServerQueueEnd(Client client, int sceneQueue) {
+		for(int i = 0; i < queues.size(); i++){
+			if(queues.get(i).client == client && queues.get(i).sceneQueue == sceneQueue){
+				queues.remove(i);
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	

@@ -808,7 +808,7 @@ public class MainViewWindow {
 			@Override
 			public void mousePressed(MouseEvent e) {
 				Server server = new Server(MISProject.project.basePort.port, true, false);
-				addTextToConsole("Ran project.");
+				addTextToConsole("Ran project and started server.");
 			}
 		});
 		
