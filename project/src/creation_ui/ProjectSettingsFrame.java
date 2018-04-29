@@ -58,7 +58,7 @@ public class ProjectSettingsFrame extends JDialog {
 		setModalityType(ModalityType.APPLICATION_MODAL);
 		setIconImage(Toolkit.getDefaultToolkit().getImage(ApplicationWindow.class.getResource("/resources/MIS_Icon128.png")));
 		setName("MIS for Godot - Version: "+MISProjectSettings.MIS_VERSION);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));

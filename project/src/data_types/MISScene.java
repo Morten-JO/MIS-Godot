@@ -15,6 +15,8 @@ public class MISScene {
 	public int loadSteps;
 	public int format;
 	public ArrayList<MISExternalResource> externalResources;
+	public MISRoomSettings roomSettings;
+	
 	
 	private static int globalID = 0;
 	

@@ -159,13 +159,13 @@ public class MISProject {
 					
 					for(int j = 0; j < scene.ruleList.size(); j++){
 						JSONObject ruleObject = new JSONObject();
-						MISRule rule = scene.ruleList.get(i);
+						MISRule rule = scene.ruleList.get(j);
 						ruleObject.put("name", rule.ruleName);
 						ruleObject.put("class", rule.getClass().getName());
 						if(rule instanceof MISRuleNode){
 							int index = -1;
 							for(int z = 0; z < scene.nodeList.size(); z++){
-								if(scene.nodeList.get(i) == ((MISRuleNode)rule).node){
+								if(scene.nodeList.get(z) == ((MISRuleNode)rule).node){
 									index = z;
 									break;
 								}

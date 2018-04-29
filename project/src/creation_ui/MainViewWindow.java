@@ -44,6 +44,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.LayoutStyle.ComponentPlacement;
 
 import data_types.MISNode;
+import data_types.MISRoomSettings;
 import data_types.MISScene;
 import jdk.nashorn.internal.ir.JoinPredecessorExpression;
 import project.MISProject;
@@ -111,7 +112,9 @@ public class MainViewWindow {
 	private JLabel lblRuleUserName;
 	private JPanel middlePanel;
 	private JMenuItem mntmAddBroadcast;
-
+	private JMenuItem mntmSceneSettings;
+	private DefaultListModel<MISNode> model;
+	
 	/**
 	 * Launch the application.
 	 */
@@ -245,6 +248,9 @@ public class MainViewWindow {
 		
 		mntmAddBroadcast = new JMenuItem("Add Broadcast");
 		mnWindow.add(mntmAddBroadcast);
+		
+		mntmSceneSettings = new JMenuItem("Scene Settings");
+		mnWindow.add(mntmSceneSettings);
 		
 		mnHelp = new JMenu("Help");
 		menuBar.add(mnHelp);
@@ -550,6 +556,7 @@ public class MainViewWindow {
 			System.out.println("Rules added to model: "+scene.ruleList.get(i).ruleName);
 			ruleModel.addElement(scene.ruleList.get(i));
 		}
+		
 		rulesList.setBackground(SystemColor.menu);
 		rulesList.setCellRenderer(new DefaultListCellRenderer() {
 			@Override
@@ -568,9 +575,24 @@ public class MainViewWindow {
 		});
 	}
 	
+	public void remakeRuleList(MISScene scene){
+		ruleModel.removeAllElements();
+		for(int i = 0; i < scene.ruleList.size(); i++){
+			System.out.println("Rules added to model: "+scene.ruleList.get(i).ruleName);
+			ruleModel.addElement(scene.ruleList.get(i));
+		}
+	}
+	
+	public void remakeNodeList(MISScene scene){
+		model.removeAllElements();
+		for(int i = 0; i < scene.nodeList.size(); i++){
+			System.out.println("Nodes added to model: "+scene.nodeList.get(i).name);
+			model.addElement(scene.nodeList.get(i));
+		}
+	}
 	
 	public void createNodeList(MISScene scene){
-		DefaultListModel<MISNode> model = new DefaultListModel<>();
+		model = new DefaultListModel<>();
 		nodeList = new JList<MISNode>(model);
 		nodeList.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Nodes", TitledBorder.LEADING, TitledBorder.ABOVE_TOP, null, new Color(0, 0, 0)));
 		nodeList.setFont(new Font("Dialog", Font.PLAIN, 17));
@@ -580,6 +602,7 @@ public class MainViewWindow {
 			System.out.println("Nodes added to model: "+scene.nodeList.get(i).name);
 			model.addElement(scene.nodeList.get(i));
 		}
+		
 		nodeList.setBackground(SystemColor.menu);
 		nodeList.setCellRenderer(new DefaultListCellRenderer() {
 			@Override
@@ -761,7 +784,9 @@ public class MainViewWindow {
 							}
 						}
 						if(scene != null){
-							createNodeList(scene);
+							remakeNodeList(scene);
+							remakeRuleList(scene);
+							currentScene = scene;
 							addTextToConsole("Loaded scene: "+scene.name);
 						} else{
 							addTextToConsole("Failed to load scene");
@@ -789,9 +814,10 @@ public class MainViewWindow {
 		mntmProjectSettings.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
-				JOptionPane.showMessageDialog(null, "UI for Project Settings is not implemented yet!");
-				mnFile.getPopupMenu().setVisible(false);
 				addTextToConsole("Opened project settings.");
+				mnFile.getPopupMenu().setVisible(false);
+				ProjectSettingsFrame dialog = new ProjectSettingsFrame(frame , MISProject.project);
+				dialog.showDialog();
 			}
 		});
 		
@@ -862,6 +888,19 @@ public class MainViewWindow {
 			}
 		});
 		
+		mntmSceneSettings.addMouseListener(new MouseAdapter(){
+				
+				@Override
+				public void mousePressed(MouseEvent e) {
+					mnWindow.getPopupMenu().setVisible(false);
+					addTextToConsole("Console cleared.");
+					SceneSettingsFrame dialog = new SceneSettingsFrame(frame ,currentScene);
+					dialog.showDialog();
+					MISRoomSettings roomSettings = dialog.getRoomSettings();
+					currentScene.roomSettings = roomSettings;
+				}
+		});
+		
 		mntmAbout.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
@@ -915,9 +954,9 @@ public class MainViewWindow {
 				MISBroadcast broadcast = dialog.getRuleFromDialog();
 				if(broadcast != null){
 					currentScene.broadcasts.add(broadcast);
-					System.out.println("Broadcast added!");
+					addTextToConsole("Broadcast "+broadcast.getBroadcastName()+" added.");
 				} else{
-					System.out.println("Broadcast is fucking null");
+					addTextToConsole("Broadcast was null, and couldn't be added.");
 				}
 			}
 		});
@@ -962,6 +1001,7 @@ public class MainViewWindow {
 	}
 	
 	public void showNode(MISNode node){
+		if(node == null) return;
 		((TitledBorder)middlePanel.getBorder()).setTitle("Node Information");
 		CardLayout layout = (CardLayout) middlePanel.getLayout();
 		layout.show(middlePanel, "nodeInformation");
