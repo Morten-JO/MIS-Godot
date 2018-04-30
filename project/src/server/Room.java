@@ -19,6 +19,8 @@ public class Room {
 	
 	public List<Client> clientsInRoom;
 	
+	public List<List<Client>> teams;
+	
 	private int roomSize;
 	
 	private int roomId;
@@ -29,20 +31,45 @@ public class Room {
 		roomId = globalRoomID;
 		globalRoomID++;
 		createBroadcastThread();
-		try{
-			this.roomSize = scene.roomSettings.teams;
-		} catch(NullPointerException e){
-			e.printStackTrace();
-			System.out.println("Error, apparently creating a room without a setting in scene: "+scene.name);
-			server.notifyFatalRoomError();
-		}
+		this.roomSize = roomSize;
 		clientsInRoom = new ArrayList<Client>();
+		teams = new ArrayList<List<Client>>();
 	}
 	
 	public Room(MISScene scene, int roomSize, Server server,  Client... client){
 		this(scene, roomSize, server);
-		for(int i = 0; i < client.length; i++){
-			clientsInRoom.add(client[i]);
+		try{
+			if(scene.roomSettings.teams == 0){
+				for(int i = 0; i < client.length; i++){
+					List<Client> clientList = new ArrayList<Client>();
+					clientList.add(client[i]);
+					teams.add(clientList);
+				}
+			} else{
+				for(int i = 0; i < scene.roomSettings.teams; i++){
+					teams.add(new ArrayList<Client>());
+				}
+				int teamCounter = 0;
+				for(int i = 0; i < client.length; i++){
+					teams.get(teamCounter).add(client[i]);
+					teamCounter++;
+					if(teamCounter >= teams.size()){
+						teamCounter = 0;
+					}
+				}
+			}
+			
+			for(int i = 0; i < teams.size(); i++){
+				for(int j = 0; j < teams.get(i).size(); j++){
+					clientsInRoom.add(teams.get(i).get(j));
+					teams.get(i).get(j).joinRoom(this);
+					teams.get(i).get(j).notifyCreatedRoom(this, roomSize, i);
+				}
+			}
+		} catch(NullPointerException e){
+			e.printStackTrace();
+			System.out.println("Error, apparently creating a room without a setting in scene: "+scene.name);
+			server.notifyFatalRoomError();
 		}
 	}
 	
@@ -101,6 +128,10 @@ public class Room {
 	public boolean closeRoom(){
 		broadcastRunning = false;
 		return true;
+	}
+	
+	public int getSceneId(){
+		return scene.IDNumber;
 	}
 	
 }
