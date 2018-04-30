@@ -176,9 +176,15 @@ public class Server implements Runnable{
 							}
 						}
 					}
+					try {
+						Thread.sleep(50);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
 				}
 			}
 		});
+		queueHandler.start();
 	}
 	
 	public void notifyServerOfFailedClient(Client client){
