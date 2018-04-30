@@ -28,7 +28,7 @@ public class Server implements Runnable{
 	public Long timeStartedInMillis;
 	private List<Room> rooms;
 	private List<MISQueue> queues;
-	
+	private Thread queueHandler;
 	
 	public Server(int port, boolean ui, boolean autoStart){
 		this.port = port;
@@ -51,6 +51,7 @@ public class Server implements Runnable{
 			if(this.ui){
 				serverUI.startServerUI();
 			}
+			startQueueHandler();
 		} catch (IOException e) {
 			e.printStackTrace();
 			return false;
@@ -126,6 +127,18 @@ public class Server implements Runnable{
 		return true;
 	}
 	
+	private void startQueueHandler(){
+		queueHandler = new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				while(running){
+					
+				}
+			}
+		});
+	}
+	
 	public void notifyServerOfFailedClient(Client client){
 		clientList.remove(client);
 		if(this.ui){
@@ -168,6 +181,11 @@ public class Server implements Runnable{
 			}
 		}
 		return false;
+	}
+
+	public void notifyFatalRoomError() {
+		// TODO Auto-generated method stub
+		
 	}
 	
 	

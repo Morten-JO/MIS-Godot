@@ -896,8 +896,6 @@ public class MainViewWindow {
 					addTextToConsole("Console cleared.");
 					SceneSettingsFrame dialog = new SceneSettingsFrame(frame ,currentScene);
 					dialog.showDialog();
-					MISRoomSettings roomSettings = dialog.getRoomSettings();
-					currentScene.roomSettings = roomSettings;
 				}
 		});
 		

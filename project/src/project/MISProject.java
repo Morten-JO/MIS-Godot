@@ -17,6 +17,7 @@ import data_types.MISBounds;
 import data_types.MISExternalResource;
 import data_types.MISNode;
 import data_types.MISPort;
+import data_types.MISRoomSettings;
 import data_types.MISScene;
 import enums.MISListType;
 import enums.MISProtocol;
@@ -104,6 +105,14 @@ public class MISProject {
 					sceneObject.put("load_steps", scene.loadSteps);
 					sceneObject.put("format", scene.format);
 					sceneObject.put("id", scene.IDNumber);
+					//Possibly broken unfinished code
+					sceneObject.put("roomScene",scene.roomSettings != null);
+					if(scene.roomSettings != null){
+						sceneObject.put("roomSceneMinimum", scene.roomSettings.minimumPlayers);
+						sceneObject.put("roomSceneMaximum", scene.roomSettings.maximumPlayers);
+						sceneObject.put("roomSceneTeamSize", scene.roomSettings.teams);
+						sceneObject.put("roomSceneAutoQueue", scene.roomSettings.autoQueue);
+					}
 					
 					JSONObject nodesObject = new JSONObject();
 					nodesObject.put("nodes_n", scene.nodeList.size());
@@ -352,7 +361,17 @@ public class MISProject {
 				scene.format = toIntExact((Long) sceneObject.get("format"));
 				scene.loadSteps = toIntExact((Long) sceneObject.get("load_steps"));
 				scene.name = (String) sceneObject.get("name");
-
+				boolean hasRoomInScene = (Boolean) sceneObject.get("RoomScene");
+				if(hasRoomInScene){
+					int minimumPlayers = toIntExact((Long) sceneObject.get("roomSceneMinimum"));
+					int maximumPlayers = toIntExact((Long) sceneObject.get("roomSceneMaximum"));
+					boolean autoQueue = (Boolean) sceneObject.get("roomSceneAutoQueue");
+					int teamSize = toIntExact((Long) sceneObject.get("roomSceneTeamSize"));
+					MISRoomSettings settings = new MISRoomSettings(minimumPlayers, maximumPlayers, teamSize, autoQueue);
+					scene.roomSettings = settings;
+				}
+				
+				
 				JSONObject nodesObject = (JSONObject) sceneObject.get("nodes");
 				int amountNodes = toIntExact((Long) nodesObject.get("nodes_n"));
 				for(int j = 0; j < amountNodes; j++){

@@ -13,9 +13,12 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import data_types.MISRoomSettings;
 import data_types.MISScene;
+import project.MISProject;
 import settings.MISProjectSettings;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -38,6 +41,9 @@ public class SceneSettingsFrame extends JDialog {
 	private JButton saveButton;
 	private JButton exitButton;
 	private boolean wasAnythingChanged = false;
+	private JCheckBox chckbxRoomInScene;
+	private JPanel cardLayoutPanel;
+	private JSpinner spinnerTeamsInRoom;
 
 	/**
 	 * Create the dialog.
@@ -60,23 +66,37 @@ public class SceneSettingsFrame extends JDialog {
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		
-		JCheckBox chckbxNewCheckBox = new JCheckBox("Room Scene");
+		chckbxRoomInScene = new JCheckBox("Room Scene");
+		chckbxRoomInScene.addChangeListener(new ChangeListener() {
+			
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				wasAnythingChanged = true;
+				saveButton.setEnabled(true);
+				CardLayout layout = (CardLayout) cardLayoutPanel.getLayout();
+				if(chckbxRoomInScene.isSelected()){
+					layout.show(cardLayoutPanel, "roomCard");
+				} else{
+					layout.show(cardLayoutPanel, "noRoomCard");
+				}
+			}
+		});
 		
-		JPanel cardLayoutPanel = new JPanel();
+		cardLayoutPanel = new JPanel();
 		GroupLayout gl_contentPanel = new GroupLayout(contentPanel);
 		gl_contentPanel.setHorizontalGroup(
 			gl_contentPanel.createParallelGroup(Alignment.LEADING)
 				.addGroup(Alignment.TRAILING, gl_contentPanel.createSequentialGroup()
 					.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 					.addGroup(gl_contentPanel.createParallelGroup(Alignment.LEADING)
-						.addComponent(chckbxNewCheckBox)
+						.addComponent(chckbxRoomInScene)
 						.addComponent(cardLayoutPanel, GroupLayout.PREFERRED_SIZE, 404, GroupLayout.PREFERRED_SIZE))
 					.addContainerGap())
 		);
 		gl_contentPanel.setVerticalGroup(
 			gl_contentPanel.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_contentPanel.createSequentialGroup()
-					.addComponent(chckbxNewCheckBox)
+					.addComponent(chckbxRoomInScene)
 					.addGap(7)
 					.addComponent(cardLayoutPanel, GroupLayout.PREFERRED_SIZE, 119, GroupLayout.PREFERRED_SIZE)
 					.addContainerGap(69, Short.MAX_VALUE))
@@ -84,21 +104,52 @@ public class SceneSettingsFrame extends JDialog {
 		cardLayoutPanel.setLayout(new CardLayout(0, 0));
 		
 		JPanel roomCardPanel = new JPanel();
-		cardLayoutPanel.add(roomCardPanel, "name_42962220790523");
+		cardLayoutPanel.add(roomCardPanel, "roomCard");
 		
 		JLabel lblMinimumPlayers = new JLabel("Minimum players:");
 		
 		spinnerMinimumPlayers = new JSpinner();
+		spinnerMinimumPlayers.addChangeListener(new ChangeListener() {
+			
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				wasAnythingChanged = true;
+				saveButton.setEnabled(true);
+			}
+		});
 		
 		JLabel lblMaximumPlayers = new JLabel("Maximum players:");
 		
 		spinnerMaximumPlayers = new JSpinner();
-		
+		spinnerMaximumPlayers.addChangeListener(new ChangeListener() {
+			
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				wasAnythingChanged = true;
+				saveButton.setEnabled(true);
+			}
+		});
 		chckbxAutoQueue = new JCheckBox("Auto Queue");
-		
+		chckbxAutoQueue.addChangeListener(new ChangeListener() {
+			
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				wasAnythingChanged = true;
+				saveButton.setEnabled(true);
+			}
+		});
 		JLabel lblTeamLayout = new JLabel("Teams In Room:");
 		
-		JSpinner spinnerTeamsInRoom = new JSpinner();
+		spinnerTeamsInRoom = new JSpinner();
+		spinnerTeamsInRoom.addChangeListener(new ChangeListener() {
+			
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				wasAnythingChanged = true;
+				saveButton.setEnabled(true);
+			}
+		});
+		
 		GroupLayout gl_roomCardPanel = new GroupLayout(roomCardPanel);
 		gl_roomCardPanel.setHorizontalGroup(
 			gl_roomCardPanel.createParallelGroup(Alignment.LEADING)
@@ -142,7 +193,7 @@ public class SceneSettingsFrame extends JDialog {
 		roomCardPanel.setLayout(gl_roomCardPanel);
 		
 		JPanel noRoomCardPanel = new JPanel();
-		cardLayoutPanel.add(noRoomCardPanel, "name_44888365311773");
+		cardLayoutPanel.add(noRoomCardPanel, "noRoomCard");
 		contentPanel.setLayout(gl_contentPanel);
 		{
 			JPanel buttonPane = new JPanel();
@@ -189,23 +240,47 @@ public class SceneSettingsFrame extends JDialog {
 				}
 			}
 		});
+		
+		CardLayout layout = (CardLayout) cardLayoutPanel.getLayout();
+		layout.show(cardLayoutPanel, "noRoomCard");
+		setValues();
+		saveButton.setEnabled(false);
 	}
 	
 	protected void saveProject() {
-		// TODO Auto-generated method stub
-		
+		boolean roomInScene = chckbxRoomInScene.isSelected();
+		if(roomInScene){
+			int minimumPlayers = (Integer) spinnerMinimumPlayers.getValue();
+			int maximumPlayers = (Integer) spinnerMaximumPlayers.getValue();
+			boolean autoQueue = chckbxAutoQueue.isSelected();
+			int teamSize = (Integer) spinnerTeamsInRoom.getValue();
+			MISRoomSettings roomSettings = new MISRoomSettings(minimumPlayers, maximumPlayers, teamSize, autoQueue);
+			scene.roomSettings = roomSettings;
+		}
+		if(MISProject.saveProject()){
+			wasAnythingChanged = false;
+			saveButton.setEnabled(false);
+		}
 	}
 
 	protected void updateValues() {
 		// TODO Auto-generated method stub
 		
 	}
+	
+	protected void setValues(){
+		if(scene.roomSettings != null){
+			chckbxRoomInScene.setSelected(true);
+			spinnerMinimumPlayers.setValue(scene.roomSettings.minimumPlayers);
+			spinnerMaximumPlayers.setValue(scene.roomSettings.maximumPlayers);
+			spinnerTeamsInRoom.setValue(scene.roomSettings.teams);
+			chckbxAutoQueue.setSelected(scene.roomSettings.autoQueue);
+		} else{
+			chckbxRoomInScene.setSelected(false);
+		}
+	}
 
 	public void showDialog(){
 		setVisible(true);
-	}
-	
-	public MISRoomSettings getRoomSettings(){
-		return null;
 	}
 }
