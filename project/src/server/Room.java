@@ -24,17 +24,23 @@ public class Room {
 	private int roomId;
 	private static int globalRoomID;
 	
-	public Room(MISScene scene, int roomSize){
+	public Room(MISScene scene, int roomSize, Server server){
 		this.scene = scene;
 		roomId = globalRoomID;
 		globalRoomID++;
 		createBroadcastThread();
-		this.roomSize = roomSize;
+		try{
+			this.roomSize = scene.roomSettings.teams;
+		} catch(NullPointerException e){
+			e.printStackTrace();
+			System.out.println("Error, apparently creating a room without a setting in scene: "+scene.name);
+			server.notifyFatalRoomError();
+		}
 		clientsInRoom = new ArrayList<Client>();
 	}
 	
-	public Room(MISScene scene, int roomSize, Client... client){
-		this(scene, roomSize);
+	public Room(MISScene scene, int roomSize, Server server,  Client... client){
+		this(scene, roomSize, server);
 		for(int i = 0; i < client.length; i++){
 			clientsInRoom.add(client[i]);
 		}

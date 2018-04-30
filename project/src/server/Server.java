@@ -12,6 +12,7 @@ import java.util.List;
 import broadcasts.MISBroadcastMessage;
 import data_types.MISQueue;
 import data_types.MISScene;
+import project.MISProject;
 import receivers.MISReceiverAll;
 import server_ui.ServerApplicationWindow;
 
@@ -29,8 +30,11 @@ public class Server implements Runnable{
 	private List<Room> rooms;
 	private List<MISQueue> queues;
 	private Thread queueHandler;
+	private Server self;
+	
 	
 	public Server(int port, boolean ui, boolean autoStart){
+		self = this;
 		this.port = port;
 		clientList = new ArrayList<Client>();
 		thread = new Thread(this);
@@ -77,7 +81,7 @@ public class Server implements Runnable{
 					MISBroadcastMessage broadcast = new MISBroadcastMessage("TestBroadcast", 27, "Hello there sir.");
 					broadcast.receiver = new MISReceiverAll();
 					scene.broadcasts.add(broadcast);
-					Room room = new Room(scene, 2, clientList.get(0), clientList.get(1));
+					Room room = new Room(scene, 2, this, clientList.get(0), clientList.get(1));
 					clientList.get(0).joinRoom(room);
 					clientList.get(1).joinRoom(room);
 					clientList.get(0).isLookingForGame = false;
@@ -129,11 +133,49 @@ public class Server implements Runnable{
 	
 	private void startQueueHandler(){
 		queueHandler = new Thread(new Runnable() {
-			
 			@Override
 			public void run() {
 				while(running){
-					
+					int[] sceneCounts = new int[MISProject.project.scenes.size()];
+					for(int i = 0; i < sceneCounts.length; i++){
+						sceneCounts[i] = 0;
+					}
+					for(int i = 0; i < queues.size(); i++){
+						if(queues.get(i).sceneQueue < sceneCounts.length && queues.get(i).sceneQueue >= 0){
+							sceneCounts[queues.get(i).sceneQueue]++;
+						}
+					}
+					for(int i = 0; i < sceneCounts.length; i++){
+						if(MISProject.project.scenes.get(i).roomSettings != null){
+							if(sceneCounts[i] >= MISProject.project.scenes.get(i).roomSettings.minimumPlayers){
+								int playersForRoom = MISProject.project.scenes.get(i).roomSettings.minimumPlayers;
+								if(sceneCounts[i] >= MISProject.project.scenes.get(i).roomSettings.maximumPlayers){
+									playersForRoom = MISProject.project.scenes.get(i).roomSettings.maximumPlayers;
+								} else{
+									playersForRoom = sceneCounts[i];
+								}
+								int count = 0;
+								List<MISQueue> clients = new ArrayList<MISQueue>();
+								for(int j = 0; j < queues.size(); j++){
+									if(queues.get(j).sceneQueue == i){
+										clients.add(queues.get(j));
+										count++;
+									}
+									if(count >= playersForRoom){
+										break;
+									}
+								}
+								Client[] roomClients = new Client[clients.size()];
+								for(int j = 0; j < clients.size(); j++){
+									queues.remove(clients.get(j));
+									roomClients[j] = clients.get(j).client;
+								}
+								
+								Room room = new Room(MISProject.project.scenes.get(i), playersForRoom, self, roomClients);
+								rooms.add(room);
+							}
+						}
+					}
 				}
 			}
 		});

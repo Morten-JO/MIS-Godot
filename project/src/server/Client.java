@@ -134,4 +134,12 @@ public class Client implements Runnable{
 	public Room getRoom(){
 		return room;
 	}
+	
+	public void notifyJoinedRoom(Room room){
+		
+	}
+	
+	public void notifyLeavedRoom(Room room){
+		
+	}
 }
