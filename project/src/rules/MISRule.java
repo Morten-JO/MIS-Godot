@@ -1,7 +1,7 @@
 package rules;
 
-import data_types.MISNode;
 import enums.MISRuleType;
+import nodes.MISNode;
 
 public class MISRule {
 	

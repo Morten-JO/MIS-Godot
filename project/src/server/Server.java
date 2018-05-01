@@ -76,19 +76,6 @@ public class Server implements Runnable{
 				clientList.add(clientObject);
 				clientObject.startThreads();
 				totalPlayers++;
-				if(clientList.size() > 1){
-					MISScene scene = new MISScene(0);
-					MISBroadcastMessage broadcast = new MISBroadcastMessage("TestBroadcast", 27, "Hello there sir.");
-					broadcast.receiver = new MISReceiverAll();
-					scene.broadcasts.add(broadcast);
-					Room room = new Room(scene, 2, this, clientList.get(0), clientList.get(1));
-					clientList.get(0).joinRoom(room);
-					clientList.get(1).joinRoom(room);
-					clientList.get(0).isLookingForGame = false;
-					clientList.get(1).isLookingForGame = true;
-					room.startBroadcastThread();
-					rooms.add(room);
-				}
 				if(this.ui){
 					serverUI.updateServer();
 				}
@@ -170,8 +157,15 @@ public class Server implements Runnable{
 									queues.remove(clients.get(j));
 									roomClients[j] = clients.get(j).client;
 								}
-								
+								//Make deep copy of scene
+								MISScene originalScene = new MISScene();
+								MISScene newScene = new MISScene();
+								newScene.format = originalScene.format;
+								newScene.IDNumber = originalScene.IDNumber;
+								newScene.loadSteps = originalScene.loadSteps;
 								Room room = new Room(MISProject.project.scenes.get(i), playersForRoom, self, roomClients);
+								room.startBroadcastThread();
+								room.startRefreshThread();
 								rooms.add(room);
 							}
 						}

@@ -3,6 +3,12 @@ package data_types;
 import java.util.ArrayList;
 
 import broadcasts.MISBroadcast;
+import broadcasts.MISBroadcastData;
+import broadcasts.MISBroadcastMessage;
+import broadcasts.MISBroadcastValue;
+import nodes.MISNode;
+import nodes.MISNode2D;
+import nodes.MISSprite;
 import rules.MISRule;
 
 public class MISScene {
@@ -79,6 +85,62 @@ public class MISScene {
 	}
 	
 	public void addMessageOnAction(){
+		
+	}
+	
+	public MISScene createDeepCopy(){
+		MISScene newScene = new MISScene();
+		newScene.format = this.format;
+		newScene.IDNumber = this.IDNumber;
+		newScene.name = this.name;
+		newScene.loadSteps = this.loadSteps;
+		//add broadcasts
+		for(int i = 0; i < this.broadcasts.size(); i++){
+			MISBroadcast broadcast = null;
+			if(this.broadcasts.get(i) instanceof MISBroadcastValue){
+				MISBroadcastValue old = (MISBroadcastValue)this.broadcasts.get(i);
+				broadcast = new MISBroadcastValue(old.getBroadcastName(), old.timesPerMinute);
+			} else if(this.broadcasts.get(i) instanceof MISBroadcastData){
+				MISBroadcastData old = (MISBroadcastData)this.broadcasts.get(i);
+				broadcast = new MISBroadcastData(old.getBroadcastName(), old.timesPerMinute);
+			} else if(this.broadcasts.get(i) instanceof MISBroadcastMessage){
+				MISBroadcastMessage old = (MISBroadcastMessage)this.broadcasts.get(i);
+				broadcast = new MISBroadcastMessage(old.getBroadcastName(), old.timesPerMinute, old.message);
+			}
+			if(broadcast == null){
+				System.err.println("Error making a deepcopy of the scene");
+			}
+			newScene.broadcasts.add(broadcast);
+		}
+		//add nodes
+		for(int i = 0; i < this.nodeList.size(); i++){
+			MISNode node = null;
+			if(this.nodeList.get(i) instanceof MISNode2D){
+				MISNode2D old = (MISNode2D) this.nodeList.get(i);
+				node = new MISNode2D(new MIS2DTransform(old.transform.positionX, old.transform.positionY, old.transform.rotation, old.transform.scaleX, old.transform.scaleY));
+			} else if(this.nodeList.get(i) instanceof MISSprite){
+				MISSprite old = (MISSprite) this.nodeList.get(i);
+				node = new MISSprite(new MIS2DTransform(old.transform.positionX, old.transform.positionY, old.transform.rotation, old.transform.scaleX, old.transform.scaleY), old.textureId);
+			} else if(this.nodeList.get(i) instanceof MISNode){
+				node = new MISNode();
+			}
+			MISNode old = this.nodeList.get(i);
+			node.index = old.index;
+			node.informationReceivers = old.informationReceivers;
+			node.name = old.name;
+			node.parent = old.parent;
+			node.scriptAttached = old.scriptAttached;
+			node.scriptId = old.scriptId;
+			node.scriptName = old.scriptName;
+			node.type = old.type;
+			node.shouldSendInformation = old.shouldSendInformation;
+			newScene.nodeList.add(node);
+		}
+		//add rules
+		for(int i = 0; i < this.ruleList.size(); i++){
+			
+		}
+		return newScene;
 		
 	}
 	

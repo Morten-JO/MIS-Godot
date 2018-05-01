@@ -1,6 +1,6 @@
 package rules;
 
-import data_types.MISNode;
+import nodes.MISNode;
 
 public class MISRuleNode extends MISRule {
 	

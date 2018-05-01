@@ -8,9 +8,9 @@ import javax.swing.GroupLayout;
 import javax.swing.JLabel;
 import javax.swing.GroupLayout.Alignment;
 
-import data_types.MISNode;
 import data_types.MISScene;
 import loaders.MISLoader;
+import nodes.MISNode;
 import project.MISProject;
 import project.MISProjectInformation;
 

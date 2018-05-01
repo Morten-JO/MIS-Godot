@@ -13,9 +13,9 @@ import broadcasts.MISBroadcast;
 import broadcasts.MISBroadcastData;
 import broadcasts.MISBroadcastValue;
 import broadcasts.MISBroadcastMessage;
+import data_types.MIS2DTransform;
 import data_types.MISBounds;
 import data_types.MISExternalResource;
-import data_types.MISNode;
 import data_types.MISPort;
 import data_types.MISRoomSettings;
 import data_types.MISScene;
@@ -23,6 +23,12 @@ import enums.MISListType;
 import enums.MISProtocol;
 import enums.MISType;
 import loaders.MISLoader;
+import nodes.MISNode;
+import nodes.MISNode2D;
+import nodes.MISSprite;
+import receivers.MISReceiverAll;
+import receivers.MISReceiverPerson;
+import receivers.MISReceiverTeam;
 import rules.MISRule;
 import rules.MISRuleNode;
 import rules.MISRuleNodePosition;
@@ -119,6 +125,23 @@ public class MISProject {
 					for(int j = 0; j < scene.nodeList.size(); j++){
 						JSONObject nodeObject = new JSONObject();
 						MISNode node = scene.nodeList.get(j);
+						nodeObject.put("class", node.getClass().getSimpleName());
+						if(node instanceof MISNode2D){
+							MISNode2D node2D = (MISNode2D)node;
+							nodeObject.put("positionX", node2D.transform.positionX);
+							nodeObject.put("positionY", node2D.transform.positionY);
+							nodeObject.put("rotation", node2D.transform.rotation);
+							nodeObject.put("scaleX", node2D.transform.scaleX);
+							nodeObject.put("scaleY", node2D.transform.scaleY);
+						} else if(node instanceof MISSprite){
+							MISSprite misSprite = (MISSprite)node;
+							nodeObject.put("positionX", misSprite.transform.positionX);
+							nodeObject.put("positionY", misSprite.transform.positionY);
+							nodeObject.put("rotation", misSprite.transform.rotation);
+							nodeObject.put("scaleX", misSprite.transform.scaleX);
+							nodeObject.put("scaleY", misSprite.transform.scaleY);
+							nodeObject.put("textureId", misSprite.textureId);
+						} 
 						nodeObject.put("name", node.name);
 						nodeObject.put("type", node.type);
 						nodeObject.put("index", node.index);
@@ -131,6 +154,15 @@ public class MISProject {
 						if(node.parent != null){
 							nodeObject.put("parent_name", node.parent.name);
 							nodeObject.put("parent_index", node.parent.index);
+						}
+						nodeObject.put("shouldSendInformation", node.shouldSendInformation);
+						if(node.shouldSendInformation){
+							nodeObject.put("informationReceivers", node.informationReceivers.getClass().getSimpleName());
+							if(node.informationReceivers instanceof MISReceiverPerson){
+								
+							} else if(node.informationReceivers instanceof MISReceiverTeam){
+								
+							}
 						}
 						nodesObject.put(""+j, nodeObject);
 					}
@@ -376,7 +408,31 @@ public class MISProject {
 				int amountNodes = toIntExact((Long) nodesObject.get("nodes_n"));
 				for(int j = 0; j < amountNodes; j++){
 					JSONObject nodeObject = (JSONObject) nodesObject.get(""+j);
-					MISNode node = new MISNode();
+					
+					MISNode node;
+					String className = (String) nodeObject.get("class");
+					if(className.equals(MISNode2D.class.getSimpleName())){
+						
+						double positionX = (double) nodeObject.get("positionX");
+						double positionY = (double) nodeObject.get("positionY");
+						double rotation = (double) nodeObject.get("rotation");
+						double scaleX = (double) nodeObject.get("scaleX");
+						double scaleY = (double) nodeObject.get("scaleY");
+						MISNode2D node2D = new MISNode2D(new MIS2DTransform(positionX, positionY, rotation, scaleX, scaleY));
+						node = node2D;
+					} else if(className.equals(MISSprite.class.getSimpleName())){
+						double positionX = (double) nodeObject.get("positionX");
+						double positionY = (double) nodeObject.get("positionY");
+						double rotation = (double) nodeObject.get("rotation");
+						double scaleX = (double) nodeObject.get("scaleX");
+						double scaleY = (double) nodeObject.get("scaleY");
+						int textureId = toIntExact((Long)nodeObject.get("textureId"));
+						MISSprite misSprite = new MISSprite(new MIS2DTransform(positionX, positionY, rotation, scaleX, scaleY), textureId);
+						node = misSprite;
+					} else{
+						node = new MISNode();
+					}
+					
 					node.name = (String) nodeObject.get("name");
 					node.type = (String) nodeObject.get("type");
 					node.index = toIntExact((Long) nodeObject.get("index"));
@@ -394,6 +450,18 @@ public class MISProject {
 								node.parent = scene.nodeList.get(x);
 								break;
 							}
+						}
+					}
+					
+					boolean shouldSendInfo = (Boolean) nodeObject.get("shouldSendInformation");
+					if(shouldSendInfo){
+						String shouldSendReceiverName = (String) nodeObject.get("informationReceivers");
+						if(shouldSendReceiverName.equals(MISReceiverPerson.class.getSimpleName())){
+							node.informationReceivers = new MISReceiverPerson();
+						} else if(shouldSendReceiverName.equals(MISReceiverAll.class.getSimpleName())){
+							node.informationReceivers = new MISReceiverAll();
+						} else if(shouldSendReceiverName.equals(MISReceiverTeam.class.getSimpleName())){
+							node.informationReceivers = new MISReceiverTeam();
 						}
 					}
 					scene.addNode(node);

@@ -10,8 +10,8 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import data_types.MISBounds;
-import data_types.MISNode;
 import enums.MISRuleType;
+import nodes.MISNode;
 import rules.MISRule;
 import rules.MISRuleNode;
 import rules.MISRuleNodePosition;

@@ -1,7 +1,7 @@
 package rules;
 
 import data_types.MISBounds;
-import data_types.MISNode;
+import nodes.MISNode;
 import rules.MISRuleNode.options;
 
 public class MISRuleNodePosition extends MISRuleNode {

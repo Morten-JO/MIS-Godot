@@ -7,6 +7,7 @@ import broadcasts.MISBroadcastData;
 import broadcasts.MISBroadcastValue;
 import broadcasts.MISBroadcastMessage;
 import data_types.MISScene;
+import project.MISProject;
 import receivers.MISReceiverAll;
 
 public class Room {
@@ -14,8 +15,10 @@ public class Room {
 	private MISScene scene;
 	
 	private Thread broadcastThread;
+	private Thread refreshThread;
 	
 	private boolean broadcastRunning = true;
+	private boolean refreshRunning = true;
 	
 	public List<Client> clientsInRoom;
 	
@@ -73,6 +76,30 @@ public class Room {
 		}
 	}
 	
+	private void createRefreshThread(){
+		refreshThread = new Thread(new Runnable(){
+			@Override
+			public void run() {
+				while(refreshRunning){
+					for(int i = 0; i < scene.nodeList.size(); i++){
+						if(scene.nodeList.get(i).shouldSendInformation){
+							if(scene.nodeList.get(i).informationReceivers instanceof MISReceiverAll){
+								for(int j = 0; j < clientsInRoom.size(); j++){
+									clientsInRoom.get(j).addMessageToSend(scene.nodeList.get(i).getReadyPacket());
+								}
+							}
+						}
+					}
+					try {
+						Thread.sleep(1000/MISProject.project.refreshRate);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		});
+	}
+	
 	private void createBroadcastThread(){
 		broadcastThread = new Thread(new Runnable() {
 			@Override
@@ -121,12 +148,26 @@ public class Room {
 		broadcastThread.start();
 	}
 	
+	public void startRefreshThread(){
+		refreshRunning = true;
+		refreshThread.start();
+	}
+	
+	public void stopBroadcastThread(){
+		broadcastRunning = false;
+	}
+	
+	public void stopRefreshThread(){
+		refreshRunning = false;
+	}
+	
 	public int getRoomID(){
 		return roomId;
 	}
 	
 	public boolean closeRoom(){
 		broadcastRunning = false;
+		refreshRunning = false;
 		return true;
 	}
 	

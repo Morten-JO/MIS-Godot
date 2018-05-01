@@ -1,4 +1,6 @@
-package data_types;
+package nodes;
+
+import receivers.MISReceiver;
 
 public class MISNode {
 
@@ -12,8 +14,15 @@ public class MISNode {
 	
 	public MISNode parent;
 	
+	public boolean shouldSendInformation;
+	public MISReceiver informationReceivers;
+	
 	public MISNode(){
 		
+	}
+	
+	public String getReadyPacket(){
+		return "node "+name+" "+index;
 	}
 	
 }

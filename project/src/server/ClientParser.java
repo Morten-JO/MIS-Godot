@@ -16,16 +16,28 @@ public class ClientParser {
 		if(message.startsWith("queuestart")){
 			try{
 				int sceneQueue = Integer.parseInt(message.split(" ")[1]);
-				return serverReference.notifyServerQueueStart(client, sceneQueue);
+				boolean queueStart = serverReference.notifyServerQueueStart(client, sceneQueue);
+				if(queueStart){
+					client.addMessageToSend("queuestart "+sceneQueue);
+					return true;
+				}
 			} catch(NumberFormatException e){
 				e.printStackTrace();
 			}
 		} else if(message.startsWith("queueend")){
 			try{
 				int sceneQueue = Integer.parseInt(message.split(" ")[1]);
-				return serverReference.notifyServerQueueEnd(client, sceneQueue);
+				boolean queueEnd = serverReference.notifyServerQueueEnd(client, sceneQueue);
+				if(queueEnd){
+					client.addMessageToSend("queueend "+sceneQueue);
+					return true;
+				}
 			} catch(NumberFormatException e){
 				e.printStackTrace();
+			}
+		} else if(message.startsWith("node")){
+			if(client.getRoom() != null){
+				
 			}
 		}
 		return false;
