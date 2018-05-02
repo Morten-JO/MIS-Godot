@@ -9,6 +9,8 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.sun.org.apache.xerces.internal.util.SynchronizedSymbolTable;
+
 import broadcasts.MISBroadcastMessage;
 import data_types.MISQueue;
 import data_types.MISScene;
@@ -44,6 +46,9 @@ public class Server implements Runnable{
 		if(this.ui){
 			serverUI = new ServerApplicationWindow(this, autoStart);
 			serverUI.setVisible(true);
+		}
+		for(int i = 0; i < MISProject.project.scenes.size(); i++){
+			System.out.println("Scenes #"+i+" - "+MISProject.project.scenes.get(i).roomSettings);
 		}
 	}
 	
@@ -158,12 +163,15 @@ public class Server implements Runnable{
 									roomClients[j] = clients.get(j).client;
 								}
 								//Make deep copy of scene
-								MISScene originalScene = new MISScene();
-								MISScene newScene = new MISScene();
-								newScene.format = originalScene.format;
-								newScene.IDNumber = originalScene.IDNumber;
-								newScene.loadSteps = originalScene.loadSteps;
-								Room room = new Room(MISProject.project.scenes.get(i), playersForRoom, self, roomClients);
+								MISScene originalScene = MISProject.project.scenes.get(i);
+								for(int x = 0; x < originalScene.nodeList.size(); x++){
+									System.out.println("X: #"+x+" and should: "+originalScene.nodeList.get(x).shouldSendInformation);
+									System.out.println("and the datastruc: "+originalScene.nodeList.get(x).informationReceivers);
+								}
+								System.out.println("About to create room: ");
+								System.out.println("Value of room settings: "+originalScene.roomSettings);
+								MISScene newScene = originalScene.createDeepCopy();
+								Room room = new Room(newScene, playersForRoom, self, roomClients);
 								room.startBroadcastThread();
 								room.startRefreshThread();
 								rooms.add(room);
@@ -183,6 +191,12 @@ public class Server implements Runnable{
 	
 	public void notifyServerOfFailedClient(Client client){
 		clientList.remove(client);
+		for(int i = 0; i < queues.size(); i++){
+			if(queues.get(i).client == client){
+				queues.remove(i);
+				break;
+			}
+		}
 		if(this.ui){
 			serverUI.receivedMessagesFromLeft += client.getMessagesReceived();
 			serverUI.sentMessagesToLeft += client.getMessagesSent();

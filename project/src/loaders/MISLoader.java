@@ -90,8 +90,16 @@ public class MISLoader {
 					scene.addExternalResource(externalResource);
 				} else if(readLine.startsWith("[node")){
 					MISNode node = new MISNode();
+					System.out.println("Node created.");
 					if(readLine.contains("name=\"")){
 						node.name = readLine.split("name=\"")[1].split("\"")[0];
+						System.out.println("Node from readline: "+readLine);
+						System.out.println("Node name is: "+node.name);
+						System.out.println("Node name set.");
+						
+					}
+					if(node.name == null){
+						System.out.println("THE NODE IS FUCKING NULL.: "+readLine);
 					}
 					if(readLine.contains("type=\"")){
 						node.type = readLine.split("type=\"")[1].split("\"")[0];
@@ -101,7 +109,7 @@ public class MISLoader {
 							node = sprite;
 						} else {
 							MISNode2D node2D = new MISNode2D(new MIS2DTransform(0, 0, 0, 0, 0));
-							node2D.name = node2D.name;
+							node2D.name = node.name;
 							node = node2D;
 						}
 					}
@@ -109,21 +117,36 @@ public class MISLoader {
 						String value = readLine.split("parent=\"")[1].split("\"")[0];
 						if(!value.equals(".")){
 							if(value.contains("/")){
+								System.out.println("lol");
 								String[] parents = value.split("/");
 								value = parents[parents.length-1];
 							}
 							for(int i = 0; i < scene.nodeList.size(); i++){
+								System.out.println(".");
+								if(scene.nodeList == null){
+									System.out.println("WTF????????");
+								}
+								if(scene.nodeList.get(i) == null){
+									System.out.println("NECK?=???????????????");
+								}
+								if(value == null){
+									System.out.println("hmmmmmmmmmmmm");
+								}
 								if(scene.nodeList.get(i).name.equals(value)){
 									node.parent = scene.nodeList.get(i);
 									break;
 								}
 							}
 						} else{
+							System.out.println("Just set parent parent parent.");
 							node.parent = scene.nodeList.get(0);
 						}
 					}
 					lastNode = node;
 					scene.addNode(node);
+					for(int i = 0; i < scene.nodeList.size(); i++){
+						System.out.println("#"+i+" : "+scene.nodeList.get(i).name);
+					}
 				} else if(readLine.startsWith("script = ExtResource")){
 					if(lastNode != null){
 						readLine = readLine.replaceAll(" ", "");
@@ -146,7 +169,7 @@ public class MISLoader {
 				} else if(readLine.startsWith("transform")){
 					if(readLine.startsWith("transform/pos")){
 						try{
-							String parseString = readLine.split("(")[1].replaceAll(")", "").replaceAll(" ", "");
+							String parseString = readLine.split(Pattern.quote("("))[1].replaceAll(Pattern.quote(")"), "").replaceAll(" ", "");
 							String xPosition = parseString.split(",")[0];
 							String yPosition = parseString.split(",")[1];
 							if(lastNode instanceof MISNode2D){
@@ -164,7 +187,7 @@ public class MISLoader {
 						
 					} else if(readLine.startsWith("transform/scale")){
 						try{
-							String parseString = readLine.split("(")[1].replaceAll(")", "").replaceAll(" ", "");
+							String parseString = readLine.split(Pattern.quote("("))[1].replaceAll(Pattern.quote(")"), "").replaceAll(" ", "");
 							String xSize = parseString.split(",")[0];
 							String ySize = parseString.split(",")[1];
 							if(lastNode instanceof MISNode2D){

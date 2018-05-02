@@ -9,6 +9,8 @@ import broadcasts.MISBroadcastMessage;
 import data_types.MISScene;
 import project.MISProject;
 import receivers.MISReceiverAll;
+import receivers.MISReceiverPerson;
+import receivers.MISReceiverTeam;
 
 public class Room {
 
@@ -34,9 +36,16 @@ public class Room {
 		roomId = globalRoomID;
 		globalRoomID++;
 		createBroadcastThread();
+		createRefreshThread();
 		this.roomSize = roomSize;
 		clientsInRoom = new ArrayList<Client>();
 		teams = new ArrayList<List<Client>>();
+		for(int i = 0; i < scene.nodeList.size(); i++){
+			System.out.println("#"+i+" Should send: "+scene.nodeList.get(i).shouldSendInformation);
+			if(scene.nodeList.get(i).shouldSendInformation){
+				System.out.println("data: "+scene.nodeList.get(i).informationReceivers);
+			}
+		}
 	}
 	
 	public Room(MISScene scene, int roomSize, Server server,  Client... client){
@@ -83,11 +92,24 @@ public class Room {
 				while(refreshRunning){
 					for(int i = 0; i < scene.nodeList.size(); i++){
 						if(scene.nodeList.get(i).shouldSendInformation){
-							if(scene.nodeList.get(i).informationReceivers instanceof MISReceiverAll){
-								for(int j = 0; j < clientsInRoom.size(); j++){
-									clientsInRoom.get(j).addMessageToSend(scene.nodeList.get(i).getReadyPacket());
+							if(scene.nodeList.get(i).informationReceivers != null){
+								if(scene.nodeList.get(i).informationReceivers instanceof MISReceiverAll){
+									for(int j = 0; j < clientsInRoom.size(); j++){
+										clientsInRoom.get(j).addMessageToSend(scene.nodeList.get(i).getReadyPacket());
+									}
+								} else if(scene.nodeList.get(i).informationReceivers instanceof MISReceiverTeam){
+									MISReceiverTeam teamReceivers = (MISReceiverTeam)scene.nodeList.get(i).informationReceivers;
+									for(int j = 0; j < teams.get(teamReceivers.team).size(); j++){
+										teams.get(teamReceivers.team).get(j).addMessageToSend(scene.nodeList.get(i).getReadyPacket());
+									}
+								} else if(scene.nodeList.get(i).informationReceivers instanceof MISReceiverPerson){
+									MISReceiverPerson personReceiver = (MISReceiverPerson)scene.nodeList.get(i).informationReceivers;
+									if(personReceiver.person >= 0 && personReceiver.person < clientsInRoom.size()){
+										clientsInRoom.get(personReceiver.person).addMessageToSend(scene.nodeList.get(i).getReadyPacket());
+									}
 								}
 							}
+
 						}
 					}
 					try {

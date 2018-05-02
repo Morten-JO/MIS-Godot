@@ -17,12 +17,14 @@ import rules.MISRuleNode;
 import rules.MISRuleNodePosition;
 import rules.MISRuleNodeRotation;
 import rules.MISRuleNodeScale;
+import settings.MISProjectSettings;
 
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import java.awt.Font;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
@@ -79,7 +81,8 @@ public class RuleDialog extends JDialog {
 		setBounds(100, 100, 450, 300);
 		setModalityType(ModalityType.APPLICATION_MODAL);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		
+		setIconImage(Toolkit.getDefaultToolkit().getImage(ApplicationWindow.class.getResource("/resources/MIS_Icon128.png")));
+		setName("MIS for Godot - Version: "+MISProjectSettings.MIS_VERSION);
 		
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));

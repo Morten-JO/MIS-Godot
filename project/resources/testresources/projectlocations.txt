@@ -7,3 +7,4 @@ C:\Users\Morten\Desktop\MIS-Godot\project\resources\dummy 2018-04-28
 C:\Users\Morten\Desktop\MIS-Godot\project\resources\demo 2018-04-29
 C:\Users\Morten\Desktop\MIS-Godot\project\resources\randomtestprojcet 2018-04-30
 C:\Users\Morten\Desktop\MIS-Godot\project\resources\testshowcase 2018-04-30
+C:\Users\Morten\Desktop\MIS-Godot\project\resources\pingpong2may 2018-05-02

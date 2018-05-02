@@ -159,9 +159,9 @@ public class MISProject {
 						if(node.shouldSendInformation){
 							nodeObject.put("informationReceivers", node.informationReceivers.getClass().getSimpleName());
 							if(node.informationReceivers instanceof MISReceiverPerson){
-								
+								nodeObject.put("informationReceiversPerson", ((MISReceiverPerson)node.informationReceivers).person);
 							} else if(node.informationReceivers instanceof MISReceiverTeam){
-								
+								nodeObject.put("informationReceiversTeam", ((MISReceiverTeam)node.informationReceivers).team);
 							}
 						}
 						nodesObject.put(""+j, nodeObject);
@@ -393,7 +393,7 @@ public class MISProject {
 				scene.format = toIntExact((Long) sceneObject.get("format"));
 				scene.loadSteps = toIntExact((Long) sceneObject.get("load_steps"));
 				scene.name = (String) sceneObject.get("name");
-				boolean hasRoomInScene = (Boolean) sceneObject.get("RoomScene");
+				boolean hasRoomInScene = (Boolean) sceneObject.get("roomScene");
 				if(hasRoomInScene){
 					int minimumPlayers = toIntExact((Long) sceneObject.get("roomSceneMinimum"));
 					int maximumPlayers = toIntExact((Long) sceneObject.get("roomSceneMaximum"));
@@ -455,13 +455,16 @@ public class MISProject {
 					
 					boolean shouldSendInfo = (Boolean) nodeObject.get("shouldSendInformation");
 					if(shouldSendInfo){
+						node.shouldSendInformation = shouldSendInfo;
 						String shouldSendReceiverName = (String) nodeObject.get("informationReceivers");
 						if(shouldSendReceiverName.equals(MISReceiverPerson.class.getSimpleName())){
-							node.informationReceivers = new MISReceiverPerson();
+							int person = toIntExact((Long)nodeObject.get("informationReceiversPerson"));
+							node.informationReceivers = new MISReceiverPerson(person);
 						} else if(shouldSendReceiverName.equals(MISReceiverAll.class.getSimpleName())){
 							node.informationReceivers = new MISReceiverAll();
 						} else if(shouldSendReceiverName.equals(MISReceiverTeam.class.getSimpleName())){
-							node.informationReceivers = new MISReceiverTeam();
+							int team = toIntExact((Long)nodeObject.get("informationReceiversTeam"));
+							node.informationReceivers = new MISReceiverTeam(team);
 						}
 					}
 					scene.addNode(node);

@@ -14,16 +14,21 @@ import javax.swing.border.EmptyBorder;
 import broadcasts.MISBroadcast;
 import broadcasts.MISBroadcastData;
 import broadcasts.MISBroadcastValue;
+import data_types.MISRoomSettings;
 import broadcasts.MISBroadcastMessage;
 import receivers.MISReceiver;
 import receivers.MISReceiverAll;
 import receivers.MISReceiverPerson;
 import receivers.MISReceiverTeam;
 import rules.MISRule;
+import settings.MISProjectSettings;
+
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JLabel;
 import java.awt.Font;
+import java.awt.Toolkit;
+
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.JComboBox;
@@ -45,16 +50,26 @@ public class BroadcastDialog extends JDialog {
 	private boolean cancel = false;
 	private JPanel typeDataPanel;
 	private JPanel typeValuePanel;
+	private JPanel receiverCardPanel;
+	private JPanel receiverAllPanel;
+	private JPanel receiverTeamPanel;
+	private JPanel receiverPersonPanel;
+	private JLabel lblTeam;
+	private JComboBox<Integer> comboBoxReceiverTeam;
+	private JLabel lblPerson;
+	private JComboBox<Integer> comboBoxReceiverPerson;
 
 	/**
 	 * Create the dialog.
 	 */
-	public BroadcastDialog() {
+	public BroadcastDialog(MISRoomSettings roomSettings) {
 		setBounds(100, 100, 450, 300);
 		setTitle("Add broadcast");
 		getContentPane().setLayout(new BorderLayout());
 		setModalityType(ModalityType.APPLICATION_MODAL);
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		setIconImage(Toolkit.getDefaultToolkit().getImage(ApplicationWindow.class.getResource("/resources/MIS_Icon128.png")));
+		setName("MIS for Godot - Version: "+MISProjectSettings.MIS_VERSION);
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		
@@ -92,7 +107,29 @@ public class BroadcastDialog extends JDialog {
 		lblBroadcastReceivers.setFont(new Font("Dialog", Font.PLAIN, 17));
 		
 		comboBoxBroadcastReceivers = new JComboBox();
-		comboBoxBroadcastReceivers.setModel(new DefaultComboBoxModel(new String[] {"All", "Team", "Person"}));
+		if(roomSettings != null){
+			comboBoxBroadcastReceivers.setModel(new DefaultComboBoxModel(new String[] {"All", "Team", "Person"}));
+		} else{
+			comboBoxBroadcastReceivers.setModel(new DefaultComboBoxModel(new String[] {"All"}));
+		}
+		
+		comboBoxBroadcastReceivers.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String receiverType = (String)comboBoxBroadcastReceivers.getSelectedItem();
+				if(receiverType.equals("All")){
+					CardLayout layout = (CardLayout) receiverCardPanel.getLayout();
+					layout.show(receiverCardPanel, "receiverAll");
+				} else if(receiverType.equals("Team")){
+					CardLayout layout = (CardLayout) receiverCardPanel.getLayout();
+					layout.show(receiverCardPanel, "receiverTeam");
+				} else if(receiverType.equals("Person")){
+					CardLayout layout = (CardLayout) receiverCardPanel.getLayout();
+					layout.show(receiverCardPanel, "receiverPerson");
+				}
+			}
+		});
 		
 		typeCardPanel = new JPanel();
 		
@@ -103,6 +140,8 @@ public class BroadcastDialog extends JDialog {
 		textFieldFrequency.setColumns(10);
 		
 		JLabel lblTimesPerMinute = new JLabel("Times per minute");
+		
+		receiverCardPanel = new JPanel();
 		GroupLayout gl_contentPanel = new GroupLayout(contentPanel);
 		gl_contentPanel.setHorizontalGroup(
 			gl_contentPanel.createParallelGroup(Alignment.LEADING)
@@ -127,7 +166,8 @@ public class BroadcastDialog extends JDialog {
 							.addComponent(textFieldFrequency, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 							.addPreferredGap(ComponentPlacement.RELATED)
 							.addComponent(lblTimesPerMinute))
-						.addComponent(typeCardPanel, GroupLayout.PREFERRED_SIZE, 423, GroupLayout.PREFERRED_SIZE))
+						.addComponent(typeCardPanel, GroupLayout.PREFERRED_SIZE, 423, GroupLayout.PREFERRED_SIZE)
+						.addComponent(receiverCardPanel, GroupLayout.PREFERRED_SIZE, 423, GroupLayout.PREFERRED_SIZE))
 					.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
 		);
 		gl_contentPanel.setVerticalGroup(
@@ -150,8 +190,95 @@ public class BroadcastDialog extends JDialog {
 						.addComponent(textFieldFrequency, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 						.addComponent(lblTimesPerMinute))
 					.addPreferredGap(ComponentPlacement.UNRELATED)
-					.addComponent(typeCardPanel, GroupLayout.DEFAULT_SIZE, 93, Short.MAX_VALUE))
+					.addComponent(typeCardPanel, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+					.addComponent(receiverCardPanel, GroupLayout.PREFERRED_SIZE, 43, GroupLayout.PREFERRED_SIZE))
 		);
+		receiverCardPanel.setLayout(new CardLayout(0, 0));
+		
+		receiverAllPanel = new JPanel();
+		receiverCardPanel.add(receiverAllPanel, "receiverAll");
+		GroupLayout gl_receiverAllPanel = new GroupLayout(receiverAllPanel);
+		gl_receiverAllPanel.setHorizontalGroup(
+			gl_receiverAllPanel.createParallelGroup(Alignment.LEADING)
+				.addGap(0, 423, Short.MAX_VALUE)
+		);
+		gl_receiverAllPanel.setVerticalGroup(
+			gl_receiverAllPanel.createParallelGroup(Alignment.LEADING)
+				.addGap(0, 43, Short.MAX_VALUE)
+		);
+		receiverAllPanel.setLayout(gl_receiverAllPanel);
+		
+		receiverTeamPanel = new JPanel();
+		receiverCardPanel.add(receiverTeamPanel, "receiverTeam");
+		
+		lblTeam = new JLabel("Team:");
+		
+		comboBoxReceiverTeam = new JComboBox<Integer>();
+		if(roomSettings != null){
+			DefaultComboBoxModel<Integer> boxModel = new DefaultComboBoxModel<Integer>();
+			for(int i = 0; i < roomSettings.teams; i++){
+				boxModel.addElement(i);
+			}
+			comboBoxReceiverTeam.setModel(boxModel);
+		}
+		GroupLayout gl_receiverTeamPanel = new GroupLayout(receiverTeamPanel);
+		gl_receiverTeamPanel.setHorizontalGroup(
+			gl_receiverTeamPanel.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_receiverTeamPanel.createSequentialGroup()
+					.addContainerGap()
+					.addComponent(lblTeam)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(comboBoxReceiverTeam, GroupLayout.PREFERRED_SIZE, 107, GroupLayout.PREFERRED_SIZE)
+					.addContainerGap(272, Short.MAX_VALUE))
+		);
+		gl_receiverTeamPanel.setVerticalGroup(
+			gl_receiverTeamPanel.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_receiverTeamPanel.createSequentialGroup()
+					.addContainerGap()
+					.addGroup(gl_receiverTeamPanel.createParallelGroup(Alignment.BASELINE)
+						.addComponent(lblTeam)
+						.addComponent(comboBoxReceiverTeam, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+					.addContainerGap(18, Short.MAX_VALUE))
+		);
+		receiverTeamPanel.setLayout(gl_receiverTeamPanel);
+		
+		receiverPersonPanel = new JPanel();
+		receiverCardPanel.add(receiverPersonPanel, "receiverPerson");
+		
+		CardLayout layout = (CardLayout) receiverCardPanel.getLayout();
+		layout.show(receiverCardPanel, "receiverAll");
+		
+		lblPerson = new JLabel("Person:");
+		
+		comboBoxReceiverPerson = new JComboBox<Integer>();
+		if(roomSettings != null){
+			DefaultComboBoxModel<Integer> boxModel = new DefaultComboBoxModel<Integer>();
+			for(int i = 0; i < roomSettings.minimumPlayers; i++){
+				boxModel.addElement(i);
+			}
+			comboBoxReceiverPerson.setModel(boxModel);
+		}
+		GroupLayout gl_receiverPersonPanel = new GroupLayout(receiverPersonPanel);
+		gl_receiverPersonPanel.setHorizontalGroup(
+			gl_receiverPersonPanel.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_receiverPersonPanel.createSequentialGroup()
+					.addContainerGap()
+					.addComponent(lblPerson)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(comboBoxReceiverPerson, GroupLayout.PREFERRED_SIZE, 110, GroupLayout.PREFERRED_SIZE)
+					.addContainerGap(262, Short.MAX_VALUE))
+		);
+		gl_receiverPersonPanel.setVerticalGroup(
+			gl_receiverPersonPanel.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_receiverPersonPanel.createSequentialGroup()
+					.addContainerGap()
+					.addGroup(gl_receiverPersonPanel.createParallelGroup(Alignment.BASELINE)
+						.addComponent(lblPerson)
+						.addComponent(comboBoxReceiverPerson, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+					.addContainerGap(18, Short.MAX_VALUE))
+		);
+		receiverPersonPanel.setLayout(gl_receiverPersonPanel);
 		typeCardPanel.setLayout(new CardLayout(0, 0));
 		
 		typeMessagePanel = new JPanel();
@@ -238,9 +365,9 @@ public class BroadcastDialog extends JDialog {
 		if(receivers.equals("All")){
 			receiver = new MISReceiverAll();
 		} else if(receivers.equals("Team")){
-			receiver = new MISReceiverTeam();
+			receiver = new MISReceiverTeam((int)comboBoxReceiverTeam.getSelectedItem());
 		} else if(receivers.equals("Person")){
-			receiver = new MISReceiverPerson();
+			receiver = new MISReceiverPerson((int)comboBoxReceiverPerson.getSelectedItem());
 		}
 		if(type.equals("Message")){
 			String message = textFieldMessagePanelMessage.getText();

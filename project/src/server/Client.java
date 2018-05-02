@@ -34,7 +34,7 @@ public class Client implements Runnable{
 	
 	private Server server;
 	private Client client;
-	
+	private ClientParser parser;
 	private Room room;
 	
 	public Client(Server server, Socket socket, BufferedReader reader, PrintWriter writer){
@@ -57,6 +57,7 @@ public class Client implements Runnable{
 						String message = reader.readLine();
 						receivedMessages.add(message);
 						messagesReceived++;
+						parser.parseMessage(message);
 						lastResponse = System.currentTimeMillis();
 					} catch(SocketException e){
 						server.notifyServerOfFailedClient(client);
@@ -77,6 +78,7 @@ public class Client implements Runnable{
 		readerThread = new Thread(run);
 		receivedMessages = new ArrayList<String>();
 		toBeSentMessages = new ArrayList<String>();
+		parser = new ClientParser(server, this, true);
 	}
 	
 	public void startThreads(){
@@ -137,7 +139,7 @@ public class Client implements Runnable{
 	
 	public void notifyCreatedRoom(Room room, int totalPlayers, int teamId){
 		String messageForClient = "roomcreate "+room.getRoomID()+" "+room.getSceneId()+" "+totalPlayers+" "+teamId;
-		toBeSentMessages.add(messageForClient);
+		addMessageToSend(messageForClient);
 	}
 	
 	public void notifyJoinedRoom(Room room){

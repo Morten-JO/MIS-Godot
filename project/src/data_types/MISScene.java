@@ -10,6 +10,9 @@ import nodes.MISNode;
 import nodes.MISNode2D;
 import nodes.MISSprite;
 import rules.MISRule;
+import rules.MISRuleNodePosition;
+import rules.MISRuleNodeRotation;
+import rules.MISRuleNodeScale;
 
 public class MISScene {
 
@@ -94,6 +97,7 @@ public class MISScene {
 		newScene.IDNumber = this.IDNumber;
 		newScene.name = this.name;
 		newScene.loadSteps = this.loadSteps;
+		newScene.roomSettings = this.roomSettings;
 		//add broadcasts
 		for(int i = 0; i < this.broadcasts.size(); i++){
 			MISBroadcast broadcast = null;
@@ -138,7 +142,34 @@ public class MISScene {
 		}
 		//add rules
 		for(int i = 0; i < this.ruleList.size(); i++){
-			
+			MISRule rule = null;
+			if(this.ruleList.get(i) instanceof MISRuleNodePosition){
+				MISRuleNodePosition old = (MISRuleNodePosition)this.ruleList.get(i);
+				MISRuleNodePosition tempRule = new MISRuleNodePosition(old.ruleName, old.node, old.option);
+				tempRule.xBounds = new MISBounds(old.xBounds.min, old.xBounds.max);
+				tempRule.yBounds = new MISBounds(old.yBounds.min, old.yBounds.max);
+				tempRule.zBounds = new MISBounds(old.zBounds.min, old.zBounds.max);
+				rule = tempRule;
+			} else if(this.ruleList.get(i) instanceof MISRuleNodeRotation){
+				MISRuleNodeRotation old = (MISRuleNodeRotation)this.ruleList.get(i);
+				MISRuleNodeRotation tempRule = new MISRuleNodeRotation(old.ruleName, old.node, old.option);
+				tempRule.rotationBounds = new MISBounds(old.rotationBounds.min, old.rotationBounds.max);
+				rule = tempRule;
+			} else if(this.ruleList.get(i) instanceof MISRuleNodeScale){
+				MISRuleNodeScale old = (MISRuleNodeScale)this.ruleList.get(i);
+				MISRuleNodeScale tempRule = new MISRuleNodeScale(old.ruleName, old.node, old.option);
+				tempRule.xBounds = new MISBounds(old.xBounds.min, old.xBounds.max);
+				tempRule.yBounds = new MISBounds(old.yBounds.min, old.yBounds.max);
+				rule = tempRule;
+			}
+		}
+		//add external resources
+		for(int i = 0; i < this.externalResources.size(); i++){
+			MISExternalResource resource = new MISExternalResource();
+			resource.id = this.externalResources.get(i).id;
+			resource.name = this.externalResources.get(i).name;
+			resource.path = this.externalResources.get(i).path;
+			resource.type = this.externalResources.get(i).type;
 		}
 		return newScene;
 		

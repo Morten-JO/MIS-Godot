@@ -48,6 +48,7 @@ import data_types.MISScene;
 import jdk.nashorn.internal.ir.JoinPredecessorExpression;
 import nodes.MISNode;
 import project.MISProject;
+import receivers.MISReceiver;
 import rules.MISRule;
 import rules.MISRuleNode;
 import rules.MISRuleNodePosition;
@@ -65,9 +66,13 @@ import javax.swing.event.ListSelectionListener;
 
 import broadcasts.MISBroadcast;
 
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import java.awt.CardLayout;
+import java.awt.CheckboxMenuItem;
 import java.awt.FlowLayout;
+import javax.swing.JCheckBoxMenuItem;
 
 public class MainViewWindow {
 	private JFrame frame;
@@ -683,10 +688,40 @@ public class MainViewWindow {
 							//open rule dialog box
 						}
 					});
-					
+					JCheckBoxMenuItem shouldSendInformation = new JCheckBoxMenuItem("Refresh");
+					shouldSendInformation.setSelected(nodeList.getSelectedValue().shouldSendInformation);
+					shouldSendInformation.addActionListener(new ActionListener() {
+						
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							nodeList.getSelectedValue().shouldSendInformation = shouldSendInformation.isSelected();
+							addTextToConsole("Changed refresh value of node #"+nodeList.getSelectedIndex()+" to "+shouldSendInformation.isSelected());
+						}
+					});
 					menu.add(show);
 					menu.add(remove);
 					menu.add(addRule);
+					menu.add(shouldSendInformation);
+					if(nodeList.getSelectedValue().shouldSendInformation){
+						JMenuItem refreshInformation = new JMenuItem("Refresh info");
+						refreshInformation.addActionListener(new ActionListener() {
+							
+							@Override
+							public void actionPerformed(ActionEvent e) {
+								if(currentScene.roomSettings != null){
+									SendInformationDialog infoDialog = new SendInformationDialog(currentScene.roomSettings);
+									infoDialog.showDialog();
+									MISReceiver receiver = infoDialog.getReceiver();
+									if(receiver != null){
+										nodeList.getSelectedValue().informationReceivers = receiver;
+									}
+								} else{
+									addTextToConsole("Failed to open refresh info, check scene room settings.");
+								}
+							}
+						});
+						menu.add(refreshInformation);
+					}
 					menu.show(nodeList, arg0.getPoint().x, arg0.getPoint().y);
 					
 				}
@@ -947,7 +982,7 @@ public class MainViewWindow {
 			@Override
 			public void mousePressed(MouseEvent e) {
 				addTextToConsole("Add broadcast pressed on node-element #"+nodeList.getSelectedIndex());
-				BroadcastDialog dialog = new BroadcastDialog();
+				BroadcastDialog dialog = new BroadcastDialog(currentScene.roomSettings);
 				dialog.showDialog();
 				MISBroadcast broadcast = dialog.getRuleFromDialog();
 				if(broadcast != null){

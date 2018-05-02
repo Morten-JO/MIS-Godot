@@ -13,6 +13,7 @@ public class Main {
 
 	public static void main(String[] args) {
 		try {
+			DummyClientUI ui = new DummyClientUI();
 			Socket socket = new Socket("localhost", 1234);
 			BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
@@ -25,6 +26,7 @@ public class Main {
 						try {
 							String messageReceived = reader.readLine();
 							received.add(messageReceived);
+							ui.addElement(messageReceived);
 							
 						} catch (IOException e) {
 							e.printStackTrace();
@@ -39,13 +41,14 @@ public class Main {
 					while(true){
 						writer.println("Hey size is: "+received.size());
 						try {
-							Thread.sleep(454);
+							Thread.sleep(1000);
 						} catch (InterruptedException e) {
 							e.printStackTrace();
 						}
 					}
 				}
 			});
+			writer.println("queuestart 1");
 			thread.start();
 			writerThread.start();
 		} catch (UnknownHostException e) {
