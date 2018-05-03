@@ -164,6 +164,15 @@ public class MISProject {
 								nodeObject.put("informationReceiversTeam", ((MISReceiverTeam)node.informationReceivers).team);
 							}
 						}
+						nodeObject.put("isControllable", node.isControllable);
+						if(node.isControllable){
+							nodeObject.put("controllableName", node.controlReceiver.getClass().getSimpleName());
+							if(node.controlReceiver instanceof MISReceiverPerson){
+								nodeObject.put("controllablePerson", ((MISReceiverPerson)node.controlReceiver).person);
+							} else if(node.controlReceiver instanceof MISReceiverTeam){
+								nodeObject.put("controllableTeam", ((MISReceiverTeam)node.controlReceiver).team);
+							}
+						}
 						nodesObject.put(""+j, nodeObject);
 					}
 					sceneObject.put("nodes", nodesObject);
@@ -467,6 +476,22 @@ public class MISProject {
 							node.informationReceivers = new MISReceiverTeam(team);
 						}
 					}
+					
+					boolean isControllable = (Boolean) nodeObject.get("isControllable");
+					if(isControllable){
+						node.isControllable = isControllable;
+						String controllableName = (String) nodeObject.get("controllableName");
+						if(controllableName.equals(MISReceiverPerson.class.getSimpleName())){
+							int person = toIntExact((Long)nodeObject.get("controllablePerson"));
+							node.controlReceiver = new MISReceiverPerson(person);
+						} else if(controllableName.equals(MISReceiverAll.class.getSimpleName())){
+							node.controlReceiver = new MISReceiverAll();
+						} else if(controllableName.equals(MISReceiverTeam.class.getSimpleName())){
+							int team = toIntExact((Long)nodeObject.get("controllableTeam"));
+							node.controlReceiver = new MISReceiverTeam(team);
+						}
+					}
+					
 					scene.addNode(node);
 				}
 				

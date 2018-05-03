@@ -17,6 +17,9 @@ public class MISNode {
 	public boolean shouldSendInformation;
 	public MISReceiver informationReceivers;
 	
+	public boolean isControllable;
+	public MISReceiver controlReceiver;
+	
 	public MISNode(){
 		
 	}

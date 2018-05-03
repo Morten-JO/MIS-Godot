@@ -709,7 +709,7 @@ public class MainViewWindow {
 							@Override
 							public void actionPerformed(ActionEvent e) {
 								if(currentScene.roomSettings != null){
-									SendInformationDialog infoDialog = new SendInformationDialog(currentScene.roomSettings);
+									SendInformationDialog infoDialog = new SendInformationDialog(currentScene.roomSettings, "Refresh information");
 									infoDialog.showDialog();
 									MISReceiver receiver = infoDialog.getReceiver();
 									if(receiver != null){
@@ -721,6 +721,37 @@ public class MainViewWindow {
 							}
 						});
 						menu.add(refreshInformation);
+					}
+					JCheckBoxMenuItem isControllableItem = new JCheckBoxMenuItem("Control");
+					isControllableItem.setSelected(nodeList.getSelectedValue().isControllable);
+					isControllableItem.addActionListener(new ActionListener() {
+						
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							nodeList.getSelectedValue().isControllable = isControllableItem.isSelected();
+							addTextToConsole("Changed control value of node #"+nodeList.getSelectedIndex()+" to "+isControllableItem.isSelected());
+						}
+					});
+					menu.add(isControllableItem);
+					if(nodeList.getSelectedValue().isControllable){
+						JMenuItem controlInfo = new JMenuItem("Control info");
+						controlInfo.addActionListener(new ActionListener() {
+							
+							@Override
+							public void actionPerformed(ActionEvent e) {
+								if(currentScene.roomSettings != null){
+									SendInformationDialog infoDialog = new SendInformationDialog(currentScene.roomSettings, "Control information");
+									infoDialog.showDialog();
+									MISReceiver receiver = infoDialog.getReceiver();
+									if(receiver != null){
+										nodeList.getSelectedValue().controlReceiver = receiver;
+									}
+								} else{
+									addTextToConsole("Failed to open control info, check scene room settings");
+								}
+							}
+						});
+						menu.add(controlInfo);
 					}
 					menu.show(nodeList, arg0.getPoint().x, arg0.getPoint().y);
 					

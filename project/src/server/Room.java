@@ -6,7 +6,10 @@ import java.util.List;
 import broadcasts.MISBroadcastData;
 import broadcasts.MISBroadcastValue;
 import broadcasts.MISBroadcastMessage;
+import data_types.MIS2DTransform;
 import data_types.MISScene;
+import nodes.MISNode2D;
+import nodes.MISSprite;
 import project.MISProject;
 import receivers.MISReceiverAll;
 import receivers.MISReceiverPerson;
@@ -195,6 +198,92 @@ public class Room {
 	
 	public int getSceneId(){
 		return scene.IDNumber;
+	}
+
+	
+	//Sensitive code since users can change the message, and therefore should be handled so it doesnt crash.
+	public void notifyNodeChange(Client client, String message) {
+		try{
+			String[] messageFragments = message.split(" ");
+			String name = "";
+			int index = -1;
+			if(message.contains("[node]")){
+				int indexFragmentAt = 0;
+				for(int i = 0; i < messageFragments.length; i++){
+					if(messageFragments[i].equals("[node]")){
+						indexFragmentAt = i;
+						break;
+					}
+				}
+				name = messageFragments[indexFragmentAt+1];
+				index = Integer.parseInt(messageFragments[indexFragmentAt+2]);
+			}
+			if(!scene.nodeList.get(index).isControllable){
+				client.addMessageToSend("[node] "+name+" "+index+" denied");
+				return;
+			}
+			boolean isAllowedToUpdate = false;
+			if(scene.nodeList.get(index).controlReceiver instanceof MISReceiverPerson){
+				int indexInList = -1;
+				for(int i = 0; i < clientsInRoom.size(); i++){
+					if(clientsInRoom.get(i) == client){
+						indexInList = i;
+						break;
+					}
+				}
+				if(indexInList != -1){
+					if(((MISReceiverPerson)scene.nodeList.get(index).controlReceiver).person == indexInList){
+						isAllowedToUpdate = true;
+					}
+				}
+			} else if(scene.nodeList.get(index).controlReceiver instanceof MISReceiverTeam){
+				int controllingTeam = ((MISReceiverTeam)scene.nodeList.get(index).controlReceiver).team;
+				if(teams.get(controllingTeam).contains(client)){
+					isAllowedToUpdate = true;
+				}
+			} else{
+				isAllowedToUpdate = true;
+			}
+			if(!isAllowedToUpdate){
+				return;
+			}
+			if(message.contains("[transform2d]")){
+				int indexFragmentAt = 0;
+				for(int i = 0; i < messageFragments.length; i++){
+					if(messageFragments[i].equals("[transform2d]")){
+						indexFragmentAt = i;
+						break;
+					}
+				}
+				double xPos = Double.parseDouble(messageFragments[indexFragmentAt+1]);
+				double yPos = Double.parseDouble(messageFragments[indexFragmentAt+2]);
+				double rot = Double.parseDouble(messageFragments[indexFragmentAt+3]);
+				double xScale = Double.parseDouble(messageFragments[indexFragmentAt+4]);
+				double yScale = Double.parseDouble(messageFragments[indexFragmentAt+5]);
+				MIS2DTransform transform = new MIS2DTransform(xPos, yPos, rot, xScale, yScale);
+				if(scene.nodeList.get(index) instanceof MISNode2D){
+					((MISNode2D)scene.nodeList.get(index)).transform = transform;
+				} else if(scene.nodeList.get(index) instanceof MISSprite){
+					((MISSprite)scene.nodeList.get(index)).transform = transform;
+				}
+			}
+			if(message.contains("[sprite]")){
+				int indexFragmentAt = 0;
+				for(int i = 0; i < messageFragments.length; i++){
+					if(messageFragments[i].equals("[sprite]")){
+						indexFragmentAt = i;
+						break;
+					}
+				}
+				int textureId = Integer.parseInt(messageFragments[indexFragmentAt+1]);
+				if(scene.nodeList.get(index) instanceof MISSprite){
+					((MISSprite)scene.nodeList.get(index)).textureId = textureId;
+				}
+			}
+		} catch(Exception e){
+			e.printStackTrace();
+		}
+		
 	}
 	
 }

@@ -37,7 +37,7 @@ public class ClientParser {
 			}
 		} else if(message.startsWith("node")){
 			if(client.getRoom() != null){
-				
+				client.getRoom().notifyNodeChange(client, message);
 			}
 		}
 		return false;

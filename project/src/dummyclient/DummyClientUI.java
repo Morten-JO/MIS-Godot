@@ -20,22 +20,6 @@ public class DummyClientUI extends JFrame {
 	private JPanel contentPane;
 	private DefaultListModel<String> listModel;
 	private JTextPane txtpnTest;
-	
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					DummyClientUI frame = new DummyClientUI();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
 
 	/**
 	 * Create the frame.
@@ -47,7 +31,6 @@ public class DummyClientUI extends JFrame {
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
-		setVisible(true);
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
 		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
@@ -69,6 +52,7 @@ public class DummyClientUI extends JFrame {
 		scrollPane.setViewportView(txtpnTest);
 		listModel = new DefaultListModel<String>();
 		contentPane.setLayout(gl_contentPane);
+		setVisible(true);
 	}
 	
 	public void addElement(String str){

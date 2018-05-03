@@ -39,8 +39,8 @@ public class SendInformationDialog extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public SendInformationDialog(MISRoomSettings settings) {
-		setTitle("Refresh information");
+	public SendInformationDialog(MISRoomSettings settings, String title) {
+		setTitle(title);
 		setModalityType(ModalityType.APPLICATION_MODAL);
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setIconImage(Toolkit.getDefaultToolkit().getImage(ApplicationWindow.class.getResource("/resources/MIS_Icon128.png")));
