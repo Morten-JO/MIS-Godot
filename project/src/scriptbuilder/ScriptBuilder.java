@@ -1,5 +1,6 @@
 package scriptbuilder;
 
+import data_types.MISScene;
 import project.MISProject;
 
 public class ScriptBuilder {
@@ -14,7 +15,7 @@ public class ScriptBuilder {
 	public static void main(String[] args) {
 	}
 	
-	public static  boolean buildScript(MISProject project, String location, String name, String nodeType, String ip){
+	public static  boolean buildScript(MISProject project, MISScene scene, String location, String name, String nodeType, String ip){
 		
 		String scriptString = "";
 		
@@ -41,7 +42,7 @@ public class ScriptBuilder {
 		
 		scriptString += createLineBreaks(2);
 		
-		//Create proces function
+		//Create process function
 		scriptString += "func _process(delta):"+createLineBreaks(1);
 		scriptString += createIndentations(1)+"pass";
 		
@@ -52,6 +53,31 @@ public class ScriptBuilder {
 		scriptString += "func connectToServer():"+createLineBreaks(1);
 		scriptString += createIndentations(1)+tcpConnectionVariableName+".connect("+ip+", "+project.basePort.port+")";
 		
+		scriptString += createLineBreaks(2);
+		
+		//create queue functions
+		scriptString += "func onReceiveQueueStart(data):"+createLineBreaks(1);
+		scriptString += createIndentations(1)+"pass"+createLineBreaks(2);
+		
+		scriptString += "func onReceiveQueueEnd(data):"+createLineBreaks(1);
+		scriptString += createIndentations(1)+"pass"+createLineBreaks(2);
+		
+		scriptString += "func sendQueueStartRequest(data):"+createLineBreaks(1);
+		scriptString += createIndentations(1)+"pass"+createLineBreaks(2);
+		
+		//Create broadcast functions
+		for(int i = 0; i < scene.broadcasts.size(); i++){
+			scriptString += "func onReceiveBroadcast"+scene.broadcasts.get(i).getBroadcastName()+"(data):"+createLineBreaks(1);
+			scriptString += createIndentations(1)+"pass"+createLineBreaks(2);
+		}
+		
+		//Create refresh functions
+		for(int i = 0; i < scene.nodeList.size(); i++){
+			if(scene.nodeList.get(i).shouldSendInformation){
+				scriptString += "func onReceiveRefresh"+scene.name+"_"+i+"():"+createLineBreaks(1);
+				scriptString += createIndentations(1)+"pass"+createLineBreaks(2);
+			}
+		}
 		
 		System.out.println("Script:");
 		System.out.println(scriptString);
