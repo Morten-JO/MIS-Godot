@@ -33,7 +33,7 @@ public class Server implements Runnable{
 	private List<MISQueue> queues;
 	private Thread queueHandler;
 	private Server self;
-	
+	private boolean autoQueue = false;
 	
 	public Server(int port, boolean ui, boolean autoStart){
 		self = this;

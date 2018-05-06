@@ -2,6 +2,9 @@ package scriptbuilder;
 
 import data_types.MISScene;
 import project.MISProject;
+import receivers.MISReceiverAll;
+import receivers.MISReceiverPerson;
+import receivers.MISReceiverTeam;
 
 public class ScriptBuilder {
 
@@ -76,6 +79,24 @@ public class ScriptBuilder {
 			if(scene.nodeList.get(i).shouldSendInformation){
 				scriptString += "func onReceiveRefresh"+scene.name+"_"+i+"():"+createLineBreaks(1);
 				scriptString += createIndentations(1)+"pass"+createLineBreaks(2);
+			}
+		}
+		
+		//Create node control functions
+		for(int i = 0; i < scene.nodeList.size(); i++){
+			if(scene.nodeList.get(i).isControllable){
+				if(scene.nodeList.get(i).controlReceiver instanceof MISReceiverAll){
+					scriptString += "func updateNodeAll_"+scene.name+"_"+scene.nodeList.get(i).index+"():"+createLineBreaks(1);
+					scriptString += createIndentations(1)+"pass"+createLineBreaks(2);
+				} else if(scene.nodeList.get(i).controlReceiver instanceof MISReceiverTeam){
+					MISReceiverTeam receiver = (MISReceiverTeam)scene.nodeList.get(i).controlReceiver;
+					scriptString += "func updateNodeTeam_"+receiver.team+"_"+scene.name+"_"+scene.nodeList.get(i).index+"():"+createLineBreaks(1);
+					scriptString += createIndentations(1)+"pass"+createLineBreaks(2);
+				} else if(scene.nodeList.get(i).controlReceiver instanceof MISReceiverPerson){
+					MISReceiverPerson receiver = (MISReceiverPerson)scene.nodeList.get(i).controlReceiver;
+					scriptString += "func updateNodePerson_"+receiver.person+"_"+scene.name+"_"+scene.nodeList.get(i).index+"():"+createLineBreaks(1);
+					scriptString += createIndentations(1)+"pass"+createLineBreaks(2);
+				}
 			}
 		}
 		

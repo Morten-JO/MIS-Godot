@@ -37,6 +37,9 @@ public class Client implements Runnable{
 	private ClientParser parser;
 	private Room room;
 	
+	private String name = "";
+	
+	
 	public Client(Server server, Socket socket, BufferedReader reader, PrintWriter writer){
 		this.socket = socket;
 		this.lastResponse = System.nanoTime();
@@ -148,5 +151,9 @@ public class Client implements Runnable{
 	
 	public void notifyLeavedRoom(Room room){
 		
+	}
+	
+	public void notifySetName(String name){
+		this.name = name;
 	}
 }

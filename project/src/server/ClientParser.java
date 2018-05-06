@@ -39,6 +39,12 @@ public class ClientParser {
 			if(client.getRoom() != null){
 				client.getRoom().notifyNodeChange(client, message);
 			}
+		} else if(message.startsWith("setname")){
+			String[] nodes = message.split(" ");
+			if(nodes.length > 1){
+				client.notifySetName(nodes[1]);
+				return true;
+			}
 		}
 		return false;
 	}
