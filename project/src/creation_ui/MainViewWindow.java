@@ -46,6 +46,7 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 import data_types.MISRoomSettings;
 import data_types.MISScene;
 import jdk.nashorn.internal.ir.JoinPredecessorExpression;
+import main.Main;
 import nodes.MISNode;
 import project.MISProject;
 import receivers.MISReceiver;
@@ -873,7 +874,7 @@ public class MainViewWindow {
 				mnFile.getPopupMenu().setVisible(false);
 				frame.dispose();
 				String[] args = {};
-				ApplicationWindow.main(args);
+				Main.main(args);
 			}
 		});
 		

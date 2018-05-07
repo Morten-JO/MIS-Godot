@@ -35,7 +35,8 @@ public class ClientParser {
 			} catch(NumberFormatException e){
 				e.printStackTrace();
 			}
-		} else if(message.startsWith("node")){
+		} else if(message.startsWith("[node]")){
+			System.out.println("Node called.");
 			if(client.getRoom() != null){
 				client.getRoom().notifyNodeChange(client, message);
 			}

@@ -307,7 +307,18 @@ public class ServerApplicationWindow extends JFrame {
 			if(server.clientList.get(i).getRoom() != null){
 				showString += " | In room: "+server.clientList.get(i).getRoom().getRoomID();
 			} else{
-				showString += " | Idling";
+				boolean isInQueue = false;
+				for(int j = 0; j < server.queues.size(); j++){
+					if(server.queues.get(j).client == server.clientList.get(i)){
+						isInQueue = true;
+						break;
+					}
+				}
+				if(isInQueue){
+					showString += " | In Queue";
+				} else{
+					showString += " | Idling";
+				}
 			}
 			model.addElement(showString);
 		}

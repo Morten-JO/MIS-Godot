@@ -9,7 +9,7 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Main {
+public class DummyClientMain {
 
 	public static void main(String[] args) {
 		try {
@@ -18,6 +18,7 @@ public class Main {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
 			List<String> received = new ArrayList<String>();
+			List<String> toSend = new ArrayList<String>();
 			Thread thread = new Thread(new Runnable() {
 				
 				@Override
@@ -39,7 +40,10 @@ public class Main {
 				@Override
 				public void run() {
 					while(true){
-						writer.println("Hey size is: "+received.size());
+						if(toSend.size() > 0){
+							writer.println(toSend.get(0));
+							toSend.remove(0);
+						}
 						try {
 							Thread.sleep(1000);
 						} catch (InterruptedException e) {

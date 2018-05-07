@@ -75,6 +75,7 @@ public class Room {
 			}
 			
 			for(int i = 0; i < teams.size(); i++){
+				System.out.println("Ran this through, how many times?");
 				for(int j = 0; j < teams.get(i).size(); j++){
 					clientsInRoom.add(teams.get(i).get(j));
 					teams.get(i).get(j).joinRoom(this);
@@ -204,6 +205,7 @@ public class Room {
 	//Sensitive code since users can change the message, and therefore should be handled so it doesnt crash.
 	public void notifyNodeChange(Client client, String message) {
 		try{
+			System.out.println("Notify node change was called.");
 			String[] messageFragments = message.split(" ");
 			String name = "";
 			int index = -1;
@@ -220,6 +222,7 @@ public class Room {
 			}
 			if(!scene.nodeList.get(index).isControllable){
 				client.addMessageToSend("[node] "+name+" "+index+" denied");
+				System.out.println("Hey it's not controllable");
 				return;
 			}
 			boolean isAllowedToUpdate = false;
@@ -239,12 +242,15 @@ public class Room {
 			} else if(scene.nodeList.get(index).controlReceiver instanceof MISReceiverTeam){
 				int controllingTeam = ((MISReceiverTeam)scene.nodeList.get(index).controlReceiver).team;
 				if(teams.get(controllingTeam).contains(client)){
+					System.out.println("wut1");
 					isAllowedToUpdate = true;
 				}
 			} else{
+				System.out.println("wu2");
 				isAllowedToUpdate = true;
 			}
 			if(!isAllowedToUpdate){
+				System.out.println("Not allowed to update.");
 				return;
 			}
 			if(message.contains("[transform2d]")){
@@ -263,7 +269,9 @@ public class Room {
 				MIS2DTransform transform = new MIS2DTransform(xPos, yPos, rot, xScale, yScale);
 				if(scene.nodeList.get(index) instanceof MISNode2D){
 					((MISNode2D)scene.nodeList.get(index)).transform = transform;
+					System.out.println("woo we set its value");
 				} else if(scene.nodeList.get(index) instanceof MISSprite){
+					System.out.println("woo we set its value 2");
 					((MISSprite)scene.nodeList.get(index)).transform = transform;
 				}
 			}

@@ -30,7 +30,7 @@ public class Server implements Runnable{
 	public int totalPlayers = 0;
 	public Long timeStartedInMillis;
 	private List<Room> rooms;
-	private List<MISQueue> queues;
+	public List<MISQueue> queues;
 	private Thread queueHandler;
 	private Server self;
 	private boolean autoQueue = false;

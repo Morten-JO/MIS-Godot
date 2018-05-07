@@ -138,6 +138,8 @@ public class MISScene {
 			node.scriptName = old.scriptName;
 			node.type = old.type;
 			node.shouldSendInformation = old.shouldSendInformation;
+			node.isControllable = old.isControllable;
+			node.controlReceiver = old.controlReceiver;
 			newScene.nodeList.add(node);
 		}
 		//add rules

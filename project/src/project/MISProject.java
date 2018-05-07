@@ -164,14 +164,17 @@ public class MISProject {
 								nodeObject.put("informationReceiversTeam", ((MISReceiverTeam)node.informationReceivers).team);
 							}
 						}
-						nodeObject.put("isControllable", node.isControllable);
+						nodeObject.put("isControllable", node.isControllable && node.controlReceiver != null);
 						if(node.isControllable){
-							nodeObject.put("controllableName", node.controlReceiver.getClass().getSimpleName());
-							if(node.controlReceiver instanceof MISReceiverPerson){
-								nodeObject.put("controllablePerson", ((MISReceiverPerson)node.controlReceiver).person);
-							} else if(node.controlReceiver instanceof MISReceiverTeam){
-								nodeObject.put("controllableTeam", ((MISReceiverTeam)node.controlReceiver).team);
+							if(node.controlReceiver != null){
+								nodeObject.put("controllableName", node.controlReceiver.getClass().getSimpleName());
+								if(node.controlReceiver instanceof MISReceiverPerson){
+									nodeObject.put("controllablePerson", ((MISReceiverPerson)node.controlReceiver).person);
+								} else if(node.controlReceiver instanceof MISReceiverTeam){
+									nodeObject.put("controllableTeam", ((MISReceiverTeam)node.controlReceiver).team);
+								}
 							}
+							
 						}
 						nodesObject.put(""+j, nodeObject);
 					}
