@@ -8,8 +8,9 @@ import broadcasts.MISBroadcastValue;
 import broadcasts.MISBroadcastMessage;
 import data_types.MIS2DTransform;
 import data_types.MISScene;
+import nodes.MISControl;
 import nodes.MISNode2D;
-import nodes.MISSprite;
+import nodes.MISSpatial;
 import project.MISProject;
 import receivers.MISReceiverAll;
 import receivers.MISReceiverPerson;
@@ -205,7 +206,6 @@ public class Room {
 	//Sensitive code since users can change the message, and therefore should be handled so it doesnt crash.
 	public void notifyNodeChange(Client client, String message) {
 		try{
-			System.out.println("Notify node change was called.");
 			String[] messageFragments = message.split(" ");
 			String name = "";
 			int index = -1;
@@ -222,7 +222,6 @@ public class Room {
 			}
 			if(!scene.nodeList.get(index).isControllable){
 				client.addMessageToSend("[node] "+name+" "+index+" denied");
-				System.out.println("Hey it's not controllable");
 				return;
 			}
 			boolean isAllowedToUpdate = false;
@@ -242,15 +241,12 @@ public class Room {
 			} else if(scene.nodeList.get(index).controlReceiver instanceof MISReceiverTeam){
 				int controllingTeam = ((MISReceiverTeam)scene.nodeList.get(index).controlReceiver).team;
 				if(teams.get(controllingTeam).contains(client)){
-					System.out.println("wut1");
 					isAllowedToUpdate = true;
 				}
 			} else{
-				System.out.println("wu2");
 				isAllowedToUpdate = true;
 			}
 			if(!isAllowedToUpdate){
-				System.out.println("Not allowed to update.");
 				return;
 			}
 			if(message.contains("[transform2d]")){
@@ -269,25 +265,11 @@ public class Room {
 				MIS2DTransform transform = new MIS2DTransform(xPos, yPos, rot, xScale, yScale);
 				if(scene.nodeList.get(index) instanceof MISNode2D){
 					((MISNode2D)scene.nodeList.get(index)).transform = transform;
-					System.out.println("woo we set its value");
-				} else if(scene.nodeList.get(index) instanceof MISSprite){
-					System.out.println("woo we set its value 2");
-					((MISSprite)scene.nodeList.get(index)).transform = transform;
+				} else if(scene.nodeList.get(index) instanceof MISControl){
+					// TODO Auto-generated method stub
 				}
 			}
-			if(message.contains("[sprite]")){
-				int indexFragmentAt = 0;
-				for(int i = 0; i < messageFragments.length; i++){
-					if(messageFragments[i].equals("[sprite]")){
-						indexFragmentAt = i;
-						break;
-					}
-				}
-				int textureId = Integer.parseInt(messageFragments[indexFragmentAt+1]);
-				if(scene.nodeList.get(index) instanceof MISSprite){
-					((MISSprite)scene.nodeList.get(index)).textureId = textureId;
-				}
-			}
+			// TODO Auto-generated method stub
 		} catch(Exception e){
 			e.printStackTrace();
 		}

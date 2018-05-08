@@ -39,6 +39,8 @@ public class Client implements Runnable{
 	
 	private String name = "";
 	
+	public ArrayList<String> sentMessagesDataStorage;
+	public ArrayList<String> receivedMessagesDataStorage;
 	
 	public Client(Server server, Socket socket, BufferedReader reader, PrintWriter writer){
 		this.socket = socket;
@@ -60,6 +62,7 @@ public class Client implements Runnable{
 						String message = reader.readLine();
 						receivedMessages.add(message);
 						messagesReceived++;
+						receivedMessagesDataStorage.add(message);
 						parser.parseMessage(message);
 						lastResponse = System.currentTimeMillis();
 					} catch(SocketException e){
@@ -81,6 +84,8 @@ public class Client implements Runnable{
 		readerThread = new Thread(run);
 		receivedMessages = new ArrayList<String>();
 		toBeSentMessages = new ArrayList<String>();
+		sentMessagesDataStorage = new ArrayList<String>();
+		receivedMessagesDataStorage = new ArrayList<String>();
 		parser = new ClientParser(server, this, true);
 	}
 	
@@ -96,6 +101,7 @@ public class Client implements Runnable{
 		while(writerRunning){
 			if(toBeSentMessages.size() > 0 ){
 				writer.println(toBeSentMessages.get(0));
+				sentMessagesDataStorage.add(toBeSentMessages.get(0));
 				toBeSentMessages.remove(0);
 			} else {
 				try {
@@ -156,5 +162,9 @@ public class Client implements Runnable{
 	
 	public void notifySetName(String name){
 		this.name = name;
+	}
+	
+	public String getIp(){
+		return socket.getInetAddress().getHostAddress();
 	}
 }

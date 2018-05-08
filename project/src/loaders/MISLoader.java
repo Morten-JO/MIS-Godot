@@ -10,12 +10,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import com.sun.xml.internal.bind.v2.TODO;
+
 import data_types.MIS2DTransform;
 import data_types.MISExternalResource;
 import data_types.MISScene;
+import nodes.MISControl;
 import nodes.MISNode;
 import nodes.MISNode2D;
-import nodes.MISSprite;
+import nodes.MISSpatial;
 import project.MISProject;
 import project.MISProjectInformation;
 
@@ -103,14 +106,18 @@ public class MISLoader {
 					}
 					if(readLine.contains("type=\"")){
 						node.type = readLine.split("type=\"")[1].split("\"")[0];
-						if(node.type.equals("Sprite")){
-							MISSprite sprite = new MISSprite(new MIS2DTransform(0, 0, 0, 0, 0), -1);
-							sprite.name = node.name;
-							node = sprite;
-						} else {
+						if(MISNode2D.isType(node.type)){
 							MISNode2D node2D = new MISNode2D(new MIS2DTransform(0, 0, 0, 0, 0));
 							node2D.name = node.name;
 							node = node2D;
+						} else if(MISSpatial.isType(node.type)) {
+							MISSpatial spatial = new MISSpatial();
+							spatial.name = node.name;
+							node = spatial;
+						} else if(MISControl.isType(node.type)){
+							MISControl control = new MISControl();
+							control.name = node.name;
+							node = control;
 						}
 					}
 					if(readLine.contains("parent=\"")){
@@ -169,35 +176,30 @@ public class MISLoader {
 				} else if(readLine.startsWith("transform")){
 					if(readLine.startsWith("transform/pos")){
 						try{
-							String parseString = readLine.split(Pattern.quote("("))[1].replaceAll(Pattern.quote(")"), "").replaceAll(" ", "");
-							String xPosition = parseString.split(",")[0];
-							String yPosition = parseString.split(",")[1];
 							if(lastNode instanceof MISNode2D){
+								String parseString = readLine.split(Pattern.quote("("))[1].replaceAll(Pattern.quote(")"), "").replaceAll(" ", "");
+								String xPosition = parseString.split(",")[0];
+								String yPosition = parseString.split(",")[1];
 								MISNode2D node2D = ((MISNode2D)lastNode);
 								node2D.transform.positionX = Double.parseDouble(xPosition);
 								node2D.transform.positionY = Double.parseDouble(yPosition);
-							} else if(lastNode instanceof MISSprite){
-								MISSprite sprite = ((MISSprite)lastNode);
-								sprite.transform.positionX = Double.parseDouble(xPosition);
-								sprite.transform.positionY = Double.parseDouble(yPosition);
-							}
+							} 
 						} catch(Exception e){
 							e.printStackTrace();
 						}
 						
 					} else if(readLine.startsWith("transform/scale")){
 						try{
-							String parseString = readLine.split(Pattern.quote("("))[1].replaceAll(Pattern.quote(")"), "").replaceAll(" ", "");
-							String xSize = parseString.split(",")[0];
-							String ySize = parseString.split(",")[1];
+							
 							if(lastNode instanceof MISNode2D){
+								String parseString = readLine.split(Pattern.quote("("))[1].replaceAll(Pattern.quote(")"), "").replaceAll(" ", "");
+								String xSize = parseString.split(",")[0];
+								String ySize = parseString.split(",")[1];
 								MISNode2D node2D = ((MISNode2D)lastNode);
 								node2D.transform.scaleX = Double.parseDouble(xSize);
 								node2D.transform.scaleY = Double.parseDouble(ySize);
-							} else if(lastNode instanceof MISSprite){
-								MISSprite sprite = ((MISSprite)lastNode);
-								sprite.transform.scaleX = Double.parseDouble(xSize);
-								sprite.transform.scaleY = Double.parseDouble(ySize);
+							} else if(lastNode instanceof MISSpatial){
+								// TODO Auto-generated method stub
 							}
 						} catch(Exception e){
 							e.printStackTrace();

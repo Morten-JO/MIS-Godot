@@ -23,9 +23,10 @@ import enums.MISListType;
 import enums.MISProtocol;
 import enums.MISType;
 import loaders.MISLoader;
+import nodes.MISControl;
 import nodes.MISNode;
 import nodes.MISNode2D;
-import nodes.MISSprite;
+import nodes.MISSpatial;
 import receivers.MISReceiverAll;
 import receivers.MISReceiverPerson;
 import receivers.MISReceiverTeam;
@@ -133,15 +134,11 @@ public class MISProject {
 							nodeObject.put("rotation", node2D.transform.rotation);
 							nodeObject.put("scaleX", node2D.transform.scaleX);
 							nodeObject.put("scaleY", node2D.transform.scaleY);
-						} else if(node instanceof MISSprite){
-							MISSprite misSprite = (MISSprite)node;
-							nodeObject.put("positionX", misSprite.transform.positionX);
-							nodeObject.put("positionY", misSprite.transform.positionY);
-							nodeObject.put("rotation", misSprite.transform.rotation);
-							nodeObject.put("scaleX", misSprite.transform.scaleX);
-							nodeObject.put("scaleY", misSprite.transform.scaleY);
-							nodeObject.put("textureId", misSprite.textureId);
-						} 
+						} else if(node instanceof MISSpatial){
+							// TODO Auto-generated method stub
+						} else if(node instanceof MISControl){
+							// TODO Auto-generated method stub
+						}
 						nodeObject.put("name", node.name);
 						nodeObject.put("type", node.type);
 						nodeObject.put("index", node.index);
@@ -432,15 +429,12 @@ public class MISProject {
 						double scaleY = (double) nodeObject.get("scaleY");
 						MISNode2D node2D = new MISNode2D(new MIS2DTransform(positionX, positionY, rotation, scaleX, scaleY));
 						node = node2D;
-					} else if(className.equals(MISSprite.class.getSimpleName())){
-						double positionX = (double) nodeObject.get("positionX");
-						double positionY = (double) nodeObject.get("positionY");
-						double rotation = (double) nodeObject.get("rotation");
-						double scaleX = (double) nodeObject.get("scaleX");
-						double scaleY = (double) nodeObject.get("scaleY");
-						int textureId = toIntExact((Long)nodeObject.get("textureId"));
-						MISSprite misSprite = new MISSprite(new MIS2DTransform(positionX, positionY, rotation, scaleX, scaleY), textureId);
-						node = misSprite;
+					} else if(className.equals(MISSpatial.class.getSimpleName())){
+						// TODO Auto-generated method stub
+						node = new MISSpatial();
+					} else if(className.equals(MISControl.class.getSimpleName())){
+						// TODO Auto-generated method stub
+						node = new MISControl();
 					} else{
 						node = new MISNode();
 					}

@@ -28,4 +28,13 @@ public class MISNode {
 		return "node "+name+" "+index;
 	}
 	
+	public static boolean isType(String type){
+		if(type.equals("Node")){
+			return true;
+		}
+		return false;
+	}
+	
+	
+	
 }

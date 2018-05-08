@@ -6,9 +6,10 @@ import broadcasts.MISBroadcast;
 import broadcasts.MISBroadcastData;
 import broadcasts.MISBroadcastMessage;
 import broadcasts.MISBroadcastValue;
+import nodes.MISControl;
 import nodes.MISNode;
 import nodes.MISNode2D;
-import nodes.MISSprite;
+import nodes.MISSpatial;
 import rules.MISRule;
 import rules.MISRuleNodePosition;
 import rules.MISRuleNodeRotation;
@@ -122,9 +123,12 @@ public class MISScene {
 			if(this.nodeList.get(i) instanceof MISNode2D){
 				MISNode2D old = (MISNode2D) this.nodeList.get(i);
 				node = new MISNode2D(new MIS2DTransform(old.transform.positionX, old.transform.positionY, old.transform.rotation, old.transform.scaleX, old.transform.scaleY));
-			} else if(this.nodeList.get(i) instanceof MISSprite){
-				MISSprite old = (MISSprite) this.nodeList.get(i);
-				node = new MISSprite(new MIS2DTransform(old.transform.positionX, old.transform.positionY, old.transform.rotation, old.transform.scaleX, old.transform.scaleY), old.textureId);
+			} else if(this.nodeList.get(i) instanceof MISControl){
+				// TODO Auto-generated method stub
+				node = new MISControl();
+			} else if(this.nodeList.get(i) instanceof MISSpatial){
+				// TODO Auto-generated method stub
+				node = new MISSpatial();
 			} else if(this.nodeList.get(i) instanceof MISNode){
 				node = new MISNode();
 			}
