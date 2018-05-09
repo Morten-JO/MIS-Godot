@@ -1,6 +1,8 @@
 package scriptbuilder;
 
 import data_types.MISScene;
+import nodes.MISNode;
+import nodes.MISNode2D;
 import project.MISProject;
 import receivers.MISReceiverAll;
 import receivers.MISReceiverPerson;
@@ -12,6 +14,9 @@ public class ScriptBuilder {
 	private static String tcpConnectionVariableIntialize = "StreamPeerTCP.new()";
 	
 	private static String baseServerIpVariableName = "base_server_ip";
+	private static String teamIdVariableName = "team_id";
+	private static String timeCounterVariableName = "time_counter";
+	private static String roomBegunVariableName = "room_begun";
 	
 	private static String timeoutDurationConst = "TIMEOUT_DURATION_CONNECT = 10";
 	
@@ -28,10 +33,38 @@ public class ScriptBuilder {
 		scriptString += "#minimum build version "+project.minimumBuildVersion+createLineBreaks(1);
 		scriptString += "#project name: "+project.projectName+createLineBreaks(2);
 		
+		//Load onready node variables
+		for(int i = 1; i < scene.nodeList.size(); i++){
+			String onreadyString = "onready var ";
+			String nameOfNode = "";
+			MISNode node = scene.nodeList.get(i);
+			while(node.parent != null){
+				nameOfNode += node.parent.name+"_";
+				node = node.parent;
+			}
+			nameOfNode += scene.nodeList.get(i).name;
+			onreadyString += nameOfNode+" = get_node(\"";
+			String locationNode = "";
+			node = scene.nodeList.get(i);
+			while(node.parent != null && node.parent.index != 0){
+				locationNode += node.parent.name+"/";
+				node = node.parent;
+			}
+			locationNode += scene.nodeList.get(i).name+"\")";
+			onreadyString += locationNode+createLineBreaks(1);
+			scriptString += onreadyString;
+		}
+		
+		scriptString += createLineBreaks(2);
+		
+		
+		
 		//Create variables and variablenames
 		scriptString += "var "+tcpConnectionVariableName+" = "+tcpConnectionVariableIntialize+createLineBreaks(1);
-		scriptString += "var "+baseServerIpVariableName+" = "+"\""+ip+"\"";
-		
+		scriptString += "var "+baseServerIpVariableName+" = "+"\""+ip+"\""+createLineBreaks(1);
+		scriptString += "var "+teamIdVariableName+createLineBreaks(1);
+		scriptString += "var "+roomBegunVariableName+" = false"+createLineBreaks(1);
+		scriptString += "var "+timeCounterVariableName+" = 0";
 		scriptString += createLineBreaks(2);
 		
 		//Create consts
@@ -45,8 +78,46 @@ public class ScriptBuilder {
 		
 		scriptString += createLineBreaks(2);
 		
+		String receivedMessageVariableName = "received_message";
+		
 		//Create process function
 		scriptString += "func _process(delta):"+createLineBreaks(1);
+		
+		//received messages
+		scriptString += createIndentations(1)+"if "+tcpConnectionVariableName+".is_connected() && "+tcpConnectionVariableName+".get_available_bytes() > 0:"+createLineBreaks(1);
+		scriptString += createIndentations(2)+"var "+receivedMessageVariableName+" = "+tcpConnectionVariableName+".get_utf8_string("+tcpConnectionVariableName+".get_available_bytes())"+createLineBreaks(1);
+	
+		//room_begun(refresh etc)
+		scriptString += createIndentations(1)+"if "+roomBegunVariableName+":"+createLineBreaks(1);
+		for(int i = 0; i < scene.roomSettings.teams; i++){
+			scriptString += "if "+teamIdVariableName+" == "+i+":"+createLineBreaks(1);
+			for(int j = 0; j < scene.nodeList.size(); j++){
+				if(scene.nodeList.get(j).isControllable){
+					if(scene.nodeList.get(j).controlReceiver instanceof MISReceiverTeam){
+						MISReceiverTeam team = (MISReceiverTeam)scene.nodeList.get(j).controlReceiver;
+						if(team.team == i){
+							String nameOfNode = "";
+							MISNode node = scene.nodeList.get(j);
+							while(node.parent != null){
+								nameOfNode += node.parent.name+"_";
+								node = node.parent;
+							}
+							if(scene.nodeList.get(j) instanceof MISNode2D){
+								MISNode2D node2D = (MISNode2D) scene.nodeList.get(j);
+								scriptString += createIndentations(2)+tcpConnectionVariableName+put_utf8_string(node2D, nameOfNode)+createLineBreaks(1);
+								scriptString += createIndentations(2)+"pass"+createLineBreaks(1);
+							} else{
+								System.out.println("not instanceof misnode2d line 109 in scriptbuilder");
+							}
+						}
+					}
+				}
+			}
+			
+			
+		}
+		scriptString += createIndentations(2)+"pass";
+		
 		scriptString += createIndentations(1)+"pass";
 		
 		scriptString += createLineBreaks(2);
@@ -119,6 +190,10 @@ public class ScriptBuilder {
 			str += "\t";
 		}
 		return str;
+	}
+	
+	private static String put_utf8_string(MISNode2D node, String name){
+		return ".put_utf8_string(\"[node] "+node.name+" "+node.index+" [transform2d] \"+str("+name+".get_pos().x)+\" \"+str("+name+".get_pos().y)+\" \"+str("+name+".get_rot())+\" \"+str("+name+".get_scale().x)+\" \"+str("+name+".get_scale().y)\n";
 	}
 	
 }
