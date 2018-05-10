@@ -13,6 +13,8 @@ import nodes.MISNode2D;
 import nodes.MISSpatial;
 import project.MISProject;
 import receivers.MISReceiverAll;
+import receivers.MISReceiverNotPerson;
+import receivers.MISReceiverNotTeam;
 import receivers.MISReceiverPerson;
 import receivers.MISReceiverTeam;
 
@@ -111,6 +113,22 @@ public class Room {
 									MISReceiverPerson personReceiver = (MISReceiverPerson)scene.nodeList.get(i).informationReceivers;
 									if(personReceiver.person >= 0 && personReceiver.person < clientsInRoom.size()){
 										clientsInRoom.get(personReceiver.person).addMessageToSend(scene.nodeList.get(i).getReadyPacket());
+									}
+								} else if(scene.nodeList.get(i).informationReceivers instanceof MISReceiverNotPerson){
+									MISReceiverNotPerson personReceiver = (MISReceiverNotPerson)scene.nodeList.get(i).informationReceivers;
+									for(int j = 0; j < clientsInRoom.size(); j++){
+										if(personReceiver.person != j){
+											clientsInRoom.get(j).addMessageToSend(scene.nodeList.get(i).getReadyPacket());
+										}
+									}
+								} else if(scene.nodeList.get(i).informationReceivers instanceof MISReceiverNotTeam){
+									MISReceiverNotTeam teamReceiver = (MISReceiverNotTeam)scene.nodeList.get(i).informationReceivers;
+									for(int j = 0; j < teams.size(); j++){
+										if(teamReceiver.team != j){
+											for(int x = 0; x < teams.get(j).size(); x++){
+												teams.get(j).get(x).addMessageToSend(scene.nodeList.get(i).getReadyPacket());
+											}
+										}
 									}
 								}
 							}
@@ -243,6 +261,24 @@ public class Room {
 				if(teams.get(controllingTeam).contains(client)){
 					isAllowedToUpdate = true;
 				}
+			} else if(scene.nodeList.get(index).controlReceiver instanceof MISReceiverNotPerson){
+				int indexInList = -1;
+				for(int i = 0; i < clientsInRoom.size(); i++){
+					if(clientsInRoom.get(i) == client){
+						indexInList = i;
+						break;
+					}
+				}
+				if(indexInList != -1){
+					if(((MISReceiverNotPerson)scene.nodeList.get(index).controlReceiver).person != indexInList){
+						isAllowedToUpdate = true;
+					}
+				}
+			} else if(scene.nodeList.get(index).controlReceiver instanceof MISReceiverNotTeam) {
+				int controllingTeam = ((MISReceiverNotTeam)scene.nodeList.get(index).controlReceiver).team;
+				if(!teams.get(controllingTeam).contains(client)){
+					isAllowedToUpdate = true;
+				}
 			} else{
 				isAllowedToUpdate = true;
 			}
@@ -266,6 +302,8 @@ public class Room {
 				if(scene.nodeList.get(index) instanceof MISNode2D){
 					((MISNode2D)scene.nodeList.get(index)).transform = transform;
 				} else if(scene.nodeList.get(index) instanceof MISControl){
+					// TODO Auto-generated method stub
+				} else if(scene.nodeList.get(index) instanceof MISSpatial){
 					// TODO Auto-generated method stub
 				}
 			}

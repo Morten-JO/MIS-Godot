@@ -5,10 +5,10 @@ import rules.MISRuleNodeRotation;
 
 public class MISNode2D extends MISNode{
 
-	private static String[] collectiveMatches = {"MISNode2D", "CanvasModulate", "Particles2D", "ParallaxLayer", "SamplePlayer2D", "RemoteTransform2D", "TouchScreenButton", "Position2D",
+	private static String[] collectiveMatches = {"Node2D", "CanvasModulate", "Particles2D", "ParallaxLayer", "SamplePlayer2D", "RemoteTransform2D", "TouchScreenButton", "Position2D",
 												 "Area2D", "Sprite", "ParticleAttractor2D", "AnimatedSprite", "ViewportSprite", "VisibilityNotifier2D", "VisibilityEnabler2D", "Polygon2D",
 												 "RayCast2D", "CollisionShape2D", "CollisionPolygon2D", "Light2D", "LightOccluder2D", "YSort", "BackBufferCopy", "PinJoint2D", "GrooveJoint2D",
-												 "DampedSpringJoint2D", "Camera2D", "TileMap", "Navigation2D", "Path2D", "PathFollow2D", "NavigationPolygonInstance"};
+												 "DampedSpringJoint2D", "Camera2D", "TileMap", "Navigation2D", "Path2D", "PathFollow2D", "NavigationPolygonInstance", "KinematicBody2D"};
 	
 	public MIS2DTransform transform;
 	

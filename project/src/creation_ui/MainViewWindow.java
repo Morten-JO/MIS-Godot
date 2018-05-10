@@ -55,6 +55,7 @@ import rules.MISRuleNode;
 import rules.MISRuleNodePosition;
 import rules.MISRuleNodeRotation;
 import rules.MISRuleNodeScale;
+import scriptbuilder.ScriptBuilder;
 import server.Server;
 import server_ui.ServerApplicationWindow;
 
@@ -120,6 +121,7 @@ public class MainViewWindow {
 	private JMenuItem mntmAddBroadcast;
 	private JMenuItem mntmSceneSettings;
 	private DefaultListModel<MISNode> model;
+	private JMenuItem mntmBuildScript;
 	
 	/**
 	 * Launch the application.
@@ -197,6 +199,9 @@ public class MainViewWindow {
 		mntmBuild = new JMenuItem("Build");
 		
 		mnFile.add(mntmBuild);
+		
+		mntmBuildScript = new JMenuItem("Build Script");
+		mnFile.add(mntmBuildScript);
 		
 		mntmQuit = new JMenuItem("Quit");
 		
@@ -911,6 +916,18 @@ public class MainViewWindow {
 				JOptionPane.showMessageDialog(null, "Build is not implemented yet!");
 				mnFile.getPopupMenu().setVisible(false);
 				addTextToConsole("Opened build window.");
+			}
+		});
+		
+		mntmBuildScript.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				mnFile.getPopupMenu().setVisible(false);
+				if(ScriptBuilder.buildScript(MISProject.project, currentScene, currentScene.nodeList.get(0).name, currentScene.nodeList.get(0).type, "localhost")){
+					addTextToConsole("Generated script.");
+				} else{
+					addTextToConsole("Failed to generate script.");
+				}
 			}
 		});
 		

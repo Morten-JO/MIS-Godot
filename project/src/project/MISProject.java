@@ -28,6 +28,8 @@ import nodes.MISNode;
 import nodes.MISNode2D;
 import nodes.MISSpatial;
 import receivers.MISReceiverAll;
+import receivers.MISReceiverNotPerson;
+import receivers.MISReceiverNotTeam;
 import receivers.MISReceiverPerson;
 import receivers.MISReceiverTeam;
 import rules.MISRule;
@@ -152,13 +154,19 @@ public class MISProject {
 							nodeObject.put("parent_name", node.parent.name);
 							nodeObject.put("parent_index", node.parent.index);
 						}
-						nodeObject.put("shouldSendInformation", node.shouldSendInformation);
+						nodeObject.put("shouldSendInformation", node.shouldSendInformation && node.informationReceivers != null);
 						if(node.shouldSendInformation){
-							nodeObject.put("informationReceivers", node.informationReceivers.getClass().getSimpleName());
-							if(node.informationReceivers instanceof MISReceiverPerson){
-								nodeObject.put("informationReceiversPerson", ((MISReceiverPerson)node.informationReceivers).person);
-							} else if(node.informationReceivers instanceof MISReceiverTeam){
-								nodeObject.put("informationReceiversTeam", ((MISReceiverTeam)node.informationReceivers).team);
+							if(node.informationReceivers != null){
+								nodeObject.put("informationReceivers", node.informationReceivers.getClass().getSimpleName());
+								if(node.informationReceivers instanceof MISReceiverPerson){
+									nodeObject.put("informationReceiversPerson", ((MISReceiverPerson)node.informationReceivers).person);
+								} else if(node.informationReceivers instanceof MISReceiverTeam){
+									nodeObject.put("informationReceiversTeam", ((MISReceiverTeam)node.informationReceivers).team);
+								} else if(node.informationReceivers instanceof MISReceiverNotPerson){
+									nodeObject.put("informationReceiversNotPerson", ((MISReceiverNotPerson)node.informationReceivers).person);
+								} else if(node.informationReceivers instanceof MISReceiverNotTeam){
+									nodeObject.put("informationReceiversNotTeam", ((MISReceiverNotTeam)node.informationReceivers).team);
+								}
 							}
 						}
 						nodeObject.put("isControllable", node.isControllable && node.controlReceiver != null);
@@ -169,6 +177,10 @@ public class MISProject {
 									nodeObject.put("controllablePerson", ((MISReceiverPerson)node.controlReceiver).person);
 								} else if(node.controlReceiver instanceof MISReceiverTeam){
 									nodeObject.put("controllableTeam", ((MISReceiverTeam)node.controlReceiver).team);
+								} else if(node.controlReceiver instanceof MISReceiverNotPerson){
+									nodeObject.put("controllableNotPerson", ((MISReceiverNotPerson)node.controlReceiver).person);
+								} else if(node.controlReceiver instanceof MISReceiverNotTeam){
+									nodeObject.put("controllableNotTeam", ((MISReceiverNotTeam)node.controlReceiver).team);
 								}
 							}
 							
@@ -421,7 +433,6 @@ public class MISProject {
 					MISNode node;
 					String className = (String) nodeObject.get("class");
 					if(className.equals(MISNode2D.class.getSimpleName())){
-						
 						double positionX = (double) nodeObject.get("positionX");
 						double positionY = (double) nodeObject.get("positionY");
 						double rotation = (double) nodeObject.get("rotation");
@@ -471,6 +482,12 @@ public class MISProject {
 						} else if(shouldSendReceiverName.equals(MISReceiverTeam.class.getSimpleName())){
 							int team = toIntExact((Long)nodeObject.get("informationReceiversTeam"));
 							node.informationReceivers = new MISReceiverTeam(team);
+						} else if(shouldSendReceiverName.equals(MISReceiverNotPerson.class.getSimpleName())){
+							int person = toIntExact((Long)nodeObject.get("informationReceiversNotPerson"));
+							node.informationReceivers = new MISReceiverNotPerson(person);
+						} else if(shouldSendReceiverName.equals(MISReceiverNotTeam.class.getSimpleName())){
+							int team = toIntExact((Long)nodeObject.get("informationReceiversNotTeam"));
+							node.informationReceivers = new MISReceiverNotTeam(team);
 						}
 					}
 					
@@ -486,6 +503,12 @@ public class MISProject {
 						} else if(controllableName.equals(MISReceiverTeam.class.getSimpleName())){
 							int team = toIntExact((Long)nodeObject.get("controllableTeam"));
 							node.controlReceiver = new MISReceiverTeam(team);
+						} else if(controllableName.equals(MISReceiverNotPerson.class.getSimpleName())){
+							int person = toIntExact((Long)nodeObject.get("controllableNotPerson"));
+							node.informationReceivers = new MISReceiverNotPerson(person);
+						} else if(controllableName.equals(MISReceiverNotTeam.class.getSimpleName())){
+							int team = toIntExact((Long)nodeObject.get("controllableNotTeam"));
+							node.informationReceivers = new MISReceiverNotTeam(team);
 						}
 					}
 					

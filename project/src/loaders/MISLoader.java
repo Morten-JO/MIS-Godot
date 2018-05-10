@@ -109,14 +109,17 @@ public class MISLoader {
 						if(MISNode2D.isType(node.type)){
 							MISNode2D node2D = new MISNode2D(new MIS2DTransform(0, 0, 0, 0, 0));
 							node2D.name = node.name;
+							node2D.type = node.type;
 							node = node2D;
 						} else if(MISSpatial.isType(node.type)) {
 							MISSpatial spatial = new MISSpatial();
 							spatial.name = node.name;
+							spatial.type = node.type;
 							node = spatial;
 						} else if(MISControl.isType(node.type)){
 							MISControl control = new MISControl();
 							control.name = node.name;
+							control.type = node.type;
 							node = control;
 						}
 					}

@@ -15,6 +15,8 @@ import javax.swing.border.EmptyBorder;
 import data_types.MISRoomSettings;
 import receivers.MISReceiver;
 import receivers.MISReceiverAll;
+import receivers.MISReceiverNotPerson;
+import receivers.MISReceiverNotTeam;
 import receivers.MISReceiverPerson;
 import receivers.MISReceiverTeam;
 import server.Room;
@@ -31,10 +33,12 @@ public class SendInformationDialog extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
 	private JPanel cardPanelReceivers;
-	private JComboBox comboBoxReceiverType;
+	private JComboBox<String> comboBoxReceiverType;
 	private JComboBox<Integer> comboBoxTeam;
 	private JComboBox<Integer> comboBoxPerson;
 	private boolean cancel;
+	private JComboBox<Integer> comboBoxNotPerson;
+	private JComboBox<Integer> comboBoxNotTeam;
 	
 	/**
 	 * Create the dialog.
@@ -53,7 +57,7 @@ public class SendInformationDialog extends JDialog {
 		JLabel lblReceivers = new JLabel("Receivers:");
 		
 		comboBoxReceiverType = new JComboBox();
-		comboBoxReceiverType.setModel(new DefaultComboBoxModel(new String[] {"All", "Person", "Team"}));
+		comboBoxReceiverType.setModel(new DefaultComboBoxModel(new String[] {"All", "Person", "Team", "NotPerson", "NotTeam"}));
 		
 		comboBoxReceiverType.addActionListener(new ActionListener() {
 			
@@ -69,6 +73,12 @@ public class SendInformationDialog extends JDialog {
 				} else if(receiverType.equals("Team")){
 					CardLayout layout = (CardLayout) cardPanelReceivers.getLayout();
 					layout.show(cardPanelReceivers, "receiverTeam");
+				} else if(receiverType.equals("NotPerson")){
+					CardLayout layout = (CardLayout) cardPanelReceivers.getLayout();
+					layout.show(cardPanelReceivers, "receiverNotPerson");
+				} else if(receiverType.equals("NotTeam")){
+					CardLayout layout = (CardLayout) cardPanelReceivers.getLayout();
+					layout.show(cardPanelReceivers, "receiverNotTeam");
 				}
 			}
 		});
@@ -172,6 +182,74 @@ public class SendInformationDialog extends JDialog {
 					.addContainerGap(128, Short.MAX_VALUE))
 		);
 		cardPanelReceiversPerson.setLayout(gl_cardPanelReceiversPerson);
+		
+		JPanel cardPanelReceiversNotPerson = new JPanel();
+		cardPanelReceivers.add(cardPanelReceiversNotPerson, "receiverNotPerson");
+		
+		JLabel label = new JLabel("Person:");
+		
+		comboBoxNotPerson = new JComboBox();
+		DefaultComboBoxModel<Integer> notPersonBoxModel = new DefaultComboBoxModel<Integer>();
+		for(int i = 0; i < settings.minimumPlayers; i++){
+			notPersonBoxModel.addElement(i);
+		}
+		comboBoxNotPerson.setModel(notPersonBoxModel);
+		GroupLayout gl_cardPanelReceiversNotPerson = new GroupLayout(cardPanelReceiversNotPerson);
+		gl_cardPanelReceiversNotPerson.setHorizontalGroup(
+			gl_cardPanelReceiversNotPerson.createParallelGroup(Alignment.LEADING)
+				.addGap(0, 424, Short.MAX_VALUE)
+				.addGroup(gl_cardPanelReceiversNotPerson.createSequentialGroup()
+					.addContainerGap()
+					.addComponent(label)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(comboBoxNotPerson, GroupLayout.PREFERRED_SIZE, 51, GroupLayout.PREFERRED_SIZE)
+					.addContainerGap(322, Short.MAX_VALUE))
+		);
+		gl_cardPanelReceiversNotPerson.setVerticalGroup(
+			gl_cardPanelReceiversNotPerson.createParallelGroup(Alignment.LEADING)
+				.addGap(0, 153, Short.MAX_VALUE)
+				.addGroup(gl_cardPanelReceiversNotPerson.createSequentialGroup()
+					.addContainerGap()
+					.addGroup(gl_cardPanelReceiversNotPerson.createParallelGroup(Alignment.BASELINE)
+						.addComponent(label)
+						.addComponent(comboBoxNotPerson, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+					.addContainerGap(122, Short.MAX_VALUE))
+		);
+		cardPanelReceiversNotPerson.setLayout(gl_cardPanelReceiversNotPerson);
+		
+		JPanel cardPanelReceiversNotTeam = new JPanel();
+		cardPanelReceivers.add(cardPanelReceiversNotTeam, "receiverNotTeam");
+		
+		JLabel label_1 = new JLabel("Team:");
+		
+		comboBoxNotTeam = new JComboBox();
+		DefaultComboBoxModel<Integer> notTeamBoxModel = new DefaultComboBoxModel<Integer>();
+		for(int i = 0; i < settings.minimumPlayers; i++){
+			notTeamBoxModel.addElement(i);
+		}
+		comboBoxNotTeam.setModel(notTeamBoxModel);
+		GroupLayout gl_cardPanelReceiversNotTeam = new GroupLayout(cardPanelReceiversNotTeam);
+		gl_cardPanelReceiversNotTeam.setHorizontalGroup(
+			gl_cardPanelReceiversNotTeam.createParallelGroup(Alignment.LEADING)
+				.addGap(0, 424, Short.MAX_VALUE)
+				.addGroup(gl_cardPanelReceiversNotTeam.createSequentialGroup()
+					.addContainerGap()
+					.addComponent(label_1)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(comboBoxNotTeam, GroupLayout.PREFERRED_SIZE, 83, GroupLayout.PREFERRED_SIZE)
+					.addContainerGap(297, Short.MAX_VALUE))
+		);
+		gl_cardPanelReceiversNotTeam.setVerticalGroup(
+			gl_cardPanelReceiversNotTeam.createParallelGroup(Alignment.LEADING)
+				.addGap(0, 153, Short.MAX_VALUE)
+				.addGroup(gl_cardPanelReceiversNotTeam.createSequentialGroup()
+					.addContainerGap()
+					.addGroup(gl_cardPanelReceiversNotTeam.createParallelGroup(Alignment.BASELINE)
+						.addComponent(label_1)
+						.addComponent(comboBoxNotTeam, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+					.addContainerGap(122, Short.MAX_VALUE))
+		);
+		cardPanelReceiversNotTeam.setLayout(gl_cardPanelReceiversNotTeam);
 		contentPanel.setLayout(gl_contentPanel);
 		{
 			JPanel buttonPane = new JPanel();
@@ -226,6 +304,12 @@ public class SendInformationDialog extends JDialog {
 		} else if(receiverType.equals("Person")){
 			int personChosen = (int)comboBoxPerson.getSelectedItem();
 			receiver = new MISReceiverPerson(personChosen);
+		} else if(receiverType.equals("NotPerson")){
+			int personChosen = (int)comboBoxNotPerson.getSelectedItem();
+			receiver = new MISReceiverNotPerson(personChosen);
+		} else if(receiverType.equals("NotTeam")){
+			int teamChosen = (int)comboBoxNotTeam.getSelectedItem();
+			receiver = new MISReceiverNotTeam(teamChosen);
 		}
 		return receiver;
 	}
