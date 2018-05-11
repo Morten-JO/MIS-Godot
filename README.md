@@ -14,25 +14,41 @@
 
 
 ### Current implementations:
-...Godot scene + project import
-...Godot basic script builder
-...2D node control
-...2D node refresh
-...Project save/load
-...Broadcast(message) save + send
-...Rule(property, bounds) save
-...Basic server structure
-...Server - room
-...UI server log
+Godot scene + project import
+
+Godot basic script builder
+
+2D node control
+
+2D node refresh
+
+Project save/load
+
+Broadcast(message) save + send
+
+Rule(property, bounds) save
+
+Basic server structure
+
+Server - room
+
+UI server log
 
 
 
 
-###Future implementations:
-...Fixing up current bugs/issues
-...Triggers
-...Multiple networking connections
-...UDP protocol
-...Multi scene functionality
-...Multi server functionality
-...3D control+refresh functionality
+### Future implementations:
+Fixing up current bugs/issues
+
+Triggers
+
+Multiple networking connections
+
+UDP protocol
+
+Multi scene functionality
+
+Multi server functionality
+
+3D control+refresh functionality
+

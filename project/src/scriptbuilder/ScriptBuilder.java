@@ -54,9 +54,9 @@ public class ScriptBuilder {
 		
 		scriptString = connectFunctionGeneration(scriptString, ip, project);
 		
-		scriptString = customRoomBegunFunctionGeneration(scriptString);		
+		scriptString = customRoomBegunFunctionGeneration(scriptString, scene);		
 		
-		scriptString = queueFunctionsGeneration(scriptString);
+		scriptString = queueFunctionsGeneration(scriptString, scene);
 		
 		scriptString = broadcastFunctionsGeneration(scriptString, scene);
 		
@@ -266,12 +266,12 @@ public class ScriptBuilder {
 						MISReceiverTeam team = (MISReceiverTeam)scene.nodeList.get(j).controlReceiver;
 						if(team.team == i){
 							String nameOfNode = "";
-							MISNode node = scene.nodeList.get(i);
+							MISNode node = scene.nodeList.get(j);
 							while(node.parent != null){
 								nameOfNode += node.parent.name+"_";
 								node = node.parent;
 							}
-							nameOfNode += scene.nodeList.get(i).name;
+							nameOfNode += scene.nodeList.get(j).name;
 							if(scene.nodeList.get(j) instanceof MISNode2D){
 								MISNode2D node2D = (MISNode2D) scene.nodeList.get(j);
 								scriptString += createIndentations(3)+tcpConnectionVariableName+put_utf8_string(node2D, nameOfNode)+createLineBreaks(1);
@@ -285,12 +285,12 @@ public class ScriptBuilder {
 						MISReceiverNotTeam team = (MISReceiverNotTeam)scene.nodeList.get(j).controlReceiver;
 						if(team.team != i){
 							String nameOfNode = "";
-							MISNode node = scene.nodeList.get(i);
+							MISNode node = scene.nodeList.get(j);
 							while(node.parent != null){
 								nameOfNode += node.parent.name+"_";
 								node = node.parent;
 							}
-							nameOfNode += scene.nodeList.get(i).name;
+							nameOfNode += scene.nodeList.get(j).name;
 							if(scene.nodeList.get(j) instanceof MISNode2D){
 								MISNode2D node2D = (MISNode2D) scene.nodeList.get(j);
 								scriptString += createIndentations(3)+tcpConnectionVariableName+put_utf8_string(node2D, nameOfNode)+createLineBreaks(1);
@@ -302,12 +302,12 @@ public class ScriptBuilder {
 						scriptString += createIndentations(3)+"pass #Error, MISReceiverNotPerson don't have a reference to player_id in room yet"+createLineBreaks(1);	
 					} else{
 						String nameOfNode = "";
-						MISNode node = scene.nodeList.get(i);
+						MISNode node = scene.nodeList.get(j);
 						while(node.parent != null){
 							nameOfNode += node.parent.name+"_";
 							node = node.parent;
 						}
-						nameOfNode += scene.nodeList.get(i).name;
+						nameOfNode += scene.nodeList.get(j).name;
 						if(scene.nodeList.get(j) instanceof MISNode2D){
 							MISNode2D node2D = (MISNode2D) scene.nodeList.get(j);
 							scriptString += createIndentations(3)+tcpConnectionVariableName+put_utf8_string(node2D, nameOfNode)+createLineBreaks(1);
@@ -326,7 +326,7 @@ public class ScriptBuilder {
 	
 	private static String processFunctionTcpControlGeneration(String scriptString){
 		//Tcp connection updates
-		scriptString += createIndentations(1)+"if "+tcpConnectionVariableName+".get_status() == 1"+createLineBreaks(1);
+		scriptString += createIndentations(1)+"if "+tcpConnectionVariableName+".get_status() == 1:"+createLineBreaks(1);
 		scriptString += createIndentations(2)+timeCounterVariableName+" = "+timeCounterVariableName+" + delta"+createLineBreaks(2);
 		scriptString += createIndentations(1)+"if "+timeCounterVariableName+" > TIMEOUT_DURATION_CONNECT:"+createLineBreaks(1);
 		scriptString += createIndentations(2)+tcpConnectionVariableName+".disconnect()"+createLineBreaks(1);
@@ -337,23 +337,26 @@ public class ScriptBuilder {
 	private static String connectFunctionGeneration(String scriptString, String ip, MISProject project){
 		//Create connect function
 		scriptString += "func connectToServer():"+createLineBreaks(1);
-		scriptString += createIndentations(1)+tcpConnectionVariableName+".connect("+ip+", "+project.basePort.port+")";
+		scriptString += createIndentations(1)+tcpConnectionVariableName+".connect(\""+ip+"\", "+project.basePort.port+")"+createLineBreaks(1);
 		scriptString += createIndentations(1)+"set_process(true)"+createLineBreaks(1);
 		scriptString += createLineBreaks(2);
 		return scriptString;
 	}
 	
-	private static String customRoomBegunFunctionGeneration(String scriptString){
+	private static String customRoomBegunFunctionGeneration(String scriptString, MISScene scene){
 		//Create room_begun function (usermade code, can be called here)
 		scriptString += "func roomBegun(data):"+createLineBreaks(1);
-		scriptString += createIndentations(1)+roomBegunVariableName+" = true";
-		scriptString += createIndentations(1)+"pass";
+		scriptString += createIndentations(1)+roomBegunVariableName+" = true"+createLineBreaks(1);
+		for(int i = 0; i < scene.roomSettings.teams; i++){
+			scriptString += createIndentations(1)+"if "+teamIdVariableName+" == "+i+":"+createLineBreaks(1);
+			scriptString += createIndentations(2)+"pass"+createLineBreaks(1);
+		}
 				
 		scriptString += createLineBreaks(2);
 		return scriptString;
 	}
 	
-	private static String queueFunctionsGeneration(String scriptString){
+	private static String queueFunctionsGeneration(String scriptString, MISScene scene){
 		//create queue functions
 		scriptString += "func onReceiveQueueStart(data):"+createLineBreaks(1);
 		scriptString += createIndentations(1)+"pass"+createLineBreaks(2);
@@ -362,6 +365,8 @@ public class ScriptBuilder {
 		scriptString += createIndentations(1)+"pass"+createLineBreaks(2);
 				
 		scriptString += "func sendQueueStartRequest(data):"+createLineBreaks(1);
+		scriptString += createIndentations(1)+"if "+tcpConnectionVariableName+".is_connected():"+createLineBreaks(1);
+		scriptString += createIndentations(2)+tcpConnectionVariableName+".put_utf8_string(\"queuestart "+scene.IDNumber+"\\n\")"+createLineBreaks(1);
 		scriptString += createIndentations(1)+"pass"+createLineBreaks(2);
 		return scriptString;
 	}
@@ -409,7 +414,7 @@ public class ScriptBuilder {
 	
 	
 	private static String put_utf8_string(MISNode2D node, String name){
-		return ".put_utf8_string(\"[node] "+node.name+" "+node.index+" [transform2d] \"+str("+name+".get_pos().x)+\" \"+str("+name+".get_pos().y)+\" \"+str("+name+".get_rot())+\" \"+str("+name+".get_scale().x)+\" \"+str("+name+".get_scale().y)\n";
+		return ".put_utf8_string(\"[node] "+node.name+" "+node.index+" [transform2d] \"+str("+name+".get_pos().x)+\" \"+str("+name+".get_pos().y)+\" \"+str("+name+".get_rot())+\" \"+str("+name+".get_scale().x)+\" \"+str("+name+".get_scale().y)+\"\\n\")";
 	}
 	
 }

@@ -93,16 +93,12 @@ public class MISLoader {
 					scene.addExternalResource(externalResource);
 				} else if(readLine.startsWith("[node")){
 					MISNode node = new MISNode();
-					System.out.println("Node created.");
 					if(readLine.contains("name=\"")){
 						node.name = readLine.split("name=\"")[1].split("\"")[0];
 						System.out.println("Node from readline: "+readLine);
 						System.out.println("Node name is: "+node.name);
 						System.out.println("Node name set.");
 						
-					}
-					if(node.name == null){
-						System.out.println("THE NODE IS FUCKING NULL.: "+readLine);
 					}
 					if(readLine.contains("type=\"")){
 						node.type = readLine.split("type=\"")[1].split("\"")[0];
@@ -127,21 +123,10 @@ public class MISLoader {
 						String value = readLine.split("parent=\"")[1].split("\"")[0];
 						if(!value.equals(".")){
 							if(value.contains("/")){
-								System.out.println("lol");
 								String[] parents = value.split("/");
 								value = parents[parents.length-1];
 							}
-							for(int i = 0; i < scene.nodeList.size(); i++){
-								System.out.println(".");
-								if(scene.nodeList == null){
-									System.out.println("WTF????????");
-								}
-								if(scene.nodeList.get(i) == null){
-									System.out.println("NECK?=???????????????");
-								}
-								if(value == null){
-									System.out.println("hmmmmmmmmmmmm");
-								}
+							for(int i = scene.nodeList.size()-1; i >= 0; i--){
 								if(scene.nodeList.get(i).name.equals(value)){
 									node.parent = scene.nodeList.get(i);
 									break;

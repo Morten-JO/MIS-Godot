@@ -222,6 +222,13 @@ public class Server implements Runnable{
 				exists = true;
 			}
 		}
+		for(int i = 0 ; i < rooms.size(); i++){
+			for(int j = 0; j < rooms.get(i).clientsInRoom.size(); j++){
+				if(rooms.get(i).clientsInRoom.get(j) == client){
+					exists = true;
+				}
+			}
+		}
 		if(!exists){
 			queues.add(new MISQueue(client, sceneQueue));
 			return true;

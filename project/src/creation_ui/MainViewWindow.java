@@ -913,7 +913,7 @@ public class MainViewWindow {
 			@Override
 			public void mousePressed(MouseEvent e) {
 				mnFile.getPopupMenu().setVisible(false);
-				if(ScriptBuilder.buildScript(MISProject.project, currentScene, currentScene.nodeList.get(0).name, currentScene.nodeList.get(0).type, "localhost")){
+				if(ScriptBuilder.buildScript(MISProject.project, currentScene, currentScene.nodeList.get(0).name, currentScene.nodeList.get(0).type, MISProject.project.ip)){
 					addTextToConsole("Generated script.");
 				} else{
 					addTextToConsole("Failed to generate script.");

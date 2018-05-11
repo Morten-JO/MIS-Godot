@@ -43,6 +43,8 @@ public class ProjectSettingsFrame extends JDialog {
 	private JButton btnSave;
 	private JButton btnCancel;
 	private boolean wasAnythingChanged = false;
+	private JLabel lblIp;
+	private JTextField textFieldInternetAddress;
 
 	/**
 	 * Create the frame.
@@ -186,43 +188,58 @@ public class ProjectSettingsFrame extends JDialog {
 				}
 			}
 		});
+		
+		lblIp = new JLabel("Ip:");
+		
+		textFieldInternetAddress = new JTextField();
+		textFieldInternetAddress.setColumns(10);
 		GroupLayout gl_contentPane = new GroupLayout(contentPane);
 		gl_contentPane.setHorizontalGroup(
-			gl_contentPane.createParallelGroup(Alignment.LEADING)
+			gl_contentPane.createParallelGroup(Alignment.TRAILING)
 				.addGroup(gl_contentPane.createSequentialGroup()
-					.addComponent(lblBasePort)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(textFieldBasePort, GroupLayout.PREFERRED_SIZE, 65, GroupLayout.PREFERRED_SIZE))
-				.addGroup(gl_contentPane.createSequentialGroup()
-					.addComponent(lblProjectName)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(textFieldProjectName, GroupLayout.PREFERRED_SIZE, 213, GroupLayout.PREFERRED_SIZE))
-				.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING, false)
-					.addGroup(gl_contentPane.createSequentialGroup()
-						.addComponent(lblListType)
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addComponent(comboBoxListType, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-					.addGroup(gl_contentPane.createSequentialGroup()
-						.addComponent(lblProjectMinimumVersion)
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addComponent(textFieldProjectMinimumVersion, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)))
-				.addGroup(gl_contentPane.createSequentialGroup()
-					.addComponent(lblMm)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(spinnerMMPCPS, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-				.addGroup(gl_contentPane.createSequentialGroup()
-					.addComponent(lblRefreshRate)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(spinnerRefreshRate, GroupLayout.PREFERRED_SIZE, 55, GroupLayout.PREFERRED_SIZE))
-				.addGroup(gl_contentPane.createSequentialGroup()
-					.addComponent(lblSessionTimeout)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(spinnerSessionTimeout, GroupLayout.PREFERRED_SIZE, 74, GroupLayout.PREFERRED_SIZE))
-				.addGroup(Alignment.TRAILING, gl_contentPane.createSequentialGroup()
-					.addContainerGap(296, Short.MAX_VALUE)
 					.addComponent(btnSave)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(btnCancel))
+				.addGroup(gl_contentPane.createSequentialGroup()
+					.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_contentPane.createSequentialGroup()
+							.addComponent(lblRefreshRate)
+							.addPreferredGap(ComponentPlacement.UNRELATED)
+							.addComponent(spinnerRefreshRate, GroupLayout.PREFERRED_SIZE, 55, GroupLayout.PREFERRED_SIZE))
+						.addGroup(Alignment.TRAILING, gl_contentPane.createSequentialGroup()
+							.addComponent(lblListType)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(comboBoxListType, 0, 235, Short.MAX_VALUE))
+						.addGroup(gl_contentPane.createSequentialGroup()
+							.addComponent(lblProjectMinimumVersion)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(textFieldProjectMinimumVersion, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE))
+						.addGroup(gl_contentPane.createSequentialGroup()
+							.addComponent(lblProjectName)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(textFieldProjectName, GroupLayout.PREFERRED_SIZE, 213, GroupLayout.PREFERRED_SIZE))
+						.addGroup(gl_contentPane.createSequentialGroup()
+							.addComponent(lblSessionTimeout)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(spinnerSessionTimeout, GroupLayout.PREFERRED_SIZE, 74, GroupLayout.PREFERRED_SIZE)))
+					.addGap(140))
+				.addGroup(Alignment.LEADING, gl_contentPane.createSequentialGroup()
+					.addGroup(gl_contentPane.createParallelGroup(Alignment.TRAILING, false)
+						.addGroup(Alignment.LEADING, gl_contentPane.createSequentialGroup()
+							.addGap(2)
+							.addComponent(lblMm)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(spinnerMMPCPS))
+						.addGroup(Alignment.LEADING, gl_contentPane.createSequentialGroup()
+							.addComponent(lblBasePort)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(textFieldBasePort, GroupLayout.PREFERRED_SIZE, 65, GroupLayout.PREFERRED_SIZE)))
+					.addContainerGap(305, Short.MAX_VALUE))
+				.addGroup(Alignment.LEADING, gl_contentPane.createSequentialGroup()
+					.addComponent(lblIp)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(textFieldInternetAddress, GroupLayout.DEFAULT_SIZE, 139, Short.MAX_VALUE)
+					.addGap(267))
 		);
 		gl_contentPane.setVerticalGroup(
 			gl_contentPane.createParallelGroup(Alignment.LEADING)
@@ -230,7 +247,7 @@ public class ProjectSettingsFrame extends JDialog {
 					.addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lblProjectName)
 						.addComponent(textFieldProjectName, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addPreferredGap(ComponentPlacement.RELATED)
+					.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 					.addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lblProjectMinimumVersion)
 						.addComponent(textFieldProjectMinimumVersion, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
@@ -242,11 +259,11 @@ public class ProjectSettingsFrame extends JDialog {
 					.addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lblRefreshRate)
 						.addComponent(spinnerRefreshRate, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addPreferredGap(ComponentPlacement.RELATED)
+					.addPreferredGap(ComponentPlacement.UNRELATED)
 					.addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
-						.addComponent(lblMm)
-						.addComponent(spinnerMMPCPS, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addPreferredGap(ComponentPlacement.RELATED)
+						.addComponent(spinnerMMPCPS, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lblMm))
+					.addPreferredGap(ComponentPlacement.UNRELATED)
 					.addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lblBasePort)
 						.addComponent(textFieldBasePort, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
@@ -254,7 +271,11 @@ public class ProjectSettingsFrame extends JDialog {
 					.addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lblSessionTimeout)
 						.addComponent(spinnerSessionTimeout, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addPreferredGap(ComponentPlacement.RELATED, 52, Short.MAX_VALUE)
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
+						.addComponent(lblIp)
+						.addComponent(textFieldInternetAddress, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+					.addGap(27)
 					.addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
 						.addComponent(btnCancel)
 						.addComponent(btnSave)))
@@ -274,8 +295,17 @@ public class ProjectSettingsFrame extends JDialog {
 
 
 	protected void updateValues() {
-		// TODO Auto-generated method stub
-		
+		try{
+			MISProject.project.projectName = textFieldProjectName.getText();
+			MISProject.project.minimumBuildVersion = Double.parseDouble(textFieldProjectMinimumVersion.getText());
+			MISProject.project.basePort.port = Integer.parseInt(textFieldBasePort.getText());
+			MISProject.project.refreshRate = (int)(spinnerRefreshRate.getModel().getValue());
+			MISProject.project.maxMessagesPerClientPerSecond = (int)spinnerMMPCPS.getModel().getValue();
+			MISProject.project.timeOutDuration = (int) spinnerSessionTimeout.getModel().getValue();
+			MISProject.project.ip = textFieldInternetAddress.getText();
+		} catch(Exception e){
+			e.printStackTrace();
+		}
 	}
 
 
@@ -292,6 +322,7 @@ public class ProjectSettingsFrame extends JDialog {
 		} else{
 			comboBoxListType.setSelectedIndex(1);
 		}
+		textFieldInternetAddress.setText(project.ip);
 	}
 
 

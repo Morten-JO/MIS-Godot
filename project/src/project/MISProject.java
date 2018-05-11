@@ -46,7 +46,7 @@ public class MISProject {
 	public static MISProject project;
 	private boolean isSaving = false;
 	private boolean isLoading = false;
-	
+
 	public MISProject(){
 		listType = MISListType.ARRAY;
 		refreshRate = MISGeneralSettings.STANDARD_REFRESH_RATE;
@@ -102,6 +102,7 @@ public class MISProject {
 			projectGeneralSettingsObject.put("ports", portsObjects);
 			projectGeneralSettingsObject.put("ports_n", MISProject.project.ports.size());
 			projectGeneralSettingsObject.put("ui_on_run", MISProject.project.uiOnRun);
+			projectGeneralSettingsObject.put("main_ip", MISProject.project.ip);
 			
 			mainObject.put("project_settings", projectGeneralSettingsObject);
 			
@@ -408,6 +409,8 @@ public class MISProject {
 			}
 			boolean uiOnRun = (Boolean) projectSettings.get("ui_on_run");
 			MISProject.project.uiOnRun = uiOnRun;
+			String mainIp = (String)projectSettings.get("main_ip");
+			MISProject.project.ip = mainIp;
 			
 			JSONObject scenes = (JSONObject) jsonObject.get("scenes");
 			int numberOfScenes = toIntExact((Long) jsonObject.get("scenes_n"));
@@ -622,6 +625,7 @@ public class MISProject {
 	public double minimumBuildVersion = 0.01;
 	public ArrayList<MISScene> scenes;
 	public boolean uiOnRun = false;
+	public String ip = "localhost";
 	
 	/*
 	 * General settings

@@ -57,6 +57,7 @@ public class CreateNewProjectSettings extends JPanel {
 	private JRadioButton rdbtnServerside;
 	private JRadioButton rdbtnClientSide;
 	private JTextField textFieldBasePort;
+	private JTextField internetAddressTextField;
 	
 	public void putVariables(String projName, String projLoc, String godotLoc){
 		this.projectName = projName;
@@ -149,6 +150,11 @@ public class CreateNewProjectSettings extends JPanel {
 		
 		textFieldBasePort = new JTextField();
 		textFieldBasePort.setColumns(10);
+		
+		JLabel lblIp = new JLabel("Ip:");
+		
+		internetAddressTextField = new JTextField();
+		internetAddressTextField.setColumns(10);
 		GroupLayout groupLayout = new GroupLayout(this);
 		groupLayout.setHorizontalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
@@ -171,12 +177,16 @@ public class CreateNewProjectSettings extends JPanel {
 								.addComponent(chckbxEncryption)
 								.addComponent(chckbxUi)
 								.addComponent(lblProtocols)
-								.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
+								.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 									.addComponent(listProtocols, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 									.addGroup(groupLayout.createSequentialGroup()
 										.addComponent(lblNewLabel)
 										.addPreferredGap(ComponentPlacement.RELATED)
 										.addComponent(textFieldClientBuild, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+									.addGroup(groupLayout.createSequentialGroup()
+										.addComponent(lblIp)
+										.addPreferredGap(ComponentPlacement.RELATED)
+										.addComponent(internetAddressTextField, GroupLayout.PREFERRED_SIZE, 134, GroupLayout.PREFERRED_SIZE))
 									.addGroup(groupLayout.createSequentialGroup()
 										.addComponent(lblBaseport)
 										.addPreferredGap(ComponentPlacement.RELATED)
@@ -251,7 +261,11 @@ public class CreateNewProjectSettings extends JPanel {
 					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lblBaseport)
 						.addComponent(textFieldBasePort, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addPreferredGap(ComponentPlacement.RELATED, 147, Short.MAX_VALUE)
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+						.addComponent(lblIp)
+						.addComponent(internetAddressTextField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+					.addPreferredGap(ComponentPlacement.RELATED, 116, Short.MAX_VALUE)
 					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(btnBack)
 						.addComponent(btnCreate))
@@ -286,6 +300,7 @@ public class CreateNewProjectSettings extends JPanel {
 					project.targetEngine = MISType.Godot;
 					project.scenes = scenes;
 					project.uiOnRun = chckbxUi.isSelected();
+					project.ip = internetAddressTextField.getText();
 					
 					MISProject.project = project;
 					boolean success = MISProject.saveProject();
@@ -364,6 +379,10 @@ public class CreateNewProjectSettings extends JPanel {
 				System.out.println("baseport problems");
 				return false;
 			}
+		}
+		if(internetAddressTextField.getText().isEmpty()){
+			System.out.println("internet adress problems");
+			return false;
 		}
 		return true;
 		
