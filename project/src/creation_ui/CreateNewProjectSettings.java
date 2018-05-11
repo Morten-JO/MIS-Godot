@@ -285,6 +285,7 @@ public class CreateNewProjectSettings extends JPanel {
 					project.listType = MISListType.ARRAY;
 					project.targetEngine = MISType.Godot;
 					project.scenes = scenes;
+					project.uiOnRun = chckbxUi.isSelected();
 					
 					MISProject.project = project;
 					boolean success = MISProject.saveProject();

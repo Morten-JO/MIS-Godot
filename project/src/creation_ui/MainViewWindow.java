@@ -661,15 +661,6 @@ public class MainViewWindow {
 							addTextToConsole("Showed node-element #"+nodeList.getSelectedIndex());
 						}
 					});
-					JMenuItem remove = new JMenuItem("Remove");
-					remove.addActionListener(new ActionListener() {
-						
-						@Override
-						public void actionPerformed(ActionEvent e) {
-							//call remove function
-							addTextToConsole("Removed node-element #"+nodeList.getSelectedIndex());
-						}
-					});
 					
 					JMenuItem addRule = new JMenuItem("Add Rule");
 					addRule.addActionListener(new ActionListener() {
@@ -705,7 +696,6 @@ public class MainViewWindow {
 						}
 					});
 					menu.add(show);
-					menu.add(remove);
 					menu.add(addRule);
 					menu.add(shouldSendInformation);
 					if(nodeList.getSelectedValue().shouldSendInformation){
@@ -986,7 +976,13 @@ public class MainViewWindow {
 		mntmAbout.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
-				JOptionPane.showMessageDialog(null, "About ui is not implemented yet!");
+				try {
+					Desktop.getDesktop().browse(new URI("https://github.com/Mortenbaws/MIS-Godot"));
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				} catch (URISyntaxException e1) {
+					e1.printStackTrace();
+				}
 				mnHelp.getPopupMenu().setVisible(false);
 				addTextToConsole("Opened about page.");
 			}
@@ -996,7 +992,7 @@ public class MainViewWindow {
 			@Override
 			public void mousePressed(MouseEvent e) {
 				try {
-					Desktop.getDesktop().browse(new URI("http://www.misgodot.com/manual"));
+					Desktop.getDesktop().browse(new URI("https://github.com/Mortenbaws/MIS-Godot/blob/master/checkmark.txt"));
 					mnHelp.getPopupMenu().setVisible(false);
 					addTextToConsole("Opened browser link to manual.");
 				} catch (IOException e1) {
@@ -1011,7 +1007,16 @@ public class MainViewWindow {
 		mntmReportABug.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
-				JOptionPane.showMessageDialog(null, "Report a bug ui is not yet implemented!");
+				int res = JOptionPane.showConfirmDialog(null, "Bug ui not implemented yet, open temp google document?");
+				if(res == JOptionPane.YES_OPTION){
+					try {
+						Desktop.getDesktop().browse(new URI("https://docs.google.com/document/d/1CbuTvuOiJpqe8KoMobaxs-M-Viy853aHNynyE37MZyo/edit?usp=sharing"));
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					} catch (URISyntaxException e1) {
+						e1.printStackTrace();
+					}
+				}
 				mnHelp.getPopupMenu().setVisible(false);
 				addTextToConsole("Opened report a bug window.");
 			}
@@ -1020,7 +1025,16 @@ public class MainViewWindow {
 		mntmSuggestAnImprovement.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
-				JOptionPane.showMessageDialog(null, "Suggestion ui is not implemented yet!");
+				int res = JOptionPane.showConfirmDialog(null, "Improvement ui not implemented yet, open temp google document?");
+				if(res == JOptionPane.YES_OPTION){
+					try {
+						Desktop.getDesktop().browse(new URI("https://docs.google.com/document/d/1CbuTvuOiJpqe8KoMobaxs-M-Viy853aHNynyE37MZyo/edit?usp=sharing"));
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					} catch (URISyntaxException e1) {
+						e1.printStackTrace();
+					}
+				}
 				mnHelp.getPopupMenu().setVisible(false);
 				addTextToConsole("Opened suggest an improvement window.");
 			}

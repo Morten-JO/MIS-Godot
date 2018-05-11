@@ -101,6 +101,7 @@ public class MISProject {
 			}
 			projectGeneralSettingsObject.put("ports", portsObjects);
 			projectGeneralSettingsObject.put("ports_n", MISProject.project.ports.size());
+			projectGeneralSettingsObject.put("ui_on_run", MISProject.project.uiOnRun);
 			
 			mainObject.put("project_settings", projectGeneralSettingsObject);
 			
@@ -405,6 +406,9 @@ public class MISProject {
 				MISPort dataPort = new MISPort(portNumber, protocol);
 				MISProject.project.ports.add(dataPort);
 			}
+			boolean uiOnRun = (Boolean) projectSettings.get("ui_on_run");
+			MISProject.project.uiOnRun = uiOnRun;
+			
 			JSONObject scenes = (JSONObject) jsonObject.get("scenes");
 			int numberOfScenes = toIntExact((Long) jsonObject.get("scenes_n"));
 			for(int i = 0; i < numberOfScenes; i++){
@@ -617,7 +621,7 @@ public class MISProject {
 	public MISPort basePort;
 	public double minimumBuildVersion = 0.01;
 	public ArrayList<MISScene> scenes;
-	
+	public boolean uiOnRun = false;
 	
 	/*
 	 * General settings

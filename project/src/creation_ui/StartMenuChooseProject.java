@@ -16,6 +16,7 @@ import javax.swing.SwingConstants;
 import loaders.MISLoader;
 import project.MISProject;
 import project.MISProjectInformation;
+import server.Server;
 
 import javax.swing.JList;
 import javax.swing.JOptionPane;
@@ -169,6 +170,26 @@ public class StartMenuChooseProject extends JPanel {
 					}
 				}
 			}
+		});
+		
+		btnRun.addMouseListener(new MouseAdapter() {
+			
+			@Override
+			public void mousePressed(MouseEvent arg0){
+				int selectedIndex = list.getSelectedIndex();
+				if(selectedIndex >= 0){
+					MISProjectInformation informationObject = list.getSelectedValue();
+					//Load the project selected
+					if(informationObject.isFoundProject()){
+						boolean success = MISProject.loadProject(informationObject.getProjectLocation());
+						MISProject.printProjectData();
+						if(success){
+							new Server(MISProject.project.basePort.port, MISProject.project.uiOnRun, false);
+						}
+					}
+				}
+			}
+			
 		});
 		
 		textFieldSearch.getDocument().addDocumentListener(new DocumentListener() {
