@@ -118,7 +118,7 @@ public class ScriptBuilder {
 				scriptString += createIndentations(4)+"#"+scene.nodeList.get(i).name+createLineBreaks(1);
 				scriptString += createIndentations(4)+"if int(split_message[2]) == "+scene.nodeList.get(i).index+":"+createLineBreaks(1);
 				if(scene.nodeList.get(i).informationReceivers instanceof MISReceiverTeam){
-					MISReceiverTeam teamNode = (MISReceiverTeam) scene.nodeList.get(i).controlReceiver;
+					MISReceiverTeam teamNode = (MISReceiverTeam) scene.nodeList.get(i).informationReceivers;
 					scriptString += createIndentations(5)+"if team_id == "+teamNode.team+":"+createLineBreaks(1);
 					String nameOfNode = "";
 					MISNode node = scene.nodeList.get(i);
@@ -140,7 +140,7 @@ public class ScriptBuilder {
 				} else if(scene.nodeList.get(i).controlReceiver instanceof MISReceiverPerson){
 					scriptString += createIndentations(6)+"pass #Error, MISReceiverPerson don't have a reference to player_id in room yet"+createLineBreaks(1);
 				} else if(scene.nodeList.get(i).controlReceiver instanceof MISReceiverNotTeam){
-					MISReceiverNotTeam teamNode = (MISReceiverNotTeam) scene.nodeList.get(i).controlReceiver;
+					MISReceiverNotTeam teamNode = (MISReceiverNotTeam) scene.nodeList.get(i).informationReceivers;
 					scriptString += createIndentations(5)+"if team_id != "+teamNode.team+":"+createLineBreaks(1);
 					String nameOfNode = "";
 					MISNode node = scene.nodeList.get(i);
