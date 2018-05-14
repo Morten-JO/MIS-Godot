@@ -82,7 +82,7 @@ public class Room {
 				for(int j = 0; j < teams.get(i).size(); j++){
 					clientsInRoom.add(teams.get(i).get(j));
 					teams.get(i).get(j).joinRoom(this);
-					teams.get(i).get(j).notifyCreatedRoom(this, roomSize, i);
+					teams.get(i).get(j).notifyCreatedRoom(this, roomSize, i, clientsInRoom.size()-1);
 				}
 			}
 		} catch(NullPointerException e){

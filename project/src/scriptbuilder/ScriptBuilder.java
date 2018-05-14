@@ -28,6 +28,7 @@ public class ScriptBuilder {
 	
 	private static String baseServerIpVariableName = "base_server_ip";
 	private static String teamIdVariableName = "team_id";
+	private static String playerIdVariableName = "player_id";
 	private static String timeCounterVariableName = "time_counter";
 	private static String roomBegunVariableName = "room_begun";
 	private static String splittedStringsVariableName = "splitted_strings";
@@ -110,6 +111,7 @@ public class ScriptBuilder {
 		scriptString += createIndentations(4)+"var room_scene_id = split_messages[2]"+createLineBreaks(1);
 		scriptString += createIndentations(4)+"var total_players = split_messages[3]"+createLineBreaks(1);
 		scriptString += createIndentations(4)+teamIdVariableName+" = int(split_messages[4])"+createLineBreaks(1);
+		scriptString += createIndentations(4)+playerIdVariableName+" = int(split_messages[5])"+createLineBreaks(1);
 		scriptString += createIndentations(4)+"roomBegun(split_messages)"+createLineBreaks(2);
 
 		//node message(updates)
@@ -121,62 +123,22 @@ public class ScriptBuilder {
 				scriptString += createIndentations(4)+"if int(split_message[2]) == "+scene.nodeList.get(i).index+":"+createLineBreaks(1);
 				if(scene.nodeList.get(i).informationReceivers instanceof MISReceiverTeam){
 					MISReceiverTeam teamNode = (MISReceiverTeam) scene.nodeList.get(i).informationReceivers;
-					scriptString += createIndentations(5)+"if team_id == "+teamNode.team+":"+createLineBreaks(1);
-					String nameOfNode = "";
-					MISNode node = scene.nodeList.get(i);
-					while(node.parent != null){
-						nameOfNode += node.parent.name+"_";
-						node = node.parent;
-					}
-					nameOfNode += scene.nodeList.get(i).name;
-					if(scene.nodeList.get(i) instanceof MISNode2D){
-						scriptString += createIndentations(6)+nameOfNode+".set_pos(Vector2(float(split_message[4]), float(split_message[5])))"+createLineBreaks(1);
-					} else if(scene.nodeList.get(i) instanceof MISControl){
-						scriptString += createIndentations(6)+"pass #Error, MISControl, not implemented"+createLineBreaks(1);
-					} else if(scene.nodeList.get(i) instanceof MISSpatial){
-						scriptString += createIndentations(6)+"pass #Error, MISSpatial, not implemented"+createLineBreaks(1);
-					} else {
-						scriptString += createIndentations(6)+"pass #Error, Not of any time... node isnt of any type, wtf?"+createLineBreaks(1);
-					}
-					
+					scriptString += createIndentations(5)+"if "+teamIdVariableName+" == "+teamNode.team+":"+createLineBreaks(1);
+					scriptString = refreshNodeString(scriptString, scene.nodeList.get(i), 6);
 				} else if(scene.nodeList.get(i).controlReceiver instanceof MISReceiverPerson){
-					scriptString += createIndentations(6)+"pass #Error, MISReceiverPerson don't have a reference to player_id in room yet"+createLineBreaks(1);
+					MISReceiverPerson personReceiver = (MISReceiverPerson) scene.nodeList.get(i).informationReceivers;
+					scriptString += createIndentations(5)+"if "+playerIdVariableName+" == "+personReceiver.person+":"+createLineBreaks(1);
+					scriptString = refreshNodeString(scriptString, scene.nodeList.get(i), 6);
 				} else if(scene.nodeList.get(i).controlReceiver instanceof MISReceiverNotTeam){
 					MISReceiverNotTeam teamNode = (MISReceiverNotTeam) scene.nodeList.get(i).informationReceivers;
-					scriptString += createIndentations(5)+"if team_id != "+teamNode.team+":"+createLineBreaks(1);
-					String nameOfNode = "";
-					MISNode node = scene.nodeList.get(i);
-					while(node.parent != null){
-						nameOfNode += node.parent.name+"_";
-						node = node.parent;
-					}
-					nameOfNode += scene.nodeList.get(i).name;
-					if(scene.nodeList.get(i) instanceof MISNode2D){
-						scriptString += createIndentations(6)+nameOfNode+".set_pos(Vector2(float(split_message[4]), float(split_message[5])))"+createLineBreaks(1);
-					} else if(scene.nodeList.get(i) instanceof MISControl){
-						scriptString += createIndentations(6)+"pass #Error, MISControl, not implemented"+createLineBreaks(1);
-					} else if(scene.nodeList.get(i) instanceof MISSpatial){
-						scriptString += createIndentations(6)+"pass #Error, MISSpatial, not implemented"+createLineBreaks(1);
-					} else {
-						scriptString += createIndentations(6)+"pass #Error, Not of any time... node isnt of any type, wtf?"+createLineBreaks(1);
-					}
+					scriptString += createIndentations(5)+"if "+teamIdVariableName+" != "+teamNode.team+":"+createLineBreaks(1);
+					scriptString = refreshNodeString(scriptString, scene.nodeList.get(i), 6);
 				} else if(scene.nodeList.get(i).controlReceiver instanceof MISReceiverNotPerson){
-					scriptString += createIndentations(6)+"pass #Error, MISReceiverNotPerson don't have a reference to player_id in room yet"+createLineBreaks(1);
+					MISReceiverNotPerson personReceiver = (MISReceiverNotPerson) scene.nodeList.get(i).informationReceivers;
+					scriptString += createIndentations(5)+"if "+playerIdVariableName+" != "+personReceiver.person+":"+createLineBreaks(1);
+					scriptString = refreshNodeString(scriptString, scene.nodeList.get(i), 6);
 				} else{
-					String nameOfNode = "";
-					MISNode node = scene.nodeList.get(i);
-					while(node.parent != null){
-						nameOfNode += node.parent.name+"_";
-						node = node.parent;
-					}
-					nameOfNode += scene.nodeList.get(i).name;
-					if(scene.nodeList.get(i) instanceof MISNode2D){
-						scriptString += createIndentations(5)+nameOfNode+".set_pos(Vector2(float(split_message[4]), float(split_message[5])))"+createLineBreaks(1);
-					} else if(scene.nodeList.get(i) instanceof MISControl){
-						scriptString += createIndentations(5)+"pass #Error, MISControl, not implemented"+createLineBreaks(1);
-					} else if(scene.nodeList.get(i) instanceof MISSpatial){
-						scriptString += createIndentations(5)+"pass #Error, MISSpatial, not implemented"+createLineBreaks(1);
-					} 
+					scriptString = refreshNodeString(scriptString, scene.nodeList.get(i), 5);
 				}
 			}
 		}
@@ -185,20 +147,37 @@ public class ScriptBuilder {
 		return scriptString;
 	}
 	
+	private static String refreshNodeString(String scriptString, MISNode node, int indents){
+		String nameOfNode = getVariableNameForNode(node);
+		if(node instanceof MISNode2D){
+			scriptString += createIndentations(indents)+nameOfNode+".set_pos(Vector2(float(split_message[4]), float(split_message[5])))"+createLineBreaks(1);
+		} else if(node instanceof MISControl){
+			scriptString += createIndentations(indents)+"pass #Error, MISControl, not implemented"+createLineBreaks(1);
+		} else if(node instanceof MISSpatial){
+			scriptString += createIndentations(indents)+"pass #Error, MISSpatial, not implemented"+createLineBreaks(1);
+		} 
+		return scriptString;
+	}
+	
+	private static String getVariableNameForNode(MISNode node){
+		String nameOfNode = "";
+		MISNode nodeTemp = node;
+		while(nodeTemp.parent != null){
+			nameOfNode += nodeTemp.parent.name+"_";
+			nodeTemp = nodeTemp.parent;
+		}
+		nameOfNode += node.name;
+		return nameOfNode;
+	}
+	
 	private static String variableGeneration(String scriptString, MISScene scene, String ip){
 		//Load onready node variables
 		for(int i = 1; i < scene.nodeList.size(); i++){
 			String onreadyString = "onready var ";
-			String nameOfNode = "";
-			MISNode node = scene.nodeList.get(i);
-			while(node.parent != null){
-				nameOfNode += node.parent.name+"_";
-				node = node.parent;
-			}
-			nameOfNode += scene.nodeList.get(i).name;
+			String nameOfNode = getVariableNameForNode(scene.nodeList.get(i));
 			onreadyString += nameOfNode+" = get_node(\"";
 			String locationNode = "";
-			node = scene.nodeList.get(i);
+			MISNode node = scene.nodeList.get(i);
 			//find upper node
 			List<MISNode> nodeParentList = new ArrayList<MISNode>();
 			while(node.parent != null && node.parent.index != 0){
@@ -263,7 +242,7 @@ public class ScriptBuilder {
 	}
 	
 	private static String processFunctionControlUpdatesGeneration(String scriptString, MISScene scene){
-		//room_begun(refresh etc)
+		//room_begun(control etc)
 		scriptString += createIndentations(1)+"if "+roomBegunVariableName+":"+createLineBreaks(1);
 		for(int i = 0; i < scene.roomSettings.teams; i++){
 			scriptString += createIndentations(2)+"if "+teamIdVariableName+" == "+i+":"+createLineBreaks(1);
@@ -272,62 +251,49 @@ public class ScriptBuilder {
 					if(scene.nodeList.get(j).controlReceiver instanceof MISReceiverTeam){
 						MISReceiverTeam team = (MISReceiverTeam)scene.nodeList.get(j).controlReceiver;
 						if(team.team == i){
-							String nameOfNode = "";
-							MISNode node = scene.nodeList.get(j);
-							while(node.parent != null){
-								nameOfNode += node.parent.name+"_";
-								node = node.parent;
-							}
-							nameOfNode += scene.nodeList.get(j).name;
-							if(scene.nodeList.get(j) instanceof MISNode2D){
-								MISNode2D node2D = (MISNode2D) scene.nodeList.get(j);
-								scriptString += createIndentations(3)+tcpConnectionVariableName+put_utf8_string(node2D, nameOfNode)+createLineBreaks(1);
-							} else{
-								scriptString += createIndentations(3)+"pass #Error, Not other than MISNode2D implemented yet."+createLineBreaks(1);
-							}
+							String nameOfNode = getVariableNameForNode(scene.nodeList.get(j));
+							scriptString = controlNodeString(scriptString, scene.nodeList.get(j), nameOfNode);
 						}
-					} else if(scene.nodeList.get(j).controlReceiver instanceof MISReceiverPerson){
-						scriptString += createIndentations(3)+"pass #Error, MISReceiverPerson don't have a reference to player_id in room yet"+createLineBreaks(1);	
 					} else if(scene.nodeList.get(j).controlReceiver instanceof MISReceiverNotTeam){
 						MISReceiverNotTeam team = (MISReceiverNotTeam)scene.nodeList.get(j).controlReceiver;
 						if(team.team != i){
-							String nameOfNode = "";
-							MISNode node = scene.nodeList.get(j);
-							while(node.parent != null){
-								nameOfNode += node.parent.name+"_";
-								node = node.parent;
-							}
-							nameOfNode += scene.nodeList.get(j).name;
-							if(scene.nodeList.get(j) instanceof MISNode2D){
-								MISNode2D node2D = (MISNode2D) scene.nodeList.get(j);
-								scriptString += createIndentations(3)+tcpConnectionVariableName+put_utf8_string(node2D, nameOfNode)+createLineBreaks(1);
-							} else{
-								scriptString += createIndentations(3)+"pass #Error, Not other than MISNode2D implemented yet."+createLineBreaks(1);
-							}
+							String nameOfNode = getVariableNameForNode(scene.nodeList.get(j));
+							scriptString = controlNodeString(scriptString, scene.nodeList.get(j), nameOfNode);
 						}
-					} else if(scene.nodeList.get(j).controlReceiver instanceof MISReceiverNotPerson){
-						scriptString += createIndentations(3)+"pass #Error, MISReceiverNotPerson don't have a reference to player_id in room yet"+createLineBreaks(1);	
-					} else{
-						String nameOfNode = "";
-						MISNode node = scene.nodeList.get(j);
-						while(node.parent != null){
-							nameOfNode += node.parent.name+"_";
-							node = node.parent;
-						}
-						nameOfNode += scene.nodeList.get(j).name;
-						if(scene.nodeList.get(j) instanceof MISNode2D){
-							MISNode2D node2D = (MISNode2D) scene.nodeList.get(j);
-							scriptString += createIndentations(3)+tcpConnectionVariableName+put_utf8_string(node2D, nameOfNode)+createLineBreaks(1);
-						} else{
-							scriptString += createIndentations(3)+"pass #Error, Not other than MISNode2D implemented yet."+createLineBreaks(1);
-						}
-					}
+					} 
 				}
 			}
 			scriptString += createIndentations(3)+"pass"+createLineBreaks(1);
 		}
-		scriptString += createIndentations(1)+"pass";
-		scriptString += createLineBreaks(2);
+		for(int i = 0; i < scene.nodeList.size(); i++){
+			if(scene.nodeList.get(i).isControllable){
+				if(scene.nodeList.get(i).controlReceiver instanceof MISReceiverPerson){
+					MISReceiverPerson person = (MISReceiverPerson)scene.nodeList.get(i).controlReceiver;
+					scriptString += createIndentations(2)+"if "+playerIdVariableName+" == "+person.person+":"+createLineBreaks(1);
+					String nameOfNode = getVariableNameForNode(scene.nodeList.get(i));
+					scriptString += createIndentations(3)+controlNodeString(scriptString, scene.nodeList.get(i), nameOfNode);
+				} else if(scene.nodeList.get(i).controlReceiver instanceof MISReceiverNotPerson){
+					MISReceiverNotPerson person = (MISReceiverNotPerson)scene.nodeList.get(i).controlReceiver;
+					scriptString += createIndentations(2)+"if "+playerIdVariableName+" != "+person.person+":"+createLineBreaks(1);
+					String nameOfNode = getVariableNameForNode(scene.nodeList.get(i));
+					scriptString += createIndentations(3)+controlNodeString(scriptString, scene.nodeList.get(i), nameOfNode);
+				} else if(scene.nodeList.get(i).controlReceiver instanceof MISReceiverAll){
+					String nameOfNode = getVariableNameForNode(scene.nodeList.get(i));
+					scriptString += createIndentations(2)+controlNodeString(scriptString, scene.nodeList.get(i), nameOfNode);
+				}
+			}
+		}
+		scriptString += createIndentations(1)+"pass"+createLineBreaks(2);
+		return scriptString;
+	}
+	
+	private static String controlNodeString(String scriptString, MISNode node, String nameOfNode){
+		if(node instanceof MISNode2D){
+			MISNode2D node2D = (MISNode2D) node;
+			scriptString += createIndentations(3)+tcpConnectionVariableName+put_utf8_string(node2D, nameOfNode)+createLineBreaks(1);
+		} else{
+			scriptString += createIndentations(3)+"pass #Error, Not other than MISNode2D implemented yet."+createLineBreaks(1);
+		}
 		return scriptString;
 	}
 	

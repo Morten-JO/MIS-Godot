@@ -146,9 +146,9 @@ public class Client implements Runnable{
 		return room;
 	}
 	
-	public void notifyCreatedRoom(Room room, int totalPlayers, int teamId){
+	public void notifyCreatedRoom(Room room, int totalPlayers, int teamId, int clientId){
 		System.out.println("Team id is: "+teamId);
-		String messageForClient = "roomcreate "+room.getRoomID()+" "+room.getSceneId()+" "+totalPlayers+" "+teamId;
+		String messageForClient = "roomcreate "+room.getRoomID()+" "+room.getSceneId()+" "+totalPlayers+" "+teamId+" "+clientId;
 		addMessageToSend(messageForClient);
 	}
 	
