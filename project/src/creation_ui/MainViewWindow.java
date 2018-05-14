@@ -705,7 +705,7 @@ public class MainViewWindow {
 							@Override
 							public void actionPerformed(ActionEvent e) {
 								if(currentScene.roomSettings != null){
-									SendInformationDialog infoDialog = new SendInformationDialog(currentScene.roomSettings, "Refresh information");
+									SendInformationDialog infoDialog = new SendInformationDialog(currentScene.roomSettings, nodeList.getSelectedValue(), true, false);
 									infoDialog.showDialog();
 									MISReceiver receiver = infoDialog.getReceiver();
 									if(receiver != null){
@@ -736,7 +736,7 @@ public class MainViewWindow {
 							@Override
 							public void actionPerformed(ActionEvent e) {
 								if(currentScene.roomSettings != null){
-									SendInformationDialog infoDialog = new SendInformationDialog(currentScene.roomSettings, "Control information");
+									SendInformationDialog infoDialog = new SendInformationDialog(currentScene.roomSettings, nodeList.getSelectedValue(), false, true);
 									infoDialog.showDialog();
 									MISReceiver receiver = infoDialog.getReceiver();
 									if(receiver != null){

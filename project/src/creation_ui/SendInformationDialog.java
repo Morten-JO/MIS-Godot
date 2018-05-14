@@ -13,6 +13,8 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import data_types.MISRoomSettings;
+import nodes.MISNode;
+import project.MISProject;
 import receivers.MISReceiver;
 import receivers.MISReceiverAll;
 import receivers.MISReceiverNotPerson;
@@ -43,8 +45,13 @@ public class SendInformationDialog extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public SendInformationDialog(MISRoomSettings settings, String title) {
-		setTitle(title);
+	public SendInformationDialog(MISRoomSettings settings, MISNode node, boolean refresh, boolean control) {
+		if(refresh){
+			setTitle("Refresh information");
+		} else if(control){
+			setTitle("Control information");
+		}
+		
 		setModalityType(ModalityType.APPLICATION_MODAL);
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setIconImage(Toolkit.getDefaultToolkit().getImage(ApplicationWindow.class.getResource("/resources/MIS_Icon128.png")));
@@ -284,10 +291,66 @@ public class SendInformationDialog extends JDialog {
 				});
 			}
 		}
+		MISReceiver receiver = null;
+		if(refresh){
+			receiver = node.informationReceivers;
+		} else if(control){
+			receiver = node.controlReceiver;
+		}
+		if(receiver != null){
+			if(receiver instanceof MISReceiverPerson){
+				CardLayout layout = (CardLayout) cardPanelReceivers.getLayout();
+				layout.show(cardPanelReceivers, "receiverPerson");
+				int person = ((MISReceiverPerson)receiver).person;
+				if(comboBoxPerson.getItemCount() > person){
+					comboBoxPerson.setSelectedIndex(person);
+				}
+				comboBoxReceiverType.setSelectedIndex(1);
+			} else if(receiver instanceof MISReceiverAll){
+				CardLayout layout = (CardLayout) cardPanelReceivers.getLayout();
+				layout.show(cardPanelReceivers, "receiverAll");
+				comboBoxReceiverType.setSelectedIndex(0);
+			} else if(receiver instanceof MISReceiverTeam){
+				CardLayout layout = (CardLayout) cardPanelReceivers.getLayout();
+				layout.show(cardPanelReceivers, "receiverTeam");
+				int team = ((MISReceiverTeam)receiver).team;
+				if(comboBoxTeam.getItemCount() > team){
+					comboBoxTeam.setSelectedIndex(team);
+				}
+				comboBoxReceiverType.setSelectedIndex(2);
+			} else if(receiver instanceof MISReceiverNotTeam){
+				CardLayout layout = (CardLayout) cardPanelReceivers.getLayout();
+				layout.show(cardPanelReceivers, "receiverNotTeam");
+				int team = ((MISReceiverNotTeam)receiver).team;
+				if(comboBoxNotTeam.getItemCount() > team){
+					comboBoxNotTeam.setSelectedIndex(team);
+				}
+				comboBoxReceiverType.setSelectedIndex(3);
+			} else if(receiver instanceof MISReceiverNotPerson){
+				CardLayout layout = (CardLayout) cardPanelReceivers.getLayout();
+				layout.show(cardPanelReceivers, "receiverNotPerson");
+				int person = ((MISReceiverNotPerson)receiver).person;
+				if(comboBoxNotPerson.getItemCount() > person){
+					comboBoxNotPerson.setSelectedIndex(person);
+				}
+				comboBoxReceiverType.setSelectedIndex(4);
+			}
+		}
+		
+		
+		if(refresh && control){
+			setVisible(false);
+			dispose();
+			cancel = true;
+			System.out.println("Both refresh and control was checked...");
+		}
+		
 	}
 
 	public void showDialog(){
-		this.setVisible(true);
+		if(!cancel){
+			this.setVisible(true);
+		}
 	}
 	
 	public MISReceiver getReceiver(){
