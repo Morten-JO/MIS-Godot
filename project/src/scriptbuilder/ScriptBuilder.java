@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JFileChooser;
 
@@ -197,9 +199,14 @@ public class ScriptBuilder {
 			onreadyString += nameOfNode+" = get_node(\"";
 			String locationNode = "";
 			node = scene.nodeList.get(i);
+			//find upper node
+			List<MISNode> nodeParentList = new ArrayList<MISNode>();
 			while(node.parent != null && node.parent.index != 0){
-				locationNode += node.parent.name+"/";
 				node = node.parent;
+				nodeParentList.add(node);
+			}
+			for(int j = nodeParentList.size()-1; j >= 0; j--){
+				locationNode += nodeParentList.get(j).name+"/";
 			}
 			locationNode += scene.nodeList.get(i).name+"\")";
 			onreadyString += locationNode+createLineBreaks(1);
