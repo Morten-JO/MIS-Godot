@@ -55,6 +55,7 @@ public class ServerApplicationWindow extends JFrame {
 	
 	private Timer standardUpdateTimer;
 	private Timer clientUpdateTimer;
+	private JButton btnLog;
 	
 	/**
 	 * Create the frame.
@@ -115,6 +116,8 @@ public class ServerApplicationWindow extends JFrame {
 		lblStatusValue = new JLabel(" ");
 		
 		btnStartServer = new JButton("Start Server");
+		
+		btnLog = new JButton("Log");
 		GroupLayout gl_contentPane = new GroupLayout(contentPane);
 		gl_contentPane.setHorizontalGroup(
 			gl_contentPane.createParallelGroup(Alignment.TRAILING)
@@ -130,7 +133,10 @@ public class ServerApplicationWindow extends JFrame {
 									.addComponent(lblStatus)
 									.addPreferredGap(ComponentPlacement.RELATED)
 									.addComponent(lblStatusValue, GroupLayout.PREFERRED_SIZE, 152, GroupLayout.PREFERRED_SIZE))
-								.addComponent(btnStartServer))
+								.addGroup(gl_contentPane.createSequentialGroup()
+									.addComponent(btnStartServer)
+									.addPreferredGap(ComponentPlacement.RELATED)
+									.addComponent(btnLog)))
 							.addGap(18)
 							.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
 								.addGroup(gl_contentPane.createSequentialGroup()
@@ -179,7 +185,9 @@ public class ServerApplicationWindow extends JFrame {
 								.addComponent(lblTotalPlayersValue))
 							.addGap(13))
 						.addGroup(gl_contentPane.createSequentialGroup()
-							.addComponent(btnStartServer)
+							.addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
+								.addComponent(btnStartServer)
+								.addComponent(btnLog))
 							.addGap(18)))
 					.addComponent(lblConnectedUsers)
 					.addPreferredGap(ComponentPlacement.RELATED)
@@ -197,6 +205,16 @@ public class ServerApplicationWindow extends JFrame {
 			isStarted = true;
 			btnStartServer.setText("Stop server");
 		}
+		
+		btnLog.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				if(isStarted){
+					ServerMessageLog log = new ServerMessageLog(server);
+				} 
+			}
+		});
+		
 		btnStartServer.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent arg0) {

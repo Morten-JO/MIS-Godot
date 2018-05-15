@@ -52,7 +52,6 @@ public class DummyClientMain {
 					}
 				}
 			});
-			writer.println("queuestart 1");
 			thread.start();
 			writerThread.start();
 		} catch (UnknownHostException e) {

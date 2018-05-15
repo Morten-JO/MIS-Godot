@@ -45,7 +45,7 @@ public class ServerMessageLog extends JFrame {
 	 */
 	public ServerMessageLog(Server server) {
 		setTitle("Server Message Log");
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 450, 650);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -125,17 +125,24 @@ public class ServerMessageLog extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Client propertyType = (Client) comboBox.getSelectedItem();
-				for(int i = 0; i < propertyType.sentMessagesDataStorage.size(); i++){
-					sentModel.addElement(propertyType.sentMessagesDataStorage.get(i));
-				}
-				for(int i = 0; i < propertyType.receivedMessagesDataStorage.size(); i++){
-					receivedModel.addElement(propertyType.receivedMessagesDataStorage.get(i));
-				}
+				updateElements(comboBox, receivedModel, sentModel);
 			}
 		});
-		
+		updateElements(comboBox, receivedModel, sentModel);
 		contentPane.setLayout(gl_contentPane);
 		setVisible(true);
+	}
+	
+	private void updateElements(JComboBox<Client> comboBox, DefaultListModel<String> receivedModel, DefaultListModel<String> sentModel){
+		Client propertyType = (Client) comboBox.getSelectedItem();
+		if(propertyType != null){
+			sentModel.removeAllElements();
+			for(int i = 0; i < propertyType.sentMessagesDataStorage.size(); i++){
+				sentModel.addElement(propertyType.sentMessagesDataStorage.get(i));
+			}
+			for(int i = 0; i < propertyType.receivedMessagesDataStorage.size(); i++){
+				receivedModel.addElement(propertyType.receivedMessagesDataStorage.get(i));
+			}
+		}
 	}
 }
