@@ -1,5 +1,7 @@
 package server;
 
+import project.MISProject;
+
 public class ClientParser {
 
 	private Server serverReference;
@@ -45,6 +47,13 @@ public class ClientParser {
 			if(nodes.length > 1){
 				client.notifySetName(nodes[1]);
 				return true;
+			}
+		} else if(message.startsWith("client_details")){
+			double minimumBuild = Double.parseDouble(message.split(" ")[1]);
+			if(MISProject.project.minimumBuildVersion > minimumBuild){
+				serverReference.notifyBadBuildVersion(client);
+			} else{
+				client.notifyValidBuildVersion();
 			}
 		}
 		return false;

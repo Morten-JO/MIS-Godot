@@ -78,7 +78,6 @@ public class Room {
 			}
 			
 			for(int i = 0; i < teams.size(); i++){
-				System.out.println("Ran this through, how many times?");
 				for(int j = 0; j < teams.get(i).size(); j++){
 					clientsInRoom.add(teams.get(i).get(j));
 					teams.get(i).get(j).joinRoom(this);

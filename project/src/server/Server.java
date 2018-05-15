@@ -32,6 +32,7 @@ public class Server implements Runnable{
 	private List<Room> rooms;
 	public List<MISQueue> queues;
 	private Thread queueHandler;
+	private Thread clientControlHandler;
 	private Server self;
 	private boolean autoQueue = false;
 	
@@ -121,6 +122,34 @@ public class Server implements Runnable{
 		serverUI.stopServerUI();
 		thread = new Thread(this);
 		return true;
+	}
+	
+	/**
+	 * Used for session timeout and client 
+	 */
+	private void startClientControlHandler(){
+		clientControlHandler = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				while(running){
+					for(int i = 0; i < clientList.size(); i++){
+						if(MISProject.project.timeOutDuration != 0){
+							if(clientList.get(i).getLastResponse() + MISProject.project.timeOutDuration * 1000 < System.currentTimeMillis()){
+								System.out.println("Client #"+clientList.get(i)+" removed due to lack of response");
+								clientList.get(i).cleanUpClient();
+								clientList.remove(i);
+								i--;
+							}
+						}
+					}
+					try {
+						Thread.sleep(500);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		});
 	}
 	
 	private void startQueueHandler(){
@@ -249,6 +278,12 @@ public class Server implements Runnable{
 	public void notifyFatalRoomError() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public void notifyBadBuildVersion(Client client) {
+		client.addMessageToSend("bad minimum_build");
+		client.cleanUpClient();
+		clientList.remove(client);
 	}
 	
 	

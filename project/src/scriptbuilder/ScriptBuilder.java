@@ -34,11 +34,13 @@ public class ScriptBuilder {
 	private static String splittedStringsVariableName = "splitted_strings";
 	
 	private static String timeoutDurationConst = "TIMEOUT_DURATION_CONNECT = 10";
+	private static String minimumClientBuild;
 	
 	public static void main(String[] args) {
 	}
 	
 	public static  boolean buildScript(MISProject project, MISScene scene, String name, String nodeType, String ip){
+		minimumClientBuild = "MINIMUM_BUILD = "+project.minimumBuildVersion;
 		String scriptString = "";
 		
 		scriptString = preVariableGeneration(scriptString, project, nodeType);
@@ -204,6 +206,7 @@ public class ScriptBuilder {
 				
 		//Create consts
 		scriptString += "const "+timeoutDurationConst+createLineBreaks(1);
+		scriptString += "const "+minimumClientBuild+createLineBreaks(1);
 			
 		scriptString += createLineBreaks(2);
 		return scriptString;
@@ -311,6 +314,7 @@ public class ScriptBuilder {
 		//Create connect function
 		scriptString += "func connectToServer():"+createLineBreaks(1);
 		scriptString += createIndentations(1)+tcpConnectionVariableName+".connect(\""+ip+"\", "+project.basePort.port+")"+createLineBreaks(1);
+		scriptString += createIndentations(1)+tcpConnectionVariableName+".put_utf8_string(\"client_details \"+MINIMUM_BUILD)"+createLineBreaks(1);
 		scriptString += createIndentations(1)+"set_process(true)"+createLineBreaks(1);
 		scriptString += createLineBreaks(2);
 		return scriptString;

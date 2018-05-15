@@ -8,6 +8,8 @@ import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
 
+import project.MISProject;
+
 public class Client implements Runnable{
 
 	private Socket socket;
@@ -42,6 +44,8 @@ public class Client implements Runnable{
 	public ArrayList<String> sentMessagesDataStorage;
 	public ArrayList<String> receivedMessagesDataStorage;
 	
+	private ArrayList<Long> messageLimiter;
+	
 	public Client(Server server, Socket socket, BufferedReader reader, PrintWriter writer){
 		this.socket = socket;
 		this.lastResponse = System.nanoTime();
@@ -49,6 +53,7 @@ public class Client implements Runnable{
 		this.writer = writer;
 		writerThread = new Thread(this);
 		lastResponse = System.currentTimeMillis();
+		messageLimiter = new ArrayList<Long>();
 		this.id = globalID;
 		globalID++;
 		this.server = server;
@@ -59,12 +64,27 @@ public class Client implements Runnable{
 			public void run() {
 				while(readerRunning){
 					try {
-						String message = reader.readLine();
-						receivedMessages.add(message);
-						messagesReceived++;
-						receivedMessagesDataStorage.add(message);
-						parser.parseMessage(message);
-						lastResponse = System.currentTimeMillis();
+						for(int i = 0; i < messageLimiter.size(); i++){
+							if(messageLimiter.get(i) < System.currentTimeMillis()){
+								messageLimiter.remove(i);
+								i--;
+							}
+						}
+						if(messageLimiter.size() < MISProject.project.maxMessagesPerClientPerSecond){
+							String message = reader.readLine();
+							receivedMessages.add(message);
+							messagesReceived++;
+							receivedMessagesDataStorage.add(message);
+							parser.parseMessage(message);
+							lastResponse = System.currentTimeMillis();
+							messageLimiter.add(System.currentTimeMillis() + 1000L);
+						} else{
+							try {
+								Thread.sleep(10);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+						}
 					} catch(SocketException e){
 						server.notifyServerOfFailedClient(client);
 						readerRunning = false;
@@ -166,5 +186,25 @@ public class Client implements Runnable{
 	
 	public String getIp(){
 		return socket.getInetAddress().getHostAddress();
+	}
+	
+	public void cleanUpClient(){
+		try {
+			readerRunning = false;
+			writerRunning = false;
+			reader.close();
+			for(int i = 0; i < toBeSentMessages.size(); i++){
+				writer.println(toBeSentMessages.get(i));
+			}
+			writer.close();
+			socket.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+	}
+
+	public void notifyValidBuildVersion() {
+		addMessageToSend("good build_version");
 	}
 }
