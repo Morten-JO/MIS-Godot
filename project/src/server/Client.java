@@ -207,4 +207,12 @@ public class Client implements Runnable{
 	public void notifyValidBuildVersion() {
 		addMessageToSend("good build_version");
 	}
+
+	public void notifyWonRoom(int winningTeamIndex) {
+		addMessageToSend("game_end "+winningTeamIndex);
+	}
+
+	public void notifyGameEnd(int winningTeamIndex) {
+		addMessageToSend("game_end "+winningTeamIndex);
+	}
 }

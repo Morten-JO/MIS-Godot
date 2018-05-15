@@ -313,4 +313,8 @@ public class Room {
 		
 	}
 	
+	public MISScene getScene(){
+		return scene;
+	}
+	
 }

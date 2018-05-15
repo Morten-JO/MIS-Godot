@@ -65,7 +65,11 @@ public class ScriptBuilder {
 		
 		scriptString = broadcastFunctionsGeneration(scriptString, scene);
 		
+		scriptString = gameActionFunctionsGeneration(scriptString, scene);
+		
 		scriptString = refreshFunctionsGeneration(scriptString, scene);
+		
+		scriptString = closeUpServerFunctionGeneration(scriptString);
 		
 		scriptString = nodeControlFunctionsGeneration(scriptString, scene);
 		
@@ -89,7 +93,7 @@ public class ScriptBuilder {
 		}
 		return false;
 	}
-	
+
 	private static String createLineBreaks(int linebreaks){
 		String str = "";
 		for(int i = 0; i < linebreaks; i++){
@@ -107,6 +111,7 @@ public class ScriptBuilder {
 	}
 	
 	private static String processFunctionRoomMessagesGeneration(String scriptString, MISScene scene){
+		//roomcreate
 		scriptString += createIndentations(3)+"if(\"roomcreate\" in "+splittedStringsVariableName+"[i]):"+createLineBreaks(1);
 		scriptString += createIndentations(4)+"var split_messages = "+splittedStringsVariableName+"[i].split(\" \")"+createLineBreaks(1);
 		scriptString += createIndentations(4)+"var room_id = split_messages[1]"+createLineBreaks(1);
@@ -116,6 +121,11 @@ public class ScriptBuilder {
 		scriptString += createIndentations(4)+playerIdVariableName+" = int(split_messages[5])"+createLineBreaks(1);
 		scriptString += createIndentations(4)+"roomBegun(split_messages)"+createLineBreaks(2);
 
+		scriptString += createIndentations(3)+"if(\"game_end\" in "+splittedStringsVariableName+"[i]):"+createLineBreaks(1);
+		scriptString += createIndentations(4)+"var split_messages = "+splittedStringsVariableName+"[i].split(\" \")"+createLineBreaks(1);
+		scriptString += createIndentations(4)+"var winning_team = int(split_messages[1])"+createLineBreaks(1);
+		scriptString += createIndentations(4)+"onReceiveGameEnd(winning_team)"+createLineBreaks(2);
+		
 		//node message(updates)
 		scriptString += createIndentations(3)+"if(\"node\" in "+splittedStringsVariableName+"[i]):"+createLineBreaks(1);
 		scriptString += createIndentations(4)+"var split_message = "+splittedStringsVariableName+"[i].split(\" \")"+createLineBreaks(1);
@@ -323,9 +333,11 @@ public class ScriptBuilder {
 	private static String customRoomBegunFunctionGeneration(String scriptString, MISScene scene){
 		//Create room_begun function (usermade code, can be called here)
 		scriptString += "func roomBegun(data):"+createLineBreaks(1);
+		scriptString += createIndentations(1)+"#Custom code can be added here(called when the game starts)"+createLineBreaks(1);
 		scriptString += createIndentations(1)+roomBegunVariableName+" = true"+createLineBreaks(1);
 		for(int i = 0; i < scene.roomSettings.teams; i++){
 			scriptString += createIndentations(1)+"if "+teamIdVariableName+" == "+i+":"+createLineBreaks(1);
+			scriptString += createIndentations(1)+"#Custom code can be added here(called when the player #"+i+" game starts)"+createLineBreaks(1);
 			scriptString += createIndentations(2)+"pass"+createLineBreaks(1);
 		}
 				
@@ -389,6 +401,32 @@ public class ScriptBuilder {
 		return scriptString;
 	}
 	
+	private static String closeUpServerFunctionGeneration(String scriptString){
+		scriptString += "func closeUpServer():"+createLineBreaks(1);
+		scriptString += createIndentations(1)+"if "+tcpConnectionVariableName+".is_connected():"+createLineBreaks(1);
+		scriptString += createIndentations(2)+tcpConnectionVariableName+".disconnect_from_host()"+createLineBreaks(2);
+		return scriptString;
+	}
+	
+	private static String gameActionFunctionsGeneration(String scriptString, MISScene scene) {
+		//gameEnd
+		scriptString += "func onReceiveGameEnd(winning_team):"+createLineBreaks(1);
+		scriptString += createIndentations(1)+"gameEnd()"+createLineBreaks(1);
+		scriptString += createIndentations(1)+"pass"+createLineBreaks(2);
+		
+		scriptString += "func gameEnd():"+createLineBreaks(1);
+		scriptString += createIndentations(1)+"#Custom code can be added here(called when the game ends)"+createLineBreaks(1);
+		scriptString += createIndentations(1)+"pass"+createLineBreaks(2);
+		
+		scriptString += "func onReceiveGameWon(winning_team):"+createLineBreaks(1);
+		scriptString += createIndentations(1)+"if "+teamIdVariableName+" == winning_team:"+createLineBreaks(1);
+		scriptString += createIndentations(2)+"gameWon()"+createLineBreaks(2);
+		
+		scriptString += "func gameWon():"+createLineBreaks(1);
+		scriptString += createIndentations(1)+"#Custom code can be added here(called when the player won)"+createLineBreaks(1);
+		scriptString += createIndentations(1)+"pass"+createLineBreaks(2);
+		return scriptString;
+	}
 	
 	private static String put_utf8_string(MISNode2D node, String name){
 		return ".put_utf8_string(\"[node] "+node.name+" "+node.index+" [transform2d] \"+str("+name+".get_pos().x)+\" \"+str("+name+".get_pos().y)+\" \"+str("+name+".get_rot())+\" \"+str("+name+".get_scale().x)+\" \"+str("+name+".get_scale().y)+\"\\n\")";

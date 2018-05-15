@@ -14,6 +14,7 @@ import com.sun.org.apache.xerces.internal.util.SynchronizedSymbolTable;
 import broadcasts.MISBroadcastMessage;
 import data_types.MISQueue;
 import data_types.MISScene;
+import game_types.MISCompetetiveGameType;
 import project.MISProject;
 import receivers.MISReceiverAll;
 import server_ui.ServerApplicationWindow;
@@ -232,12 +233,38 @@ public class Server implements Runnable{
 			serverUI.updateServer();
 		}
 		//race conditions?
-		for(int i = 0; i < rooms.size(); i++){
-			for(int j = 0; j < rooms.get(i).clientsInRoom.size(); j++){
-				if(rooms.get(i).clientsInRoom.get(j) == client){
-					rooms.get(i).clientsInRoom.remove(j);
-					i = rooms.size();
-					break;
+		for(int j = 0; j < client.getRoom().clientsInRoom.size(); j++){
+			if(client.getRoom().clientsInRoom.get(j) == client){
+				client.getRoom().clientsInRoom.remove(j);
+				break;
+			}
+		}
+		
+		for(int i = 0; i < client.getRoom().teams.size(); i++){
+			if(client.getRoom().teams.get(i).contains(client)){
+				client.getRoom().teams.get(i).remove(client);
+				break;
+			}
+		}
+		if(client.getRoom().getScene().roomSettings.gameType instanceof MISCompetetiveGameType){
+			//Check room that player left
+			int teamsWithPlayers = 0;
+			for(int i = 0; i < client.getRoom().teams.size(); i++){
+				if(client.getRoom().teams.get(i).size() > 0){
+					teamsWithPlayers++;
+				}
+			}
+			if(teamsWithPlayers <= 1){
+				client.getRoom().closeRoom();
+				if(teamsWithPlayers == 1){
+					for(int i = 0; i < client.getRoom().teams.size(); i++){
+						if(client.getRoom().teams.get(i).size() > 0){
+							for(int j = 0; j < client.getRoom().teams.get(i).size(); j++){
+								client.getRoom().teams.get(i).get(j).notifyWonRoom(i);
+								client.getRoom().teams.get(i).get(j).notifyGameEnd(i);
+							}
+						}
+					}
 				}
 			}
 		}
