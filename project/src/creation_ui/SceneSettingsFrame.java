@@ -18,7 +18,12 @@ import javax.swing.event.ChangeListener;
 
 import data_types.MISRoomSettings;
 import data_types.MISScene;
+import game_types.MISCompetetiveGameType;
+import game_types.MISCustomGameType;
+import game_types.MISEndlessGameType;
+import game_types.MISGameType;
 import project.MISProject;
+import server.Client;
 import settings.MISProjectSettings;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -44,6 +49,7 @@ public class SceneSettingsFrame extends JDialog {
 	private JCheckBox chckbxRoomInScene;
 	private JPanel cardLayoutPanel;
 	private JSpinner spinnerTeamsInRoom;
+	private JComboBox<String> roomTypeComboBox;
 
 	/**
 	 * Create the dialog.
@@ -150,6 +156,20 @@ public class SceneSettingsFrame extends JDialog {
 			}
 		});
 		
+		roomTypeComboBox = new JComboBox<String>();
+		DefaultComboBoxModel<String> model = new DefaultComboBoxModel<String>(new String[] {"Competetive", "Endless", "Custom"});
+		roomTypeComboBox.setModel(model);
+		roomTypeComboBox.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				wasAnythingChanged = true;
+				saveButton.setEnabled(true);
+			}
+		});
+		
+		JLabel lblRoomType = new JLabel("Room type:");
+		
 		GroupLayout gl_roomCardPanel = new GroupLayout(roomCardPanel);
 		gl_roomCardPanel.setHorizontalGroup(
 			gl_roomCardPanel.createParallelGroup(Alignment.LEADING)
@@ -158,20 +178,26 @@ public class SceneSettingsFrame extends JDialog {
 					.addGroup(gl_roomCardPanel.createParallelGroup(Alignment.LEADING)
 						.addComponent(chckbxAutoQueue)
 						.addGroup(gl_roomCardPanel.createSequentialGroup()
-							.addGroup(gl_roomCardPanel.createParallelGroup(Alignment.TRAILING, false)
-								.addGroup(Alignment.LEADING, gl_roomCardPanel.createSequentialGroup()
+							.addGroup(gl_roomCardPanel.createParallelGroup(Alignment.LEADING, false)
+								.addGroup(gl_roomCardPanel.createSequentialGroup()
 									.addComponent(lblTeamLayout)
 									.addPreferredGap(ComponentPlacement.RELATED)
 									.addComponent(spinnerTeamsInRoom))
-								.addGroup(Alignment.LEADING, gl_roomCardPanel.createSequentialGroup()
+								.addGroup(gl_roomCardPanel.createSequentialGroup()
 									.addComponent(lblMinimumPlayers)
 									.addPreferredGap(ComponentPlacement.RELATED)
 									.addComponent(spinnerMinimumPlayers, GroupLayout.PREFERRED_SIZE, 44, GroupLayout.PREFERRED_SIZE)))
 							.addGap(49)
-							.addComponent(lblMaximumPlayers)
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(spinnerMaximumPlayers, GroupLayout.PREFERRED_SIZE, 46, GroupLayout.PREFERRED_SIZE)))
-					.addContainerGap(79, Short.MAX_VALUE))
+							.addGroup(gl_roomCardPanel.createParallelGroup(Alignment.LEADING)
+								.addGroup(gl_roomCardPanel.createSequentialGroup()
+									.addComponent(lblMaximumPlayers)
+									.addPreferredGap(ComponentPlacement.RELATED)
+									.addComponent(spinnerMaximumPlayers, GroupLayout.PREFERRED_SIZE, 46, GroupLayout.PREFERRED_SIZE))
+								.addGroup(gl_roomCardPanel.createSequentialGroup()
+									.addComponent(lblRoomType)
+									.addPreferredGap(ComponentPlacement.RELATED)
+									.addComponent(roomTypeComboBox, 0, 145, Short.MAX_VALUE)))))
+					.addContainerGap())
 		);
 		gl_roomCardPanel.setVerticalGroup(
 			gl_roomCardPanel.createParallelGroup(Alignment.LEADING)
@@ -187,8 +213,10 @@ public class SceneSettingsFrame extends JDialog {
 					.addPreferredGap(ComponentPlacement.UNRELATED)
 					.addGroup(gl_roomCardPanel.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lblTeamLayout)
-						.addComponent(spinnerTeamsInRoom, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addContainerGap(37, Short.MAX_VALUE))
+						.addComponent(spinnerTeamsInRoom, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(roomTypeComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lblRoomType))
+					.addContainerGap(31, Short.MAX_VALUE))
 		);
 		roomCardPanel.setLayout(gl_roomCardPanel);
 		
@@ -254,7 +282,16 @@ public class SceneSettingsFrame extends JDialog {
 			int maximumPlayers = (Integer) spinnerMaximumPlayers.getValue();
 			boolean autoQueue = chckbxAutoQueue.isSelected();
 			int teamSize = (Integer) spinnerTeamsInRoom.getValue();
-			MISRoomSettings roomSettings = new MISRoomSettings(minimumPlayers, maximumPlayers, teamSize, autoQueue);
+			MISGameType gameType = null;
+			String value = (String)roomTypeComboBox.getSelectedItem();
+			if(value.equals("competetive")){
+				gameType = new MISCompetetiveGameType();
+			} else if(value.equals("Endlesss")){
+				gameType = new MISEndlessGameType();
+			} else if(value.equals("Custom")){
+				gameType = new MISCustomGameType();
+			}
+			MISRoomSettings roomSettings = new MISRoomSettings(minimumPlayers, maximumPlayers, teamSize, autoQueue, gameType);
 			scene.roomSettings = roomSettings;
 		}
 		if(MISProject.saveProject()){
@@ -275,9 +312,17 @@ public class SceneSettingsFrame extends JDialog {
 			spinnerMaximumPlayers.setValue(scene.roomSettings.maximumPlayers);
 			spinnerTeamsInRoom.setValue(scene.roomSettings.teams);
 			chckbxAutoQueue.setSelected(scene.roomSettings.autoQueue);
+			if(scene.roomSettings.gameType instanceof MISCompetetiveGameType){
+				roomTypeComboBox.setSelectedIndex(0);
+			} else if(scene.roomSettings.gameType instanceof MISEndlessGameType){
+				roomTypeComboBox.setSelectedIndex(1);
+			} else if(scene.roomSettings.gameType instanceof MISCustomGameType){
+				roomTypeComboBox.setSelectedIndex(2);
+			}
 		} else{
 			chckbxRoomInScene.setSelected(false);
 		}
+		wasAnythingChanged = false;
 	}
 
 	public void showDialog(){

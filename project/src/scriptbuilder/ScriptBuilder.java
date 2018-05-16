@@ -10,6 +10,7 @@ import java.util.List;
 import javax.swing.JFileChooser;
 
 import data_types.MISScene;
+import game_types.MISCompetetiveGameType;
 import nodes.MISControl;
 import nodes.MISNode;
 import nodes.MISNode2D;
@@ -125,6 +126,13 @@ public class ScriptBuilder {
 		scriptString += createIndentations(4)+"var split_messages = "+splittedStringsVariableName+"[i].split(\" \")"+createLineBreaks(1);
 		scriptString += createIndentations(4)+"var winning_team = int(split_messages[1])"+createLineBreaks(1);
 		scriptString += createIndentations(4)+"onReceiveGameEnd(winning_team)"+createLineBreaks(2);
+		
+		if(scene.roomSettings.gameType instanceof MISCompetetiveGameType){
+			scriptString += createIndentations(3)+"if (\"game_won\" in "+splittedStringsVariableName+"[i]):"+createLineBreaks(1);
+			scriptString += createIndentations(4)+"var split_messages = "+splittedStringsVariableName+"[i].split(\" \")"+createLineBreaks(1);
+			scriptString += createIndentations(4)+"var winning_team = int(split_messages[1])"+createLineBreaks(1);
+			scriptString += createIndentations(4)+"onReceiveGameWon(winning_team)"+createLineBreaks(2);
+		}
 		
 		//node message(updates)
 		scriptString += createIndentations(3)+"if(\"node\" in "+splittedStringsVariableName+"[i]):"+createLineBreaks(1);
@@ -418,13 +426,16 @@ public class ScriptBuilder {
 		scriptString += createIndentations(1)+"#Custom code can be added here(called when the game ends)"+createLineBreaks(1);
 		scriptString += createIndentations(1)+"pass"+createLineBreaks(2);
 		
-		scriptString += "func onReceiveGameWon(winning_team):"+createLineBreaks(1);
-		scriptString += createIndentations(1)+"if "+teamIdVariableName+" == winning_team:"+createLineBreaks(1);
-		scriptString += createIndentations(2)+"gameWon()"+createLineBreaks(2);
+		if(scene.roomSettings.gameType instanceof MISCompetetiveGameType){
+			scriptString += "func onReceiveGameWon(winning_team):"+createLineBreaks(1);
+			scriptString += createIndentations(1)+"if "+teamIdVariableName+" == winning_team:"+createLineBreaks(1);
+			scriptString += createIndentations(2)+"gameWon()"+createLineBreaks(2);
+			
+			scriptString += "func gameWon():"+createLineBreaks(1);
+			scriptString += createIndentations(1)+"#Custom code can be added here(called when the player won)"+createLineBreaks(1);
+			scriptString += createIndentations(1)+"pass"+createLineBreaks(2);
+		}
 		
-		scriptString += "func gameWon():"+createLineBreaks(1);
-		scriptString += createIndentations(1)+"#Custom code can be added here(called when the player won)"+createLineBreaks(1);
-		scriptString += createIndentations(1)+"pass"+createLineBreaks(2);
 		return scriptString;
 	}
 	

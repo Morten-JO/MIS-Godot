@@ -22,6 +22,10 @@ import data_types.MISScene;
 import enums.MISListType;
 import enums.MISProtocol;
 import enums.MISType;
+import game_types.MISCompetetiveGameType;
+import game_types.MISCustomGameType;
+import game_types.MISEndlessGameType;
+import game_types.MISGameType;
 import loaders.MISLoader;
 import nodes.MISControl;
 import nodes.MISNode;
@@ -123,6 +127,7 @@ public class MISProject {
 						sceneObject.put("roomSceneMaximum", scene.roomSettings.maximumPlayers);
 						sceneObject.put("roomSceneTeamSize", scene.roomSettings.teams);
 						sceneObject.put("roomSceneAutoQueue", scene.roomSettings.autoQueue);
+						sceneObject.put("roomSceneGameType", scene.roomSettings.gameType.getClass().getSimpleName());
 					}
 					
 					JSONObject nodesObject = new JSONObject();
@@ -427,7 +432,18 @@ public class MISProject {
 					int maximumPlayers = toIntExact((Long) sceneObject.get("roomSceneMaximum"));
 					boolean autoQueue = (Boolean) sceneObject.get("roomSceneAutoQueue");
 					int teamSize = toIntExact((Long) sceneObject.get("roomSceneTeamSize"));
-					MISRoomSettings settings = new MISRoomSettings(minimumPlayers, maximumPlayers, teamSize, autoQueue);
+					String gameTypeClassName = (String) sceneObject.get("roomSceneGameType");
+					MISRoomSettings settings;
+					if(gameTypeClassName.equals(MISCompetetiveGameType.class.getSimpleName())){
+						settings = new MISRoomSettings(minimumPlayers, maximumPlayers, teamSize, autoQueue, new MISCompetetiveGameType());
+					} else if(gameTypeClassName.equals(MISEndlessGameType.class.getSimpleName())){
+						settings = new MISRoomSettings(minimumPlayers, maximumPlayers, teamSize, autoQueue, new MISEndlessGameType());
+					} else if(gameTypeClassName.equals(MISCustomGameType.class.getSimpleName())){
+						settings = new MISRoomSettings(minimumPlayers, maximumPlayers, teamSize, autoQueue, new MISCustomGameType());
+					} else{
+						settings = new MISRoomSettings(minimumPlayers, maximumPlayers, teamSize, autoQueue, new MISGameType());
+					}
+					
 					scene.roomSettings = settings;
 				}
 				
