@@ -18,5 +18,21 @@ public class MISSpatial extends MISNode{
 		}
 		return false;
 	}
+	
+	public double xx;
+	public double yx;
+	public double zx;
+	
+	public double xy;
+	public double yy;
+	public double zy;
+	
+	public double xz;
+	public double yz;
+	public double zz;
+	
+	public double xo;
+	public double yo;
+	public double zo;
 
 }

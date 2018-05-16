@@ -186,8 +186,33 @@ public class MISLoader {
 								MISNode2D node2D = ((MISNode2D)lastNode);
 								node2D.transform.scaleX = Double.parseDouble(xSize);
 								node2D.transform.scaleY = Double.parseDouble(ySize);
-							} else if(lastNode instanceof MISSpatial){
-								// TODO Auto-generated method stub
+							} 
+						} catch(Exception e){
+							e.printStackTrace();
+						}
+					} else if(readLine.startsWith("transform/scale")){
+						try{
+							if(lastNode instanceof MISSpatial){
+								String parseString = readLine.split(Pattern.quote("("))[1].replaceAll(Pattern.quote(""), "").replaceAll(" ", "");
+								String[] values = parseString.split(",");
+								
+								if(values.length >= 12){
+									((MISSpatial)lastNode).xx = Double.parseDouble(values[0]);
+									((MISSpatial)lastNode).xy = Double.parseDouble(values[1]);
+									((MISSpatial)lastNode).xz = Double.parseDouble(values[2]);
+									
+									((MISSpatial)lastNode).yx = Double.parseDouble(values[3]);
+									((MISSpatial)lastNode).yy = Double.parseDouble(values[4]);
+									((MISSpatial)lastNode).yz = Double.parseDouble(values[5]);
+									
+									((MISSpatial)lastNode).zx = Double.parseDouble(values[6]);
+									((MISSpatial)lastNode).zy = Double.parseDouble(values[7]);
+									((MISSpatial)lastNode).zz = Double.parseDouble(values[8]);
+									
+									((MISSpatial)lastNode).xo = Double.parseDouble(values[9]);
+									((MISSpatial)lastNode).yo = Double.parseDouble(values[10]);
+									((MISSpatial)lastNode).zo = Double.parseDouble(values[11]);
+								}
 							}
 						} catch(Exception e){
 							e.printStackTrace();

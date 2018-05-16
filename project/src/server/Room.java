@@ -306,6 +306,49 @@ public class Room {
 					// TODO Auto-generated method stub
 				}
 			}
+			if(message.contains("[spatial]")){
+				int indexFragmentAt = 0;
+				for(int i = 0; i < messageFragments.length; i++){
+					if(messageFragments[i].equals("[spatial]")){
+						indexFragmentAt = i;
+						break;
+					}
+				}
+				double xx = Double.parseDouble(messageFragments[indexFragmentAt+1]);
+				double xy = Double.parseDouble(messageFragments[indexFragmentAt+2]);
+				double xz = Double.parseDouble(messageFragments[indexFragmentAt+3]);
+				
+				double yx = Double.parseDouble(messageFragments[indexFragmentAt+4]);
+				double yy = Double.parseDouble(messageFragments[indexFragmentAt+5]);
+				double yz = Double.parseDouble(messageFragments[indexFragmentAt+6]);
+				
+				double zx = Double.parseDouble(messageFragments[indexFragmentAt+7]);
+				double zy = Double.parseDouble(messageFragments[indexFragmentAt+8]);
+				double zz = Double.parseDouble(messageFragments[indexFragmentAt+9]);
+				
+				double xo = Double.parseDouble(messageFragments[indexFragmentAt+10]);
+				double yo = Double.parseDouble(messageFragments[indexFragmentAt+11]);
+				double zo = Double.parseDouble(messageFragments[indexFragmentAt+12]);
+				
+				if(scene.nodeList.get(index) instanceof MISSpatial){
+					((MISSpatial)scene.nodeList.get(index)).xx = xx;
+					((MISSpatial)scene.nodeList.get(index)).yx = yx;
+					((MISSpatial)scene.nodeList.get(index)).zx = zx;
+					
+					((MISSpatial)scene.nodeList.get(index)).xy = xy;
+					((MISSpatial)scene.nodeList.get(index)).yy = yy;
+					((MISSpatial)scene.nodeList.get(index)).zy = zy;
+					
+					((MISSpatial)scene.nodeList.get(index)).xz = xz;
+					((MISSpatial)scene.nodeList.get(index)).yz = yz;
+					((MISSpatial)scene.nodeList.get(index)).zz = zz;
+					
+					((MISSpatial)scene.nodeList.get(index)).xo = xo;
+					((MISSpatial)scene.nodeList.get(index)).yo = yo;
+					((MISSpatial)scene.nodeList.get(index)).zo = zo;
+					
+				}
+			}
 			// TODO Auto-generated method stub
 		} catch(Exception e){
 			e.printStackTrace();

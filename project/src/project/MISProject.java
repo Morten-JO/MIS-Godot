@@ -144,7 +144,22 @@ public class MISProject {
 							nodeObject.put("scaleX", node2D.transform.scaleX);
 							nodeObject.put("scaleY", node2D.transform.scaleY);
 						} else if(node instanceof MISSpatial){
-							// TODO Auto-generated method stub
+							MISSpatial spatial = (MISSpatial)node;
+							nodeObject.put("xx", spatial.xx);
+							nodeObject.put("yx", spatial.yx);
+							nodeObject.put("zx", spatial.zx);
+							
+							nodeObject.put("xy", spatial.xy);
+							nodeObject.put("yy", spatial.yy);
+							nodeObject.put("zy", spatial.zy);
+							
+							nodeObject.put("xz", spatial.xz);
+							nodeObject.put("yz", spatial.yz);
+							nodeObject.put("zz", spatial.zz);
+							
+							nodeObject.put("xo", spatial.xo);
+							nodeObject.put("yo", spatial.yo);
+							nodeObject.put("zo", spatial.zo);
 						} else if(node instanceof MISControl){
 							// TODO Auto-generated method stub
 						}
@@ -288,22 +303,6 @@ public class MISProject {
 		}
 		MISProject.project.isSaving = false;
 		return false;
-	}
-	
-	public static void main(String[] args) {
-		/*MISProject.project = new MISProject("testprojectname", "resources/testresources", MISType.Godot);
-		MISProject.project.ports.add(new MISPort(123, MISProtocol.TCP));
-		MISProject.project.ports.add(new MISPort(1234, MISProtocol.UDP));
-		MISProject.project.scenes.add(MISLoader.loadSceneByLocation("resources/testresources/Sce.tscn"));
-		for(int i = 0; i < MISProject.project.scenes.size(); i++){
-			MISProject.project.scenes.get(i).addBroadcast(new MISBroastcastMessage(1.0f, "testMessage"));
-		}
-		if(MISProject.saveProject()){
-			System.out.println("SAVED SUCCESSFULLY!");
-		}*/
-		loadProject("resources/testresources");
-		System.out.println("ProjectName: "+MISProject.project.projectName);
-		MISProject.printProjectData();
 	}
 	
 	public static void printProjectData(){
@@ -464,8 +463,38 @@ public class MISProject {
 						MISNode2D node2D = new MISNode2D(new MIS2DTransform(positionX, positionY, rotation, scaleX, scaleY));
 						node = node2D;
 					} else if(className.equals(MISSpatial.class.getSimpleName())){
-						// TODO Auto-generated method stub
-						node = new MISSpatial();
+						double xx = (double) nodeObject.get("xx");
+						double yx = (double) nodeObject.get("yx");
+						double zx = (double) nodeObject.get("zx");
+						
+						double xy = (double) nodeObject.get("xy");
+						double yy = (double) nodeObject.get("yy");
+						double zy = (double) nodeObject.get("zy");
+						
+						double xz = (double) nodeObject.get("xz");
+						double yz = (double) nodeObject.get("yz");
+						double zz = (double) nodeObject.get("zz");
+						
+						double xo = (double) nodeObject.get("xo");
+						double yo = (double) nodeObject.get("yo");
+						double zo = (double) nodeObject.get("zo");
+						MISSpatial nodeSpatial = new MISSpatial();
+						nodeSpatial.xx = xx;
+						nodeSpatial.yx = yx;
+						nodeSpatial.zx = zx;
+						
+						nodeSpatial.xy = xy;
+						nodeSpatial.yy = yy;
+						nodeSpatial.zy = zy;
+						
+						nodeSpatial.xz = xz;
+						nodeSpatial.yz = yz;
+						nodeSpatial.zz = zz;
+						
+						nodeSpatial.xo = xo;
+						nodeSpatial.yo = yo;
+						nodeSpatial.zo = zo;
+						node = nodeSpatial;
 					} else if(className.equals(MISControl.class.getSimpleName())){
 						// TODO Auto-generated method stub
 						node = new MISControl();

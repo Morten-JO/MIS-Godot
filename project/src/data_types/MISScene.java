@@ -127,8 +127,24 @@ public class MISScene {
 				// TODO Auto-generated method stub
 				node = new MISControl();
 			} else if(this.nodeList.get(i) instanceof MISSpatial){
-				// TODO Auto-generated method stub
-				node = new MISSpatial();
+				MISSpatial old = (MISSpatial) this.nodeList.get(i);
+				MISSpatial spatialCopy = new MISSpatial();
+				spatialCopy.xx = old.xx;
+				spatialCopy.yx = old.yx;
+				spatialCopy.zx = old.zx;
+				
+				spatialCopy.xy = old.xy;
+				spatialCopy.yy = old.yy;
+				spatialCopy.zy = old.zy;
+				
+				spatialCopy.xz = old.xz;
+				spatialCopy.yz = old.yz;
+				spatialCopy.zz = old.zz;
+				
+				spatialCopy.xo = old.xo;
+				spatialCopy.yo = old.yo;
+				spatialCopy.zo = old.zo;
+				node = spatialCopy;
 			} else if(this.nodeList.get(i) instanceof MISNode){
 				node = new MISNode();
 			}
