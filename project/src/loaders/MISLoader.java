@@ -18,6 +18,7 @@ import data_types.MISScene;
 import nodes.MISControl;
 import nodes.MISNode;
 import nodes.MISNode2D;
+import nodes.MISNodeScene;
 import nodes.MISSpatial;
 import project.MISProject;
 import project.MISProjectInformation;
@@ -136,6 +137,23 @@ public class MISLoader {
 							System.out.println("Just set parent parent parent.");
 							node.parent = scene.nodeList.get(0);
 						}
+					}
+					if(readLine.contains("instance=ExtResource(")){
+						String value = readLine.split("instance=ExtResource(")[1].split(")")[0].replaceAll(" ", "");
+						int resourceNumber = Integer.parseInt(value);
+						MISExternalResource extRes = null;
+						for(int i = 0; i < scene.externalResources.size(); i++){
+							if(scene.externalResources.get(i).id == resourceNumber){
+								extRes = scene.externalResources.get(i);
+								break;
+							}
+						}
+						MISNodeScene sceneNode = new MISNodeScene();
+						sceneNode.resource = extRes;
+						sceneNode.parent = node.parent;
+						sceneNode.name = node.name;
+						sceneNode.type = "Scene";
+						node = sceneNode;
 					}
 					lastNode = node;
 					scene.addNode(node);

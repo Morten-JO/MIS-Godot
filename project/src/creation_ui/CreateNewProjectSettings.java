@@ -14,6 +14,7 @@ import enums.MISListType;
 import enums.MISProtocol;
 import enums.MISType;
 import loaders.MISLoader;
+import nodes.MISNodeScene;
 import project.MISProject;
 import project.MISProjectInformation;
 
@@ -281,6 +282,18 @@ public class CreateNewProjectSettings extends JPanel {
 			public void mousePressed(MouseEvent arg0) {
 				if(checkProblems()){
 					ArrayList<MISScene> scenes = MISLoader.loadScenesByLocation(godotLocation);
+					for(int i = 0; i < scenes.size(); i++){
+						for(int j = 0; j < scenes.get(i).nodeList.size(); j++){
+							if(scenes.get(i).nodeList.get(j) instanceof MISNodeScene){
+								for(int x = 0; x < scenes.size(); x++){
+									if(((MISNodeScene)scenes.get(i).nodeList.get(j)).resource.name.equals(scenes.get(x).name)){
+										((MISNodeScene)scenes.get(i).nodeList.get(j)).scene = scenes.get(x);
+										break;
+									}
+								}
+							}
+						}
+					}
 					MISProject project = new MISProject();
 					
 					int spinnerRefreshRateValue = (Integer)spinnerRefreshRate.getValue();
