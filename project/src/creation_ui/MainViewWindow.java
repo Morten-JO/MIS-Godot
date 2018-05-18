@@ -48,6 +48,7 @@ import data_types.MISScene;
 import jdk.nashorn.internal.ir.JoinPredecessorExpression;
 import main.Main;
 import nodes.MISNode;
+import nodes.MISNodeScene;
 import project.MISProject;
 import receivers.MISReceiver;
 import rules.MISRule;
@@ -615,20 +616,24 @@ public class MainViewWindow {
 		}
 		
 		nodeList.setBackground(SystemColor.menu);
+		
 		nodeList.setCellRenderer(new DefaultListCellRenderer() {
 			@Override
 			public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected,
 					boolean cellHasFocus) {
 				Component renderer = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
 				if(renderer instanceof JLabel && value instanceof MISNode){
+					//bleeding edge
 					MISNode info = (MISNode)value;
 					String indexer = "   ";
 					String nodeString = indexer;
-					MISNode temp = info;
-					while(temp.parent != null){
-						nodeString += indexer;
-						temp = temp.parent;
-					}
+					if(scene.nodeList.get(0) != value){
+						MISNode temp = info;
+						while(temp.parent != null){
+							nodeString += indexer;
+							temp = temp.parent;
+						}
+					} 
 					nodeString += info.index +" - "+info.name;
 					((JLabel)renderer).setText(nodeString);
 				}
@@ -685,6 +690,8 @@ public class MainViewWindow {
 							//open rule dialog box
 						}
 					});
+					
+					
 					JCheckBoxMenuItem shouldSendInformation = new JCheckBoxMenuItem("Refresh");
 					shouldSendInformation.setSelected(nodeList.getSelectedValue().shouldSendInformation);
 					shouldSendInformation.addActionListener(new ActionListener() {
@@ -695,8 +702,30 @@ public class MainViewWindow {
 							addTextToConsole("Changed refresh value of node #"+nodeList.getSelectedIndex()+" to "+shouldSendInformation.isSelected());
 						}
 					});
+					
+					
 					menu.add(show);
 					menu.add(addRule);
+					
+					if(nodeList.getSelectedValue() instanceof MISNodeScene){
+						MISNodeScene nodeScene = (MISNodeScene) nodeList.getSelectedValue();
+						if(nodeScene.scene != null){
+							JMenuItem loadScene = new JMenuItem("Load Scene");
+							loadScene.addActionListener(new ActionListener() {
+								
+								@Override
+								public void actionPerformed(ActionEvent e) {
+									remakeNodeList(nodeScene.scene);
+									remakeRuleList(nodeScene.scene);
+									currentScene = nodeScene.scene;
+									addTextToConsole("Loaded scene: "+nodeScene.scene.name);
+								}
+							});
+							menu.add(loadScene);
+						}
+					}
+					
+					
 					menu.add(shouldSendInformation);
 					if(nodeList.getSelectedValue().shouldSendInformation){
 						JMenuItem refreshInformation = new JMenuItem("Refresh info");

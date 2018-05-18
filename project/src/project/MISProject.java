@@ -19,6 +19,7 @@ import data_types.MISExternalResource;
 import data_types.MISPort;
 import data_types.MISRoomSettings;
 import data_types.MISScene;
+import data_types.MISTempScene;
 import enums.MISListType;
 import enums.MISProtocol;
 import enums.MISType;
@@ -30,6 +31,7 @@ import loaders.MISLoader;
 import nodes.MISControl;
 import nodes.MISNode;
 import nodes.MISNode2D;
+import nodes.MISNodeScene;
 import nodes.MISSpatial;
 import receivers.MISReceiverAll;
 import receivers.MISReceiverNotPerson;
@@ -162,6 +164,21 @@ public class MISProject {
 							nodeObject.put("zo", spatial.zo);
 						} else if(node instanceof MISControl){
 							// TODO Auto-generated method stub
+						} else if(node instanceof MISNodeScene){
+							MISNodeScene nodeScene = (MISNodeScene)node;
+							nodeObject.put("nodeSceneReference", nodeScene.scene != null);
+							if(nodeScene.scene != null){
+								nodeObject.put("nodeSceneName", nodeScene.scene.name);
+								nodeObject.put("nodeSceneIndex", nodeScene.scene.IDNumber);
+							}
+							nodeObject.put("extResourceReference", nodeScene.scene != null);
+							if(nodeScene.resource != null){
+								nodeObject.put("nodeExtResName", nodeScene.resource.name);
+								nodeObject.put("nodeExtResId", nodeScene.resource.id);
+								nodeObject.put("nodeExtResType", nodeScene.resource.type);
+								nodeObject.put("nodeExtResPath", nodeScene.resource.path);
+							}
+							
 						}
 						nodeObject.put("name", node.name);
 						nodeObject.put("type", node.type);
@@ -498,7 +515,31 @@ public class MISProject {
 					} else if(className.equals(MISControl.class.getSimpleName())){
 						// TODO Auto-generated method stub
 						node = new MISControl();
-					} else{
+					} else if(className.equals(MISNodeScene.class.getSimpleName())){
+						boolean nodeSceneReference = (Boolean) nodeObject.get("nodeSceneReference");
+						boolean extResourceReference = (Boolean) nodeObject.get("extResourceReference");
+						MISNodeScene nodeScene = new MISNodeScene();
+						if(nodeSceneReference){
+							String nodeSceneName = (String) nodeObject.get("nodeSceneName");
+							int nodeSceneIndex = toIntExact((Long) nodeObject.get("nodeSceneIndex"));
+							MISTempScene tempScene = new MISTempScene();
+							tempScene.name = nodeSceneName;
+							tempScene.IDNumber = nodeSceneIndex;
+						}
+						if(extResourceReference){
+							String nodeExtResName = (String) nodeObject.get("nodeExtResName");
+							int nodeExtResId = toIntExact((Long) nodeObject.get("nodeExtResId"));
+							String nodeExtResType = (String) nodeObject.get("nodeExtResType");
+							String nodeExtResPath = (String) nodeObject.get("nodeExtResPath");
+							MISExternalResource extRes = new MISExternalResource();
+							extRes.name = nodeExtResName;
+							extRes.id = nodeExtResId;
+							extRes.type = nodeExtResType;
+							extRes.path = nodeExtResPath;
+						}
+						node = nodeScene;
+						
+					} else {
 						node = new MISNode();
 					}
 					
@@ -646,6 +687,22 @@ public class MISProject {
 				}
 				
 				MISProject.project.scenes.add(scene);
+			}
+			//Recorrect temp scenes
+			for(int i = 0; i < MISProject.project.scenes.size(); i++){
+				for(int j = 0; j < MISProject.project.scenes.get(i).nodeList.size(); j++){
+					if(MISProject.project.scenes.get(i).nodeList.get(j) instanceof MISNodeScene){
+						MISNodeScene nodeScene = (MISNodeScene) MISProject.project.scenes.get(i).nodeList.get(j);
+						if(nodeScene.scene != null){
+							for(int x = 0; x < MISProject.project.scenes.size(); x++){
+								if(nodeScene.scene.name.equals(MISProject.project.scenes.get(x).name) && nodeScene.scene.IDNumber == MISProject.project.scenes.get(x).IDNumber){
+									nodeScene.scene = MISProject.project.scenes.get(x);
+									break;
+								}
+							}
+						}
+					}
+				}
 			}
 			MISProject.project.isLoading = false;
 			return true;
