@@ -15,6 +15,7 @@ import com.sun.xml.internal.bind.v2.TODO;
 import data_types.MIS2DTransform;
 import data_types.MISExternalResource;
 import data_types.MISScene;
+import data_types.MISTempScene;
 import nodes.MISControl;
 import nodes.MISNode;
 import nodes.MISNode2D;
@@ -139,7 +140,7 @@ public class MISLoader {
 						}
 					}
 					if(readLine.contains("instance=ExtResource(")){
-						String value = readLine.split("instance=ExtResource(")[1].split(")")[0].replaceAll(" ", "");
+						String value = readLine.split("instance=ExtResource")[1].replaceAll(Pattern.quote("("), "").split(Pattern.quote(")"))[0].replaceAll(" ", "");
 						int resourceNumber = Integer.parseInt(value);
 						MISExternalResource extRes = null;
 						for(int i = 0; i < scene.externalResources.size(); i++){
@@ -153,6 +154,10 @@ public class MISLoader {
 						sceneNode.parent = node.parent;
 						sceneNode.name = node.name;
 						sceneNode.type = "Scene";
+						if(extRes != null){
+							MISTempScene tempScene = new MISTempScene();
+							tempScene.name = extRes.name;
+						}
 						node = sceneNode;
 					}
 					lastNode = node;

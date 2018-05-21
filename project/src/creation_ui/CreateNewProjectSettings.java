@@ -14,6 +14,7 @@ import enums.MISListType;
 import enums.MISProtocol;
 import enums.MISType;
 import loaders.MISLoader;
+import nodes.MISNode;
 import nodes.MISNodeScene;
 import project.MISProject;
 import project.MISProjectInformation;
@@ -316,6 +317,18 @@ public class CreateNewProjectSettings extends JPanel {
 					project.ip = internetAddressTextField.getText();
 					
 					MISProject.project = project;
+					
+					for(int i = 0; i < MISProject.project.scenes.size(); i++){
+						MISScene scene = MISProject.project.scenes.get(i);
+						for(int j = 0; j < scene.nodeList.size(); j++){
+							MISNode node = scene.nodeList.get(j);
+							if(node instanceof MISNodeScene){
+								MISNodeScene sceneNode = (MISNodeScene) node;
+								sceneNode.recorrectScene(MISProject.project.scenes);
+							}
+						}
+					}
+					
 					boolean success = MISProject.saveProject();
 					
 					MISProject.printProjectData();

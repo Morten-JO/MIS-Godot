@@ -171,7 +171,7 @@ public class MISProject {
 								nodeObject.put("nodeSceneName", nodeScene.scene.name);
 								nodeObject.put("nodeSceneIndex", nodeScene.scene.IDNumber);
 							}
-							nodeObject.put("extResourceReference", nodeScene.scene != null);
+							nodeObject.put("extResourceReference", nodeScene.resource != null);
 							if(nodeScene.resource != null){
 								nodeObject.put("nodeExtResName", nodeScene.resource.name);
 								nodeObject.put("nodeExtResId", nodeScene.resource.id);
@@ -685,22 +685,15 @@ public class MISProject {
 						}
 					}
 				}
-				
 				MISProject.project.scenes.add(scene);
 			}
-			//Recorrect temp scenes
 			for(int i = 0; i < MISProject.project.scenes.size(); i++){
-				for(int j = 0; j < MISProject.project.scenes.get(i).nodeList.size(); j++){
-					if(MISProject.project.scenes.get(i).nodeList.get(j) instanceof MISNodeScene){
-						MISNodeScene nodeScene = (MISNodeScene) MISProject.project.scenes.get(i).nodeList.get(j);
-						if(nodeScene.scene != null){
-							for(int x = 0; x < MISProject.project.scenes.size(); x++){
-								if(nodeScene.scene.name.equals(MISProject.project.scenes.get(x).name) && nodeScene.scene.IDNumber == MISProject.project.scenes.get(x).IDNumber){
-									nodeScene.scene = MISProject.project.scenes.get(x);
-									break;
-								}
-							}
-						}
+				MISScene scene = MISProject.project.scenes.get(i);
+				for(int j = 0; j < scene.nodeList.size(); j++){
+					MISNode node = scene.nodeList.get(j);
+					if(node instanceof MISNodeScene){
+						MISNodeScene sceneNode = (MISNodeScene) node;
+						sceneNode.recorrectScene(MISProject.project.scenes);
 					}
 				}
 			}
