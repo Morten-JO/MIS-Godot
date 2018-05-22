@@ -26,10 +26,6 @@ import project.MISProjectInformation;
 
 public class MISLoader {
 
-	public static void main(String[] args) {
-		MISLoader.loadSceneByLocation("resources/testresources/Sce.tscn");
-	}
-	
 	public static ArrayList<MISScene> loadScenesByLocation(String location){
 		ArrayList<MISScene> scenes = new ArrayList<MISScene>();
 		File file = new File(location);
@@ -38,21 +34,22 @@ public class MISLoader {
 			return scenes;
 		} else{
 			System.out.println("Recursive search start!");
-			recursiveSearchForScenes(file, scenes);
+			recursiveSearchForScenes(file, scenes, location);
 		}
 		return scenes;
 	}
 	
-	private static void recursiveSearchForScenes(File file, List<MISScene> scenes){
+	private static void recursiveSearchForScenes(File file, List<MISScene> scenes, String baseLocation){
 		System.out.println("Recur on file: "+file.getName());
+		System.out.println("Location: "+file.getAbsolutePath());
 		if(file.isDirectory()){
 			File[] files = file.listFiles();
 			for(int i = 0; i < files.length; i++){
-				recursiveSearchForScenes(files[i], scenes);
+				recursiveSearchForScenes(files[i], scenes, baseLocation);
 			}
 		} else{
 			if(file.getName().contains(".tscn")){
-				scenes.add(loadSceneByLocation(file.getAbsolutePath()));
+				scenes.add(loadSceneByLocation(file.getAbsolutePath(), baseLocation));
 			}
 		}
 	}
@@ -62,7 +59,7 @@ public class MISLoader {
 	 * @param location
 	 * @return MISScene or null
 	 */
-	public static MISScene loadSceneByLocation(String location){
+	public static MISScene loadSceneByLocation(String location, String baseLocation){
 		try {
 			BufferedReader reader = new BufferedReader(new FileReader(location));
 			String readLine = "";
@@ -77,12 +74,16 @@ public class MISLoader {
 				scene.name = location;
 			}
 			
+			String path = location.substring(baseLocation.length()+1);
+			System.out.println("Path: "+path);
+			scene.path = path;
+			
 			MISNode lastNode = null;
 			while((readLine = reader.readLine()) != null){
 				if(readLine.startsWith("[ext_resource")){
 					MISExternalResource externalResource = new MISExternalResource();
 					if(readLine.contains("path=\"")){
-						externalResource.path = readLine.split("path=\"")[1].split("\"")[0];
+						externalResource.path = readLine.split("path=\"res://")[1].split("\"")[0];
 						String[] values = externalResource.path.split("/");
 						externalResource.name = values[values.length-1];		
 					}
@@ -97,9 +98,6 @@ public class MISLoader {
 					MISNode node = new MISNode();
 					if(readLine.contains("name=\"")){
 						node.name = readLine.split("name=\"")[1].split("\"")[0];
-						System.out.println("Node from readline: "+readLine);
-						System.out.println("Node name is: "+node.name);
-						System.out.println("Node name set.");
 						
 					}
 					if(readLine.contains("type=\"")){
@@ -135,7 +133,6 @@ public class MISLoader {
 								}
 							}
 						} else{
-							System.out.println("Just set parent parent parent.");
 							node.parent = scene.nodeList.get(0);
 						}
 					}
@@ -156,15 +153,13 @@ public class MISLoader {
 						sceneNode.type = "Scene";
 						if(extRes != null){
 							MISTempScene tempScene = new MISTempScene();
-							tempScene.name = extRes.name;
+							tempScene.name = extRes.name.split(".tscn")[0];
+							sceneNode.scene = tempScene;
 						}
 						node = sceneNode;
 					}
 					lastNode = node;
 					scene.addNode(node);
-					for(int i = 0; i < scene.nodeList.size(); i++){
-						System.out.println("#"+i+" : "+scene.nodeList.get(i).name);
-					}
 				} else if(readLine.startsWith("script = ExtResource")){
 					if(lastNode != null){
 						readLine = readLine.replaceAll(" ", "");

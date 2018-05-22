@@ -119,6 +119,7 @@ public class MISProject {
 					MISScene scene = MISProject.project.scenes.get(i);
 					JSONObject sceneObject = new JSONObject();
 					sceneObject.put("name", scene.name);
+					sceneObject.put("path", scene.path);
 					sceneObject.put("load_steps", scene.loadSteps);
 					sceneObject.put("format", scene.format);
 					sceneObject.put("id", scene.IDNumber);
@@ -442,6 +443,7 @@ public class MISProject {
 				scene.format = toIntExact((Long) sceneObject.get("format"));
 				scene.loadSteps = toIntExact((Long) sceneObject.get("load_steps"));
 				scene.name = (String) sceneObject.get("name");
+				scene.path = (String) sceneObject.get("path");
 				boolean hasRoomInScene = (Boolean) sceneObject.get("roomScene");
 				if(hasRoomInScene){
 					int minimumPlayers = toIntExact((Long) sceneObject.get("roomSceneMinimum"));
@@ -516,15 +518,18 @@ public class MISProject {
 						// TODO Auto-generated method stub
 						node = new MISControl();
 					} else if(className.equals(MISNodeScene.class.getSimpleName())){
+						System.err.println("IS OF CORRECT TYPE AKA MISNODESCENE");
 						boolean nodeSceneReference = (Boolean) nodeObject.get("nodeSceneReference");
 						boolean extResourceReference = (Boolean) nodeObject.get("extResourceReference");
 						MISNodeScene nodeScene = new MISNodeScene();
 						if(nodeSceneReference){
+							System.err.println("Umm what?");
 							String nodeSceneName = (String) nodeObject.get("nodeSceneName");
 							int nodeSceneIndex = toIntExact((Long) nodeObject.get("nodeSceneIndex"));
 							MISTempScene tempScene = new MISTempScene();
 							tempScene.name = nodeSceneName;
 							tempScene.IDNumber = nodeSceneIndex;
+							nodeScene.scene = tempScene;
 						}
 						if(extResourceReference){
 							String nodeExtResName = (String) nodeObject.get("nodeExtResName");
@@ -536,6 +541,7 @@ public class MISProject {
 							extRes.id = nodeExtResId;
 							extRes.type = nodeExtResType;
 							extRes.path = nodeExtResPath;
+							nodeScene.resource = extRes;
 						}
 						node = nodeScene;
 						
@@ -693,7 +699,11 @@ public class MISProject {
 					MISNode node = scene.nodeList.get(j);
 					if(node instanceof MISNodeScene){
 						MISNodeScene sceneNode = (MISNodeScene) node;
-						sceneNode.recorrectScene(MISProject.project.scenes);
+						try{
+							sceneNode.recorrectScene(MISProject.project.scenes);
+						} catch(NullPointerException e){
+							e.printStackTrace();
+						}
 					}
 				}
 			}

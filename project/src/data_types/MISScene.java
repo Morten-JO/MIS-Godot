@@ -29,7 +29,7 @@ public class MISScene {
 	public int format;
 	public ArrayList<MISExternalResource> externalResources;
 	public MISRoomSettings roomSettings;
-	
+	public String path;
 	
 	private static int globalID = 0;
 	

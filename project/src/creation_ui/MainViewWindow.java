@@ -663,7 +663,6 @@ public class MainViewWindow {
 						public void actionPerformed(ActionEvent e) {
 							//call show function
 							showNode(nodeList.getSelectedValue());
-							addTextToConsole("Showed node-element #"+nodeList.getSelectedIndex());
 						}
 					});
 					
@@ -715,6 +714,13 @@ public class MainViewWindow {
 								
 								@Override
 								public void actionPerformed(ActionEvent e) {
+									System.out.println("Bla start");
+									for(int i = 0; i < nodeScene.scene.nodeList.size(); i++){
+										System.out.println("Node : #"+i+" - "+nodeScene.scene.nodeList.get(i).name);
+									}
+									System.out.println(nodeScene.getClass().getSimpleName());
+									System.out.println("Bla end");
+									
 									remakeNodeList(nodeScene.scene);
 									remakeRuleList(nodeScene.scene);
 									currentScene = nodeScene.scene;
@@ -861,7 +867,7 @@ public class MainViewWindow {
 			public void mousePressed(MouseEvent e) {
 				String[] possiblities = new String[MISProject.project.scenes.size()];
 				for(int i = 0; i < possiblities.length; i++){
-					possiblities[i] = MISProject.project.scenes.get(i).name;
+					possiblities[i] = MISProject.project.scenes.get(i).name + " - " + MISProject.project.scenes.get(i).path;
 				}
 				if(possiblities.length > 0){
 					String s = (String) JOptionPane.showInputDialog(frame, "Select scene to load:", "Load scene", JOptionPane.PLAIN_MESSAGE, null, possiblities, possiblities[0]);

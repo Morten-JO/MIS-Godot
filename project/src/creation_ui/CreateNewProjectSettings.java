@@ -286,11 +286,11 @@ public class CreateNewProjectSettings extends JPanel {
 					for(int i = 0; i < scenes.size(); i++){
 						for(int j = 0; j < scenes.get(i).nodeList.size(); j++){
 							if(scenes.get(i).nodeList.get(j) instanceof MISNodeScene){
-								for(int x = 0; x < scenes.size(); x++){
-									if(((MISNodeScene)scenes.get(i).nodeList.get(j)).resource.name.equals(scenes.get(x).name)){
-										((MISNodeScene)scenes.get(i).nodeList.get(j)).scene = scenes.get(x);
-										break;
-									}
+								MISNodeScene node = (MISNodeScene) scenes.get(i).nodeList.get(j);
+								try{
+									node.recorrectScene(scenes);
+								} catch(NullPointerException e){
+									e.printStackTrace();
 								}
 							}
 						}
