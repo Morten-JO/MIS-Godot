@@ -49,9 +49,6 @@ public class Server implements Runnable{
 			serverUI = new ServerApplicationWindow(this, autoStart);
 			serverUI.setVisible(true);
 		}
-		for(int i = 0; i < MISProject.project.scenes.size(); i++){
-			System.out.println("Scenes #"+i+" - "+MISProject.project.scenes.get(i).roomSettings);
-		}
 	}
 	
 	public boolean startServer(){
@@ -199,7 +196,6 @@ public class Server implements Runnable{
 									System.out.println("and the datastruc: "+originalScene.nodeList.get(x).informationReceivers);
 								}
 								System.out.println("About to create room: ");
-								System.out.println("Value of room settings: "+originalScene.roomSettings);
 								MISScene newScene = originalScene.createDeepCopy();
 								Room room = new Room(newScene, playersForRoom, self, roomClients);
 								room.startBroadcastThread();
