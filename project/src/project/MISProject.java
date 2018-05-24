@@ -110,6 +110,16 @@ public class MISProject {
 			projectGeneralSettingsObject.put("ui_on_run", MISProject.project.uiOnRun);
 			projectGeneralSettingsObject.put("main_ip", MISProject.project.ip);
 			
+			projectGeneralSettingsObject.put("roomScene", MISProject.project.roomSettings != null);
+			if(MISProject.project.roomSettings != null){
+				projectGeneralSettingsObject.put("roomSceneMinimum", MISProject.project.roomSettings.minimumPlayers);
+				projectGeneralSettingsObject.put("roomSceneMaximum", MISProject.project.roomSettings.maximumPlayers);
+				projectGeneralSettingsObject.put("roomSceneTeamSize", MISProject.project.roomSettings.teams);
+				projectGeneralSettingsObject.put("roomSceneAutoQueue", MISProject.project.roomSettings.autoQueue);
+				projectGeneralSettingsObject.put("roomSceneGameType", MISProject.project.roomSettings.gameType.getClass().getSimpleName());
+				projectGeneralSettingsObject.put("roomSceneReferenceSceneId", MISProject.project.roomSettings.scene.IDNumber);
+			}
+			
 			mainObject.put("project_settings", projectGeneralSettingsObject);
 			
 			JSONObject scenesObject = new JSONObject();
@@ -123,15 +133,7 @@ public class MISProject {
 					sceneObject.put("load_steps", scene.loadSteps);
 					sceneObject.put("format", scene.format);
 					sceneObject.put("id", scene.IDNumber);
-					//Possibly broken unfinished code
-					sceneObject.put("roomScene",scene.roomSettings != null);
-					if(scene.roomSettings != null){
-						sceneObject.put("roomSceneMinimum", scene.roomSettings.minimumPlayers);
-						sceneObject.put("roomSceneMaximum", scene.roomSettings.maximumPlayers);
-						sceneObject.put("roomSceneTeamSize", scene.roomSettings.teams);
-						sceneObject.put("roomSceneAutoQueue", scene.roomSettings.autoQueue);
-						sceneObject.put("roomSceneGameType", scene.roomSettings.gameType.getClass().getSimpleName());
-					}
+					
 					
 					JSONObject nodesObject = new JSONObject();
 					nodesObject.put("nodes_n", scene.nodeList.size());
@@ -304,6 +306,8 @@ public class MISProject {
 				}
 			}
 			mainObject.put("scenes", scenesObject);
+			//Possibly broken unfinished code
+			
 		} catch(Exception e){
 			e.printStackTrace();
 			return false;
@@ -444,26 +448,7 @@ public class MISProject {
 				scene.loadSteps = toIntExact((Long) sceneObject.get("load_steps"));
 				scene.name = (String) sceneObject.get("name");
 				scene.path = (String) sceneObject.get("path");
-				boolean hasRoomInScene = (Boolean) sceneObject.get("roomScene");
-				if(hasRoomInScene){
-					int minimumPlayers = toIntExact((Long) sceneObject.get("roomSceneMinimum"));
-					int maximumPlayers = toIntExact((Long) sceneObject.get("roomSceneMaximum"));
-					boolean autoQueue = (Boolean) sceneObject.get("roomSceneAutoQueue");
-					int teamSize = toIntExact((Long) sceneObject.get("roomSceneTeamSize"));
-					String gameTypeClassName = (String) sceneObject.get("roomSceneGameType");
-					MISRoomSettings settings;
-					if(gameTypeClassName.equals(MISCompetetiveGameType.class.getSimpleName())){
-						settings = new MISRoomSettings(minimumPlayers, maximumPlayers, teamSize, autoQueue, new MISCompetetiveGameType());
-					} else if(gameTypeClassName.equals(MISEndlessGameType.class.getSimpleName())){
-						settings = new MISRoomSettings(minimumPlayers, maximumPlayers, teamSize, autoQueue, new MISEndlessGameType());
-					} else if(gameTypeClassName.equals(MISCustomGameType.class.getSimpleName())){
-						settings = new MISRoomSettings(minimumPlayers, maximumPlayers, teamSize, autoQueue, new MISCustomGameType());
-					} else{
-						settings = new MISRoomSettings(minimumPlayers, maximumPlayers, teamSize, autoQueue, new MISGameType());
-					}
-					
-					scene.roomSettings = settings;
-				}
+				
 				
 				
 				JSONObject nodesObject = (JSONObject) sceneObject.get("nodes");
@@ -693,6 +678,38 @@ public class MISProject {
 				}
 				MISProject.project.scenes.add(scene);
 			}
+			boolean hasRoomInScene = (Boolean) projectSettings.get("roomScene");
+			if(hasRoomInScene){
+				int minimumPlayers = toIntExact((Long) projectSettings.get("roomSceneMinimum"));
+				int maximumPlayers = toIntExact((Long) projectSettings.get("roomSceneMaximum"));
+				boolean autoQueue = (Boolean) projectSettings.get("roomSceneAutoQueue");
+				int teamSize = toIntExact((Long) projectSettings.get("roomSceneTeamSize"));
+				String gameTypeClassName = (String) projectSettings.get("roomSceneGameType");
+				int sceneId = toIntExact((Long) projectSettings.get("roomSceneReferenceSceneId"));
+				MISScene ref = null;
+				for(int i = 0; i < MISProject.project.scenes.size(); i++){
+					if(MISProject.project.scenes.get(i).IDNumber == sceneId){
+						ref = MISProject.project.scenes.get(i);
+					}
+				}
+				MISRoomSettings settings;
+				if(gameTypeClassName.equals(MISCompetetiveGameType.class.getSimpleName())){
+					settings = new MISRoomSettings(ref, minimumPlayers, maximumPlayers, teamSize, autoQueue, new MISCompetetiveGameType());
+				} else if(gameTypeClassName.equals(MISEndlessGameType.class.getSimpleName())){
+					settings = new MISRoomSettings(ref, minimumPlayers, maximumPlayers, teamSize, autoQueue, new MISEndlessGameType());
+				} else if(gameTypeClassName.equals(MISCustomGameType.class.getSimpleName())){
+					settings = new MISRoomSettings(ref, minimumPlayers, maximumPlayers, teamSize, autoQueue, new MISCustomGameType());
+				} else{
+					settings = new MISRoomSettings(ref, minimumPlayers, maximumPlayers, teamSize, autoQueue, new MISGameType());
+				}
+				if(ref != null){
+					MISProject.project.roomSettings = settings;
+				} else{
+					System.err.println("Refrence to scene is null.");
+				}
+				
+			}
+			
 			for(int i = 0; i < MISProject.project.scenes.size(); i++){
 				MISScene scene = MISProject.project.scenes.get(i);
 				for(int j = 0; j < scene.nodeList.size(); j++){
@@ -731,6 +748,7 @@ public class MISProject {
 	public ArrayList<MISScene> scenes;
 	public boolean uiOnRun = false;
 	public String ip = "localhost";
+	public MISRoomSettings roomSettings;
 	
 	/*
 	 * General settings

@@ -209,10 +209,11 @@ public class Client implements Runnable{
 	}
 
 	public void notifyWonRoom(int winningTeamIndex) {
-		addMessageToSend("game_end "+winningTeamIndex);
+		addMessageToSend("game_won "+winningTeamIndex);
 	}
 
 	public void notifyGameEnd(int winningTeamIndex) {
 		addMessageToSend("game_end "+winningTeamIndex);
+		room = null;
 	}
 }

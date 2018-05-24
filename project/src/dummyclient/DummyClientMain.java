@@ -54,6 +54,7 @@ public class DummyClientMain {
 			});
 			thread.start();
 			writerThread.start();
+			toSend.add("queuestart 0");
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

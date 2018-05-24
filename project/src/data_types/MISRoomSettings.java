@@ -9,8 +9,10 @@ public class MISRoomSettings {
 	public int maximumPlayers;
 	public int teams;
 	public MISGameType gameType;
+	public MISScene scene;
 	
-	public MISRoomSettings(int minimumPlayers, int maximumPlayers, int teams, boolean autoQueue, MISGameType gameType){
+	public MISRoomSettings(MISScene scene, int minimumPlayers, int maximumPlayers, int teams, boolean autoQueue, MISGameType gameType){
+		this.scene = scene;
 		this.minimumPlayers = minimumPlayers;
 		this.maximumPlayers = maximumPlayers;
 		this.teams = teams;

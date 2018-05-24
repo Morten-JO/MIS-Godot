@@ -127,7 +127,7 @@ public class ScriptBuilder {
 		scriptString += createIndentations(4)+"var winning_team = int(split_messages[1])"+createLineBreaks(1);
 		scriptString += createIndentations(4)+"onReceiveGameEnd(winning_team)"+createLineBreaks(2);
 		
-		if(scene.roomSettings.gameType instanceof MISCompetetiveGameType){
+		if(MISProject.project.roomSettings.gameType instanceof MISCompetetiveGameType){
 			scriptString += createIndentations(3)+"if (\"game_won\" in "+splittedStringsVariableName+"[i]):"+createLineBreaks(1);
 			scriptString += createIndentations(4)+"var split_messages = "+splittedStringsVariableName+"[i].split(\" \")"+createLineBreaks(1);
 			scriptString += createIndentations(4)+"var winning_team = int(split_messages[1])"+createLineBreaks(1);
@@ -267,7 +267,7 @@ public class ScriptBuilder {
 	private static String processFunctionControlUpdatesGeneration(String scriptString, MISScene scene){
 		//room_begun(control etc)
 		scriptString += createIndentations(1)+"if "+roomBegunVariableName+":"+createLineBreaks(1);
-		for(int i = 0; i < scene.roomSettings.teams; i++){
+		for(int i = 0; i < MISProject.project.roomSettings.teams; i++){
 			scriptString += createIndentations(2)+"if "+teamIdVariableName+" == "+i+":"+createLineBreaks(1);
 			for(int j = 0; j < scene.nodeList.size(); j++){
 				if(scene.nodeList.get(j).isControllable){
@@ -348,7 +348,7 @@ public class ScriptBuilder {
 		scriptString += "func roomBegun(data):"+createLineBreaks(1);
 		scriptString += createIndentations(1)+"#Custom code can be added here(called when the game starts)"+createLineBreaks(1);
 		scriptString += createIndentations(1)+roomBegunVariableName+" = true"+createLineBreaks(1);
-		for(int i = 0; i < scene.roomSettings.teams; i++){
+		for(int i = 0; i < MISProject.project.roomSettings.teams; i++){
 			scriptString += createIndentations(1)+"if "+teamIdVariableName+" == "+i+":"+createLineBreaks(1);
 			scriptString += createIndentations(1)+"#Custom code can be added here(called when the player #"+i+" game starts)"+createLineBreaks(1);
 			scriptString += createIndentations(2)+"pass"+createLineBreaks(1);
@@ -431,7 +431,7 @@ public class ScriptBuilder {
 		scriptString += createIndentations(1)+"#Custom code can be added here(called when the game ends)"+createLineBreaks(1);
 		scriptString += createIndentations(1)+"pass"+createLineBreaks(2);
 		
-		if(scene.roomSettings.gameType instanceof MISCompetetiveGameType){
+		if(MISProject.project.roomSettings.gameType instanceof MISCompetetiveGameType){
 			scriptString += "func onReceiveGameWon(winning_team):"+createLineBreaks(1);
 			scriptString += createIndentations(1)+"if "+teamIdVariableName+" == winning_team:"+createLineBreaks(1);
 			scriptString += createIndentations(2)+"gameWon()"+createLineBreaks(2);

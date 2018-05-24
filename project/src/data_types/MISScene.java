@@ -28,7 +28,6 @@ public class MISScene {
 	public int loadSteps;
 	public int format;
 	public ArrayList<MISExternalResource> externalResources;
-	public MISRoomSettings roomSettings;
 	public String path;
 	
 	private static int globalID = 0;
@@ -101,7 +100,6 @@ public class MISScene {
 		newScene.IDNumber = this.IDNumber;
 		newScene.name = this.name;
 		newScene.loadSteps = this.loadSteps;
-		newScene.roomSettings = this.roomSettings;
 		//add broadcasts
 		for(int i = 0; i < this.broadcasts.size(); i++){
 			MISBroadcast broadcast = null;

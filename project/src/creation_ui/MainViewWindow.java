@@ -739,8 +739,8 @@ public class MainViewWindow {
 							
 							@Override
 							public void actionPerformed(ActionEvent e) {
-								if(currentScene.roomSettings != null){
-									SendInformationDialog infoDialog = new SendInformationDialog(currentScene.roomSettings, nodeList.getSelectedValue(), true, false);
+								if(MISProject.project.roomSettings != null){
+									SendInformationDialog infoDialog = new SendInformationDialog(MISProject.project.roomSettings, nodeList.getSelectedValue(), true, false);
 									infoDialog.showDialog();
 									MISReceiver receiver = infoDialog.getReceiver();
 									if(receiver != null){
@@ -770,8 +770,8 @@ public class MainViewWindow {
 							
 							@Override
 							public void actionPerformed(ActionEvent e) {
-								if(currentScene.roomSettings != null){
-									SendInformationDialog infoDialog = new SendInformationDialog(currentScene.roomSettings, nodeList.getSelectedValue(), false, true);
+								if(MISProject.project.roomSettings != null){
+									SendInformationDialog infoDialog = new SendInformationDialog(MISProject.project.roomSettings, nodeList.getSelectedValue(), false, true);
 									infoDialog.showDialog();
 									MISReceiver receiver = infoDialog.getReceiver();
 									if(receiver != null){
@@ -1003,7 +1003,7 @@ public class MainViewWindow {
 				public void mousePressed(MouseEvent e) {
 					mnWindow.getPopupMenu().setVisible(false);
 					addTextToConsole("Console cleared.");
-					SceneSettingsFrame dialog = new SceneSettingsFrame(frame ,currentScene);
+					SceneSettingsFrame dialog = new SceneSettingsFrame(frame);
 					dialog.showDialog();
 				}
 		});
@@ -1080,7 +1080,7 @@ public class MainViewWindow {
 			@Override
 			public void mousePressed(MouseEvent e) {
 				addTextToConsole("Add broadcast pressed on node-element #"+nodeList.getSelectedIndex());
-				BroadcastDialog dialog = new BroadcastDialog(currentScene.roomSettings);
+				BroadcastDialog dialog = new BroadcastDialog(MISProject.project.roomSettings);
 				dialog.showDialog();
 				MISBroadcast broadcast = dialog.getRuleFromDialog();
 				if(broadcast != null){
