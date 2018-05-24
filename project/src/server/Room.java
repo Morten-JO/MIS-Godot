@@ -155,9 +155,9 @@ public class Room {
 							if(scene.broadcasts.get(i) instanceof MISBroadcastMessage){
 								dataToSend = ((MISBroadcastMessage)scene.broadcasts.get(i)).message;
 							} else if(scene.broadcasts.get(i) instanceof MISBroadcastData){
-								dataToSend = "broadcastDatanot imeplement";
+								dataToSend = "broadcastData not implement";
 							} else if(scene.broadcasts.get(i) instanceof MISBroadcastValue){
-								dataToSend = "broadcastValuenot imeplement";
+								dataToSend = "broadcastValue not implement";
 							}
 							if(scene.broadcasts.get(i).receiver instanceof MISReceiverAll){
 								for(int j = 0; j < clientsInRoom.size(); j++){
