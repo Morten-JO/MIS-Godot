@@ -175,10 +175,14 @@ public class MISLoader {
 						}
 					}
 				} else if(readLine.startsWith("[gd_scene")){
-					String loadStepsString = readLine.split("load_steps=")[1].split(" ")[0];
-					scene.loadSteps = Integer.parseInt(loadStepsString);
-					String formatString = readLine.split("format=")[1].split("]")[0];
-					scene.format = Integer.parseInt(formatString);
+					if(readLine.contains("load_steps")){
+						String loadStepsString = readLine.split("load_steps=")[1].split(" ")[0];
+						scene.loadSteps = Integer.parseInt(loadStepsString);
+					}
+					if(readLine.contains("format")){
+						String formatString = readLine.split("format=")[1].split("]")[0];
+						scene.format = Integer.parseInt(formatString);
+					}
 				} else if(readLine.startsWith("transform")){
 					if(readLine.startsWith("transform/pos")){
 						try{

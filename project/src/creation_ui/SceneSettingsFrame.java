@@ -22,19 +22,24 @@ import game_types.MISCompetetiveGameType;
 import game_types.MISCustomGameType;
 import game_types.MISEndlessGameType;
 import game_types.MISGameType;
+import nodes.MISNode;
 import project.MISProject;
 import server.Client;
 import settings.MISProjectSettings;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JCheckBox;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import java.awt.CardLayout;
+import java.awt.Component;
+
 import javax.swing.JSpinner;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListCellRenderer;
 
 public class SceneSettingsFrame extends JDialog {
 
@@ -178,6 +183,15 @@ public class SceneSettingsFrame extends JDialog {
 		}
 		sceneComboBox.setModel(sceneModel);
 		
+		sceneComboBox.setRenderer(new DefaultListCellRenderer() {
+			 @Override
+			    public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+			        if (value instanceof MISScene) {
+			            value = ((MISScene)value).name;
+			        }
+			        return super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus); //To change body of generated methods, choose Tools | Templates.
+			    }
+		});
 		
 		GroupLayout gl_roomCardPanel = new GroupLayout(roomCardPanel);
 		gl_roomCardPanel.setHorizontalGroup(
@@ -299,7 +313,7 @@ public class SceneSettingsFrame extends JDialog {
 			int teamSize = (Integer) spinnerTeamsInRoom.getValue();
 			MISGameType gameType = null;
 			String value = (String)roomTypeComboBox.getSelectedItem();
-			if(value.equals("competetive")){
+			if(value.equals("Competetive")){
 				gameType = new MISCompetetiveGameType();
 			} else if(value.equals("Endlesss")){
 				gameType = new MISEndlessGameType();

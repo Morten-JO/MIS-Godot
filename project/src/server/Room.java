@@ -57,14 +57,14 @@ public class Room {
 	public Room(MISScene scene, int roomSize, Server server,  Client... client){
 		this(scene, roomSize, server);
 		try{
-			if(scene.roomSettings.teams == 0){
+			if(MISProject.project.roomSettings.teams == 0){
 				for(int i = 0; i < client.length; i++){
 					List<Client> clientList = new ArrayList<Client>();
 					clientList.add(client[i]);
 					teams.add(clientList);
 				}
 			} else{
-				for(int i = 0; i < scene.roomSettings.teams; i++){
+				for(int i = 0; i < MISProject.project.roomSettings.teams; i++){
 					teams.add(new ArrayList<Client>());
 				}
 				int teamCounter = 0;

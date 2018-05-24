@@ -165,11 +165,11 @@ public class Server implements Runnable{
 						}
 					}
 					for(int i = 0; i < sceneCounts.length; i++){
-						if(MISProject.project.scenes.get(i).roomSettings != null){
-							if(sceneCounts[i] >= MISProject.project.scenes.get(i).roomSettings.minimumPlayers){
-								int playersForRoom = MISProject.project.scenes.get(i).roomSettings.minimumPlayers;
-								if(sceneCounts[i] >= MISProject.project.scenes.get(i).roomSettings.maximumPlayers){
-									playersForRoom = MISProject.project.scenes.get(i).roomSettings.maximumPlayers;
+						if(MISProject.project.roomSettings != null){
+							if(sceneCounts[i] >= MISProject.project.roomSettings.minimumPlayers){
+								int playersForRoom = MISProject.project.roomSettings.minimumPlayers;
+								if(sceneCounts[i] >= MISProject.project.roomSettings.maximumPlayers){
+									playersForRoom = MISProject.project.roomSettings.maximumPlayers;
 								} else{
 									playersForRoom = sceneCounts[i];
 								}
@@ -242,7 +242,7 @@ public class Server implements Runnable{
 				break;
 			}
 		}
-		if(client.getRoom().getScene().roomSettings.gameType instanceof MISCompetetiveGameType){
+		if(MISProject.project.roomSettings.gameType instanceof MISCompetetiveGameType){
 			//Check room that player left
 			int teamsWithPlayers = 0;
 			for(int i = 0; i < client.getRoom().teams.size(); i++){
@@ -256,12 +256,14 @@ public class Server implements Runnable{
 					for(int i = 0; i < client.getRoom().teams.size(); i++){
 						if(client.getRoom().teams.get(i).size() > 0){
 							for(int j = 0; j < client.getRoom().teams.get(i).size(); j++){
+								System.out.println("Notified.....");
 								client.getRoom().teams.get(i).get(j).notifyWonRoom(i);
 								client.getRoom().teams.get(i).get(j).notifyGameEnd(i);
 							}
 						}
 					}
 				}
+				rooms.remove(client.getRoom());
 			}
 		}
 		
