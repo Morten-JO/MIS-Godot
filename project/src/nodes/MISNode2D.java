@@ -18,7 +18,7 @@ public class MISNode2D extends MISNode{
 	
 	@Override
 	public String getReadyPacket(){
-		return "node "+name+" "+index+" transform2d "+transform.positionX+" "+transform.positionY+" "+transform.rotation+" "+transform.scaleX+" "+transform.scaleY;
+		return "[node] "+name+" "+index+" [transform2d] "+transform.positionX+" "+transform.positionY+" "+transform.rotation+" "+transform.scaleX+" "+transform.scaleY;
 	}
 	
 	public static boolean isType(String type){

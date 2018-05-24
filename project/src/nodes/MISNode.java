@@ -25,7 +25,7 @@ public class MISNode {
 	}
 	
 	public String getReadyPacket(){
-		return "node "+name+" "+index;
+		return "[node] "+name+" "+index;
 	}
 	
 	public static boolean isType(String type){

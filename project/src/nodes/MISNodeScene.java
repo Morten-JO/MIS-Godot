@@ -46,9 +46,9 @@ public class MISNodeScene extends MISNode{
 				MISNode2D node2D = (MISNode2D) headNode;
 				toSend += "transform2d "+node2D.transform.positionX+" "+node2D.transform.positionY+" "+node2D.transform.rotation+" "+node2D.transform.scaleX+" "+node2D.transform.scaleY;
 			}
-			else if(headNode instance of MISSp)
+			//else if(headNode instance of MISSp)
 		}
-		return "node "+name+" "+index+" transform2d "+transform.positionX+" "+transform.positionY+" "+transform.rotation+" "+transform.scaleX+" "+transform.scaleY;
+		//return "node "+name+" "+index+" transform2d "+transform.positionX+" "+transform.positionY+" "+transform.rotation+" "+transform.scaleX+" "+transform.scaleY;
 		return toSend;
 	}
 	
