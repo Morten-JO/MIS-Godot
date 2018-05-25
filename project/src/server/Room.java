@@ -9,7 +9,9 @@ import broadcasts.MISBroadcastMessage;
 import data_types.MIS2DTransform;
 import data_types.MISScene;
 import nodes.MISControl;
+import nodes.MISNode;
 import nodes.MISNode2D;
+import nodes.MISNodeScene;
 import nodes.MISSpatial;
 import project.MISProject;
 import receivers.MISReceiverAll;
@@ -51,6 +53,10 @@ public class Room {
 			if(scene.nodeList.get(i).shouldSendInformation){
 				System.out.println("data: "+scene.nodeList.get(i).informationReceivers);
 			}
+		}
+		System.out.println("Scene nodelistTypes Class whatever:");
+		for(int i = 0; i < scene.nodeList.size(); i++){
+			System.out.println("#"+i+": "+scene.nodeList.get(i).name+" - "+scene.nodeList.get(i).getClass().getSimpleName());
 		}
 	}
 	
@@ -155,9 +161,9 @@ public class Room {
 							if(scene.broadcasts.get(i) instanceof MISBroadcastMessage){
 								dataToSend = ((MISBroadcastMessage)scene.broadcasts.get(i)).message;
 							} else if(scene.broadcasts.get(i) instanceof MISBroadcastData){
-								dataToSend = "broadcastDatanot imeplement";
+								dataToSend = "broadcastData not implement";
 							} else if(scene.broadcasts.get(i) instanceof MISBroadcastValue){
-								dataToSend = "broadcastValuenot imeplement";
+								dataToSend = "broadcastValue not implement";
 							}
 							if(scene.broadcasts.get(i).receiver instanceof MISReceiverAll){
 								for(int j = 0; j < clientsInRoom.size(); j++){
@@ -300,10 +306,11 @@ public class Room {
 				MIS2DTransform transform = new MIS2DTransform(xPos, yPos, rot, xScale, yScale);
 				if(scene.nodeList.get(index) instanceof MISNode2D){
 					((MISNode2D)scene.nodeList.get(index)).transform = transform;
-				} else if(scene.nodeList.get(index) instanceof MISControl){
-					// TODO Auto-generated method stub
-				} else if(scene.nodeList.get(index) instanceof MISSpatial){
-					// TODO Auto-generated method stub
+				} else if(scene.nodeList.get(index) instanceof MISNodeScene){
+					MISNode headNode = ((MISNodeScene)scene.nodeList.get(index)).headNode;
+					if(headNode instanceof MISNode2D){
+						((MISNode2D)headNode).transform = transform;
+					}
 				}
 			}
 			if(message.contains("[spatial]")){
@@ -346,10 +353,27 @@ public class Room {
 					((MISSpatial)scene.nodeList.get(index)).xo = xo;
 					((MISSpatial)scene.nodeList.get(index)).yo = yo;
 					((MISSpatial)scene.nodeList.get(index)).zo = zo;
-					
+				} else if(scene.nodeList.get(index) instanceof MISNodeScene){
+					MISNode headNode = ((MISNodeScene)scene.nodeList.get(index)).headNode;
+					if(headNode instanceof MISSpatial){
+						((MISSpatial)headNode).xx = xx;
+						((MISSpatial)headNode).yx = yx;
+						((MISSpatial)headNode).zx = zx;
+						
+						((MISSpatial)headNode).xy = xy;
+						((MISSpatial)headNode).yy = yy;
+						((MISSpatial)headNode).zy = zy;
+						
+						((MISSpatial)headNode).xz = xz;
+						((MISSpatial)headNode).yz = yz;
+						((MISSpatial)headNode).zz = zz;
+						
+						((MISSpatial)headNode).xo = xo;
+						((MISSpatial)headNode).yo = yo;
+						((MISSpatial)headNode).zo = zo;
+					}
 				}
 			}
-			// TODO Auto-generated method stub
 		} catch(Exception e){
 			e.printStackTrace();
 		}

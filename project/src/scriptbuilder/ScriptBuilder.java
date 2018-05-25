@@ -14,6 +14,7 @@ import game_types.MISCompetetiveGameType;
 import nodes.MISControl;
 import nodes.MISNode;
 import nodes.MISNode2D;
+import nodes.MISNodeScene;
 import nodes.MISSpatial;
 import project.MISProject;
 import receivers.MISReceiverAll;
@@ -177,7 +178,16 @@ public class ScriptBuilder {
 			scriptString += createIndentations(indents)+"pass #Error, MISControl, not implemented"+createLineBreaks(1);
 		} else if(node instanceof MISSpatial){
 			scriptString += createIndentations(indents)+nameOfNode+".set_transform(Vector3(float(split_message[4]), float(split_message[5]), float(split_message[6])), Vector3(float(split_message[7]), float(split_message[8]), float(split_message[9])), Vector3(float(split_message[10]), float(split_message[11]), float(split_message[12])), Vector3(float(split_message[13]), float(split_message[14]), float(split_message[15])))"+createLineBreaks(1);
-		} 
+		} else if(node instanceof MISNodeScene){
+			MISNodeScene nodeInQuestion = (MISNodeScene)node;
+			if(nodeInQuestion.headNode instanceof MISNode2D){
+				scriptString += createIndentations(indents)+nameOfNode+".set_pos(Vector2(float(split_message[4]), float(split_message[5])))"+createLineBreaks(1);
+				scriptString += createIndentations(indents)+nameOfNode+".set_rot(float(split_message[6]))"+createLineBreaks(1);
+				scriptString += createIndentations(indents)+nameOfNode+".set_scale(Vector2(float(split_message[7]), float(split_message[8])))"+createLineBreaks(1);
+			} else if(nodeInQuestion.headNode instanceof MISSpatial){
+				scriptString += createIndentations(indents)+nameOfNode+".set_transform(Vector3(float(split_message[4]), float(split_message[5]), float(split_message[6])), Vector3(float(split_message[7]), float(split_message[8]), float(split_message[9])), Vector3(float(split_message[10]), float(split_message[11]), float(split_message[12])), Vector3(float(split_message[13]), float(split_message[14]), float(split_message[15])))"+createLineBreaks(1);
+			}
+		}
 		return scriptString;
 	}
 	
@@ -317,6 +327,17 @@ public class ScriptBuilder {
 		} else if(node instanceof MISSpatial){
 			MISSpatial spatial = (MISSpatial) node;
 			scriptString += createIndentations(3)+tcpConnectionVariableName+put_utf8_string(spatial, nameOfNode)+createLineBreaks(1);
+		} else if(node instanceof MISNodeScene){
+			MISNodeScene nodeScene = (MISNodeScene) node;
+			if(nodeScene.headNode != null){
+				if(nodeScene.headNode instanceof MISNode2D){
+					MISNode2D node2D = (MISNode2D) nodeScene.headNode;
+					scriptString += createIndentations(3)+tcpConnectionVariableName+put_utf8_string(node2D, nameOfNode, nodeScene.index)+createLineBreaks(1);
+				} else if(nodeScene.headNode instanceof MISSpatial){
+					MISSpatial spatial = (MISSpatial) nodeScene.headNode;
+					scriptString += createIndentations(3)+tcpConnectionVariableName+put_utf8_string(spatial, nameOfNode, nodeScene.index)+createLineBreaks(1);
+				}
+			}
 		} else{
 			scriptString += createIndentations(3)+"pass #Error, Not other than MISNode2D and MISSpatial implemented yet."+createLineBreaks(1);
 		}
@@ -448,8 +469,20 @@ public class ScriptBuilder {
 		return ".put_utf8_string(\"[node] "+node.name+" "+node.index+" [transform2d] \"+str("+name+".get_pos().x)+\" \"+str("+name+".get_pos().y)+\" \"+str("+name+".get_rot())+\" \"+str("+name+".get_scale().x)+\" \"+str("+name+".get_scale().y)+\"\\n\")";
 	}
 	
+	private static String put_utf8_string(MISNode2D node, String name, int index){
+		return ".put_utf8_string(\"[node] "+node.name+" "+index+" [transform2d] \"+str("+name+".get_pos().x)+\" \"+str("+name+".get_pos().y)+\" \"+str("+name+".get_rot())+\" \"+str("+name+".get_scale().x)+\" \"+str("+name+".get_scale().y)+\"\\n\")";
+	}
+	
 	private static String put_utf8_string(MISSpatial spatial, String name) {
 		return ".put_utf8_string(\"[node] "+spatial.name+" "+spatial.index+" [spatial] \"+str("
+				+ name+".get_transform().basis.x.x)+\" \"+str("+name+".get_transform().basis.x.y)+\" \"+str("+name+".get_transform().basis.x.z)+\" \"+str("
+				+ name+".get_transform().basis.y.x)+\" \"+str("+name+".get_transform().basis.y.y)+\" \"+str("+name+".get_transform().basis.y.z)+\" \"+str("
+				+ name+".get_transform().basis.z.x)+\" \"+str("+name+".get_transform().basis.z.y)+\" \"+str("+name+".get_transform().basis.z.z)+\" \"+str("
+				+ name+".get_transform().origin.x)+\" \"+str("+name+".get_transform().origin.y)+\" \"+str("+name+".get_transform().origin.z)+\"\\n\")";
+	}
+	
+	private static String put_utf8_string(MISSpatial spatial, String name, int index) {
+		return ".put_utf8_string(\"[node] "+spatial.name+" "+index+" [spatial] \"+str("
 				+ name+".get_transform().basis.x.x)+\" \"+str("+name+".get_transform().basis.x.y)+\" \"+str("+name+".get_transform().basis.x.z)+\" \"+str("
 				+ name+".get_transform().basis.y.x)+\" \"+str("+name+".get_transform().basis.y.y)+\" \"+str("+name+".get_transform().basis.y.z)+\" \"+str("
 				+ name+".get_transform().basis.z.x)+\" \"+str("+name+".get_transform().basis.z.y)+\" \"+str("+name+".get_transform().basis.z.z)+\" \"+str("

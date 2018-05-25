@@ -17,6 +17,5 @@ public class MISControl extends MISNode{
 			}
 		}
 		return false;
-	}
-	
+	}	
 }
