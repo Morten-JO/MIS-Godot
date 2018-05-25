@@ -40,15 +40,18 @@ public class MISNodeScene extends MISNode{
 	
 	@Override
 	public String getReadyPacket(){
-		String toSend = "node "+name+" "+index+" ";
+		String toSend = "[node] "+name+" "+index+" ";
 		if(headNode != null){
 			if(headNode instanceof MISNode2D){
 				MISNode2D node2D = (MISNode2D) headNode;
-				toSend += "transform2d "+node2D.transform.positionX+" "+node2D.transform.positionY+" "+node2D.transform.rotation+" "+node2D.transform.scaleX+" "+node2D.transform.scaleY;
-			}
-			//else if(headNode instance of MISSp)
+				toSend += "[transform2d] "+node2D.transform.positionX+" "+node2D.transform.positionY+" "+node2D.transform.rotation+" "+node2D.transform.scaleX+" "+node2D.transform.scaleY;
+			} else if(headNode instanceof MISSpatial){
+				MISSpatial spatial = (MISSpatial) headNode;
+				toSend += "[spatial] "+spatial.xx+" "+spatial.xy+" "+spatial.xz+" "+spatial.yx+" "+spatial.yy+" "+spatial.yz+" "+spatial.zx+" "+spatial.zy+" "+spatial.zz+" "+spatial.xo+" "+spatial.yo+" "+spatial.zo;
+			} else if(headNode instanceof MISControl){
+				MISControl control = (MISControl) headNode;
+			} 
 		}
-		//return "node "+name+" "+index+" transform2d "+transform.positionX+" "+transform.positionY+" "+transform.rotation+" "+transform.scaleX+" "+transform.scaleY;
 		return toSend;
 	}
 	

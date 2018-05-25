@@ -120,47 +120,7 @@ public class MISScene {
 		}
 		//add nodes
 		for(int i = 0; i < this.nodeList.size(); i++){
-			MISNode node = null;
-			if(this.nodeList.get(i) instanceof MISNode2D){
-				MISNode2D old = (MISNode2D) this.nodeList.get(i);
-				node = new MISNode2D(new MIS2DTransform(old.transform.positionX, old.transform.positionY, old.transform.rotation, old.transform.scaleX, old.transform.scaleY));
-			} else if(this.nodeList.get(i) instanceof MISControl){
-				// TODO Auto-generated method stub
-				node = new MISControl();
-			} else if(this.nodeList.get(i) instanceof MISSpatial){
-				MISSpatial old = (MISSpatial) this.nodeList.get(i);
-				MISSpatial spatialCopy = new MISSpatial();
-				spatialCopy.xx = old.xx;
-				spatialCopy.yx = old.yx;
-				spatialCopy.zx = old.zx;
-				
-				spatialCopy.xy = old.xy;
-				spatialCopy.yy = old.yy;
-				spatialCopy.zy = old.zy;
-				
-				spatialCopy.xz = old.xz;
-				spatialCopy.yz = old.yz;
-				spatialCopy.zz = old.zz;
-				
-				spatialCopy.xo = old.xo;
-				spatialCopy.yo = old.yo;
-				spatialCopy.zo = old.zo;
-				node = spatialCopy;
-			} else if(this.nodeList.get(i) instanceof MISNode){
-				node = new MISNode();
-			}
-			MISNode old = this.nodeList.get(i);
-			node.index = old.index;
-			node.informationReceivers = old.informationReceivers;
-			node.name = old.name;
-			node.parent = old.parent;
-			node.scriptAttached = old.scriptAttached;
-			node.scriptId = old.scriptId;
-			node.scriptName = old.scriptName;
-			node.type = old.type;
-			node.shouldSendInformation = old.shouldSendInformation;
-			node.isControllable = old.isControllable;
-			node.controlReceiver = old.controlReceiver;
+			MISNode node = createDeepCopyOfNode(this.nodeList.get(i));
 			newScene.nodeList.add(node);
 		}
 		//add rules
@@ -196,6 +156,61 @@ public class MISScene {
 		}
 		return newScene;
 		
+	}
+	
+	private MISNode createDeepCopyOfNode(MISNode nodeToCopy){
+		if(nodeToCopy == null){
+			return null;
+		}
+		MISNode node = null;
+		if(nodeToCopy instanceof MISNode2D){
+			MISNode2D old = (MISNode2D) nodeToCopy;
+			node = new MISNode2D(new MIS2DTransform(old.transform.positionX, old.transform.positionY, old.transform.rotation, old.transform.scaleX, old.transform.scaleY));
+		} else if(nodeToCopy instanceof MISControl){
+			// TODO Auto-generated method stub
+			node = new MISControl();
+		} else if(nodeToCopy instanceof MISSpatial){
+			MISSpatial old = (MISSpatial) nodeToCopy;
+			MISSpatial spatialCopy = new MISSpatial();
+			spatialCopy.xx = old.xx;
+			spatialCopy.yx = old.yx;
+			spatialCopy.zx = old.zx;
+			
+			spatialCopy.xy = old.xy;
+			spatialCopy.yy = old.yy;
+			spatialCopy.zy = old.zy;
+			
+			spatialCopy.xz = old.xz;
+			spatialCopy.yz = old.yz;
+			spatialCopy.zz = old.zz;
+			
+			spatialCopy.xo = old.xo;
+			spatialCopy.yo = old.yo;
+			spatialCopy.zo = old.zo;
+			node = spatialCopy;
+		} else if(nodeToCopy instanceof MISNodeScene){
+			MISNodeScene old = (MISNodeScene) nodeToCopy;
+			MISNodeScene sceneCopy = new MISNodeScene();
+			sceneCopy.scene = old.scene;
+			sceneCopy.resource = old.resource;
+			sceneCopy.headNode = createDeepCopyOfNode(old.headNode);
+			node = sceneCopy;
+		} else if(nodeToCopy instanceof MISNode){
+			node = new MISNode();
+		}
+		MISNode old = nodeToCopy;
+		node.index = old.index;
+		node.informationReceivers = old.informationReceivers;
+		node.name = old.name;
+		node.parent = old.parent;
+		node.scriptAttached = old.scriptAttached;
+		node.scriptId = old.scriptId;
+		node.scriptName = old.scriptName;
+		node.type = old.type;
+		node.shouldSendInformation = old.shouldSendInformation;
+		node.isControllable = old.isControllable;
+		node.controlReceiver = old.controlReceiver;
+		return node;
 	}
 	
 	
