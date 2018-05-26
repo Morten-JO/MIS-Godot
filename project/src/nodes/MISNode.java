@@ -1,6 +1,7 @@
 package nodes;
 
 import receivers.MISReceiver;
+import triggers.MISTrigger;
 
 public class MISNode {
 
@@ -19,6 +20,8 @@ public class MISNode {
 	
 	public boolean isControllable;
 	public MISReceiver controlReceiver;
+	
+	public MISTrigger trigger;
 	
 	public MISNode(){
 		
