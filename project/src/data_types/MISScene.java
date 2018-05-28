@@ -210,6 +210,7 @@ public class MISScene {
 		node.shouldSendInformation = old.shouldSendInformation;
 		node.isControllable = old.isControllable;
 		node.controlReceiver = old.controlReceiver;
+		node.trigger = old.trigger;
 		return node;
 	}
 	

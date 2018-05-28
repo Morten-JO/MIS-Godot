@@ -17,5 +17,9 @@ public class MISControl extends MISNode{
 			}
 		}
 		return false;
-	}	
+	}
+	
+	public MISControl(){
+		super();
+	}
 }

@@ -1,5 +1,8 @@
 package nodes;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import receivers.MISReceiver;
 import triggers.MISTrigger;
 
@@ -21,10 +24,10 @@ public class MISNode {
 	public boolean isControllable;
 	public MISReceiver controlReceiver;
 	
-	public MISTrigger trigger;
+	public List<MISTrigger> trigger;
 	
 	public MISNode(){
-		
+		trigger = new ArrayList<MISTrigger>();
 	}
 	
 	public String getReadyPacket(){

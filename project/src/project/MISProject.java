@@ -9,6 +9,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import actions.MISActionMessage;
 import broadcasts.MISBroadcast;
 import broadcasts.MISBroadcastData;
 import broadcasts.MISBroadcastValue;
@@ -33,6 +34,7 @@ import nodes.MISNode;
 import nodes.MISNode2D;
 import nodes.MISNodeScene;
 import nodes.MISSpatial;
+import receivers.MISReceiver;
 import receivers.MISReceiverAll;
 import receivers.MISReceiverNotPerson;
 import receivers.MISReceiverNotTeam;
@@ -44,6 +46,8 @@ import rules.MISRuleNodePosition;
 import rules.MISRuleNodeRotation;
 import rules.MISRuleNodeScale;
 import settings.MISGeneralSettings;
+import triggers.MISTrigger;
+import triggers.MISTriggerValue;
 
 import static java.lang.Math.toIntExact;
 
@@ -226,6 +230,35 @@ public class MISProject {
 								}
 							}
 							
+						}
+						nodeObject.put("triggerSize", node.trigger.size());
+						if(node.trigger.size() > 0 ){
+							for(int l = 0; l < node.trigger.size(); l++){
+								JSONObject triggerObject = new JSONObject();
+								triggerObject.put("triggerClass", node.trigger.get(l).getClass().getSimpleName());
+								if(node.trigger.get(l) instanceof MISTriggerValue){
+									MISTriggerValue value = (MISTriggerValue) node.trigger.get(l);
+									triggerObject.put("comparer", value.comparer);
+									triggerObject.put("targetType", value.targetType);
+									triggerObject.put("valueTarget", value.valueTarget);
+									triggerObject.put("actionClass", value.action.getClass().getSimpleName());
+									if(value.action instanceof MISActionMessage){
+										MISActionMessage messageAction = (MISActionMessage) value.action;
+										triggerObject.put("actionMessage", messageAction.message);
+										triggerObject.put("actionReceiver", messageAction.receiver.getClass().getSimpleName());
+										if(messageAction.receiver instanceof MISReceiverPerson){
+											triggerObject.put("actionPerson", ((MISReceiverPerson)messageAction.receiver).person);
+										} else if(messageAction.receiver instanceof MISReceiverTeam){
+											triggerObject.put("actionTeam", ((MISReceiverTeam)messageAction.receiver).team);
+										} else if(messageAction.receiver instanceof MISReceiverNotPerson){
+											triggerObject.put("actionNotPerson", ((MISReceiverNotPerson)messageAction.receiver).person);
+										} else if(messageAction.receiver instanceof MISReceiverNotTeam){
+											triggerObject.put("actionNotTeam", ((MISReceiverNotTeam)messageAction.receiver).team);
+										}
+									}
+								}
+								nodeObject.put("trigger_"+l, triggerObject);
+							}
 						}
 						nodesObject.put(""+j, nodeObject);
 					}
@@ -593,6 +626,45 @@ public class MISProject {
 						} else if(controllableName.equals(MISReceiverNotTeam.class.getSimpleName())){
 							int team = toIntExact((Long)nodeObject.get("controllableNotTeam"));
 							node.informationReceivers = new MISReceiverNotTeam(team);
+						}
+					}
+					
+					int triggerSize = toIntExact((Long)nodeObject.get("triggerSize"));
+					for(int l = 0; l < triggerSize; l++){
+						MISTrigger trigger = null;
+						JSONObject triggerObject = (JSONObject) nodeObject.get("trigger_"+l);
+						String triggerClass = (String ) triggerObject.get("triggerClass");
+						if(triggerClass.equals(MISTriggerValue.class.getSimpleName())){
+							MISTriggerValue.ValueComparer valueComparer = MISTriggerValue.ValueComparer.valueOf((String)triggerObject.get("comparer"));
+							MISTriggerValue.TargetType targetType = MISTriggerValue.TargetType.valueOf((String)triggerObject.get("targetType"));
+							double valueTarget = (Double) triggerObject.get("valueTarget");
+							String actionClass = (String) triggerObject.get("actionClass");
+							if(actionClass.equals(MISActionMessage.class.getSimpleName())){
+								String actionMessage = 	(String) triggerObject.get("actionMessage");
+								String actionReceiverClassName = (String)triggerObject.get("actionReceiver");
+								MISReceiver receiver;
+								if(actionReceiverClassName.equals(MISReceiverPerson.class.getSimpleName())){
+									int person = toIntExact((Long) triggerObject.get("actionPerson"));
+									receiver = new MISReceiverPerson(person);
+								} else if(actionReceiverClassName.equals(MISReceiverTeam.class.getSimpleName())){
+									int team = toIntExact((Long) triggerObject.get("actionTeam"));
+									receiver = new MISReceiverTeam(team);
+								} else if(actionReceiverClassName.equals(MISReceiverNotPerson.class.getSimpleName())){
+									int notPerson = toIntExact((Long) triggerObject.get("actionNotPerson"));
+									receiver = new MISReceiverNotPerson(notPerson);
+								} else if(actionReceiverClassName.equals(MISReceiverNotTeam.class.getSimpleName())){
+									int team = toIntExact((Long) triggerObject.get("actionNotTeam"));
+									receiver = new MISReceiverNotTeam(team);
+								} else{
+									receiver = new MISReceiverAll();
+								}
+								MISActionMessage actionMessageObject = new MISActionMessage(actionMessage, receiver);
+								trigger = new MISTriggerValue(actionMessageObject, valueTarget, valueComparer, targetType);
+								
+							}
+						}
+						if(trigger != null){
+							node.trigger.add(trigger);
 						}
 					}
 					

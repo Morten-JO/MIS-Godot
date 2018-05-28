@@ -35,6 +35,10 @@ public class MISSpatial extends MISNode{
 	public double yo;
 	public double zo;
 	
+	public MISSpatial() {
+		super();
+	}
+	
 	@Override
 	public String getReadyPacket(){
 		return "[node] "+name+" "+index+" [spatial] "+xx+" "+xy+" "+xz+" "+yx+" "+yy+" "+yz+" "+zx+" "+zy+" "+zz+" "+xo+" "+yo+" "+zo;

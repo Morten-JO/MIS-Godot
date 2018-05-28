@@ -22,10 +22,11 @@ public class MISTriggerValue extends MISTrigger{
 	
 	public ValueComparer comparer;
 	
-	public MISTriggerValue(MISAction action, double valueTarget, ValueComparer comparer){
+	public MISTriggerValue(MISAction action, double valueTarget, ValueComparer comparer, TargetType targetType){
 		super(action);
 		this.valueTarget = valueTarget;
 		this.comparer = comparer;
+		this.targetType = targetType;
 	}
 	
 	public boolean targetHit(MISNode node){
