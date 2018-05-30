@@ -32,6 +32,7 @@ import javax.swing.InputMap;
 import javax.swing.JComponent;
 
 import settings.MISProjectSettings;
+import triggers.MISTrigger;
 
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -48,7 +49,9 @@ import data_types.MISScene;
 import jdk.nashorn.internal.ir.JoinPredecessorExpression;
 import main.Main;
 import nodes.MISNode;
+import nodes.MISNode2D;
 import nodes.MISNodeScene;
+import nodes.MISSpatial;
 import project.MISProject;
 import receivers.MISReceiver;
 import rules.MISRule;
@@ -784,6 +787,26 @@ public class MainViewWindow {
 						});
 						menu.add(controlInfo);
 					}
+					if(nodeList.getSelectedValue() instanceof MISNode2D || nodeList.getSelectedValue() instanceof MISSpatial){
+						JMenuItem addTrigger = new JMenuItem("Add Trigger");
+						addTrigger.addActionListener(new ActionListener() {
+							
+							@Override
+							public void actionPerformed(ActionEvent e) {
+								if(MISProject.project.roomSettings != null){
+									TriggerDialog triggerDialog = new TriggerDialog(frame);
+									triggerDialog.showDialog();
+									MISTrigger trigger = triggerDialog.getTriggerFromDialog();
+									if(trigger != null){
+										nodeList.getSelectedValue().trigger.add(trigger);
+										addTextToConsole("Added trigger for "+nodeList.getSelectedValue().name);
+									}
+								}
+							}
+						});
+						menu.add(addTrigger);
+					}
+					
 					menu.show(nodeList, arg0.getPoint().x, arg0.getPoint().y);
 					
 				}

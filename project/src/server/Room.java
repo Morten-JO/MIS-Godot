@@ -3,6 +3,7 @@ package server;
 import java.util.ArrayList;
 import java.util.List;
 
+import actions.MISActionMessage;
 import broadcasts.MISBroadcastData;
 import broadcasts.MISBroadcastValue;
 import broadcasts.MISBroadcastMessage;
@@ -19,6 +20,8 @@ import receivers.MISReceiverNotPerson;
 import receivers.MISReceiverNotTeam;
 import receivers.MISReceiverPerson;
 import receivers.MISReceiverTeam;
+import triggers.MISTrigger;
+import triggers.MISTriggerValue;
 
 public class Room {
 
@@ -26,10 +29,11 @@ public class Room {
 	
 	private Thread broadcastThread;
 	private Thread refreshThread;
+	private Thread triggerThread;
 	
 	private boolean broadcastRunning = true;
 	private boolean refreshRunning = true;
-	
+	private boolean triggerRunning = true;
 	public List<Client> clientsInRoom;
 	
 	public List<List<Client>> teams;
@@ -39,12 +43,15 @@ public class Room {
 	private int roomId;
 	private static int globalRoomID;
 	
+	
+	
 	public Room(MISScene scene, int roomSize, Server server){
 		this.scene = scene;
 		roomId = globalRoomID;
 		globalRoomID++;
 		createBroadcastThread();
 		createRefreshThread();
+		createTriggerThread();
 		this.roomSize = roomSize;
 		clientsInRoom = new ArrayList<Client>();
 		teams = new ArrayList<List<Client>>();
@@ -95,6 +102,123 @@ public class Room {
 			System.out.println("Error, apparently creating a room without a setting in scene: "+scene.name);
 			server.notifyFatalRoomError();
 		}
+	}
+	
+	private void createTriggerThread(){
+		triggerThread = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				while(triggerRunning){
+					for(int i = 0; i< scene.nodeList.size(); i++){
+						MISNode node = scene.nodeList.get(i);
+						for(int j = 0; j < scene.nodeList.get(i).trigger.size(); j++){
+							MISTrigger trigger = scene.nodeList.get(i).trigger.get(j);
+							if(trigger.hasTriggered){
+								continue;
+							}
+							boolean shouldTrigger = false;
+							if(trigger instanceof MISTriggerValue){
+								MISTriggerValue valueTrigger = (MISTriggerValue) trigger;
+								double value;
+								if(node instanceof MISNode2D){
+									if(valueTrigger.targetType == MISTriggerValue.TargetType.x){
+										value = ((MISNode2D) node).transform.positionX;
+									} else if(valueTrigger.targetType == MISTriggerValue.TargetType.y){
+										value = ((MISNode2D) node).transform.positionY;
+									} else if(valueTrigger.targetType == MISTriggerValue.TargetType.rot){
+										value = ((MISNode2D) node).transform.rotation;
+									} else if(valueTrigger.targetType == MISTriggerValue.TargetType.scaleX){
+										value = ((MISNode2D) node).transform.scaleX;
+									} else if(valueTrigger.targetType == MISTriggerValue.TargetType.scaleY){
+										value = ((MISNode2D) node).transform.scaleY;
+									} else{
+										continue;
+									}
+								} else if(node instanceof MISSpatial){
+									if(valueTrigger.targetType == MISTriggerValue.TargetType.xx){
+										value = ((MISSpatial) node).xx;
+									} else if(valueTrigger.targetType == MISTriggerValue.TargetType.xy){
+										value = ((MISSpatial) node).xy;
+									} else if(valueTrigger.targetType == MISTriggerValue.TargetType.xz){
+										value = ((MISSpatial) node).xz;
+									} else if(valueTrigger.targetType == MISTriggerValue.TargetType.yx){
+										value = ((MISSpatial) node).yx;
+									} else if(valueTrigger.targetType == MISTriggerValue.TargetType.yy){
+										value = ((MISSpatial) node).yy;
+									} else if(valueTrigger.targetType == MISTriggerValue.TargetType.yz){
+										value = ((MISSpatial) node).yz;
+									} else if(valueTrigger.targetType == MISTriggerValue.TargetType.zx){
+										value = ((MISSpatial) node).zx;
+									} else if(valueTrigger.targetType == MISTriggerValue.TargetType.zy){
+										value = ((MISSpatial) node).zy;
+									} else if(valueTrigger.targetType == MISTriggerValue.TargetType.zz){
+										value = ((MISSpatial) node).zz;
+									} else if(valueTrigger.targetType == MISTriggerValue.TargetType.xo){
+										value = ((MISSpatial) node).xo;
+									} else if(valueTrigger.targetType == MISTriggerValue.TargetType.yo){
+										value = ((MISSpatial) node).yo;
+									} else if(valueTrigger.targetType == MISTriggerValue.TargetType.zo){
+										value = ((MISSpatial) node).zo;
+									} else {
+										continue;
+									}
+								} else{
+									continue;
+								}
+								
+								if(valueTrigger.comparer == MISTriggerValue.ValueComparer.Equal){
+									shouldTrigger = valueTrigger.valueTarget == value;
+								} else if(valueTrigger.comparer == MISTriggerValue.ValueComparer.Higher){
+									shouldTrigger = valueTrigger.valueTarget < value;
+								} else if(valueTrigger.comparer == MISTriggerValue.ValueComparer.Lower){
+									shouldTrigger = valueTrigger.valueTarget > value;
+								}
+							}
+							if(shouldTrigger){
+								trigger.hasTriggered = true;
+								if(trigger.action instanceof MISActionMessage){
+									MISActionMessage actionMessage = (MISActionMessage) trigger.action;
+									if(actionMessage.receiver instanceof MISReceiverAll){
+										for(int x = 0; x < clientsInRoom.size(); x++){
+											clientsInRoom.get(x).addMessageToSend("trigger_"+node.name+"_"+node.index+"_"+j+" "+actionMessage.message);
+										}
+									} else if(actionMessage.receiver instanceof MISReceiverTeam){
+										MISReceiverTeam team = (MISReceiverTeam) actionMessage.receiver;
+										for(int x = 0; x < teams.get(team.team).size(); x++){
+											teams.get(team.team).get(x).addMessageToSend("trigger_"+node.name+"_"+node.index+"_"+j+" "+actionMessage.message);
+										}
+									} else if(actionMessage.receiver instanceof MISReceiverPerson){
+										MISReceiverPerson person = (MISReceiverPerson) actionMessage.receiver;
+										clientsInRoom.get(person.person).addMessageToSend(actionMessage.message);
+									} else if(actionMessage.receiver instanceof MISReceiverNotTeam){
+										MISReceiverNotTeam team = (MISReceiverNotTeam) actionMessage.receiver;
+										for(int x = 0; x < teams.size(); x++){
+											if(x != team.team){
+												for(int z = 0; z < teams.get(x).size(); z++){
+													teams.get(x).get(z).addMessageToSend("trigger_"+node.name+"_"+node.index+"_"+j+" "+actionMessage.message);
+												}
+											}
+										}
+									} else if(actionMessage.receiver instanceof MISReceiverNotPerson){
+										MISReceiverNotPerson person = (MISReceiverNotPerson) actionMessage.receiver;
+										for(int x = 0; x < clientsInRoom.size(); x++){
+											if(person.person != x){
+												clientsInRoom.get(x).addMessageToSend("trigger_"+node.name+"_"+node.index+"_"+j+" "+actionMessage.message);
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+					try {
+						Thread.sleep(1000/MISProject.project.refreshRate);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		});
 	}
 	
 	private void createRefreshThread(){

@@ -238,8 +238,8 @@ public class MISProject {
 								triggerObject.put("triggerClass", node.trigger.get(l).getClass().getSimpleName());
 								if(node.trigger.get(l) instanceof MISTriggerValue){
 									MISTriggerValue value = (MISTriggerValue) node.trigger.get(l);
-									triggerObject.put("comparer", value.comparer);
-									triggerObject.put("targetType", value.targetType);
+									triggerObject.put("comparer", value.comparer.name());
+									triggerObject.put("targetType", value.targetType.name());
 									triggerObject.put("valueTarget", value.valueTarget);
 									triggerObject.put("actionClass", value.action.getClass().getSimpleName());
 									if(value.action instanceof MISActionMessage){

@@ -17,6 +17,8 @@ import rules.MISRule;
 import rules.MISRuleNodePosition;
 import rules.MISRuleNodeRotation;
 import rules.MISRuleNodeScale;
+import triggers.MISTrigger;
+import triggers.MISTriggerValue;
 
 public class MISScene {
 
@@ -210,7 +212,16 @@ public class MISScene {
 		node.shouldSendInformation = old.shouldSendInformation;
 		node.isControllable = old.isControllable;
 		node.controlReceiver = old.controlReceiver;
-		node.trigger = old.trigger;
+		List<MISTrigger> triggers = new ArrayList<MISTrigger>();
+		for(int i = 0; i < old.trigger.size(); i++){
+			if(old.trigger.get(i) instanceof MISTriggerValue){
+				MISTriggerValue oldTrigger = (MISTriggerValue) old.trigger.get(i);
+				triggers.add(new MISTriggerValue(oldTrigger.action, oldTrigger.valueTarget, oldTrigger.comparer, oldTrigger.targetType));
+			} else{
+				triggers.add(new MISTrigger(old.trigger.get(i).action));
+			}
+		}
+		node.trigger = triggers;
 		return node;
 	}
 	

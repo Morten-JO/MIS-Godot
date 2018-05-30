@@ -8,10 +8,21 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
+import actions.MISAction;
+import actions.MISActionMessage;
 import data_types.MISBounds;
 import enums.MISRuleType;
 import nodes.MISNode;
+import project.MISProject;
+import receivers.MISReceiver;
+import receivers.MISReceiverAll;
+import receivers.MISReceiverNotPerson;
+import receivers.MISReceiverNotTeam;
+import receivers.MISReceiverPerson;
+import receivers.MISReceiverTeam;
 import rules.MISRule;
 import rules.MISRuleNode;
 import rules.MISRuleNodePosition;
@@ -19,6 +30,7 @@ import rules.MISRuleNodeRotation;
 import rules.MISRuleNodeScale;
 import settings.MISProjectSettings;
 import triggers.MISTrigger;
+import triggers.MISTriggerValue;
 
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -32,6 +44,7 @@ import java.util.List;
 
 import javax.swing.JTextField;
 import javax.swing.ListCellRenderer;
+import javax.swing.SwingUtilities;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.JComboBox;
 import javax.swing.JComboBox.KeySelectionManager;
@@ -61,14 +74,24 @@ public class TriggerDialog extends JDialog {
 	private JPanel triggerValuePropertyPanel;
 	private JPanel receiverTypeCardLayout;
 	private JPanel receiverTypeValue;
-	private JComboBox receiverValueComboBox;
+	private JComboBox<Integer> receiverValueComboBox;
 	private JComboBox receiverTypeComboBox;
 	private JComboBox actionTypeComboBox;
+	private JPanel actionTypeCardLayout;
+	private JPanel receiverTypeNotValue;
+	private JPanel actionNotMessageCardLayout;
+	private JPanel triggerNotValuePropertyPanel;
 
+	
+	public static void main(String[] args) {
+		TriggerDialog dialog = new TriggerDialog(null);
+		dialog.showDialog();
+	}
+	
 	/**
 	 * Create the dialog.
 	 */
-	public TriggerDialog(JFrame frame, List<MISNode> nodeList) {
+	public TriggerDialog(JFrame frame) {
 		super(frame);
 		holder = this;
 		setTitle("Add new trigger");
@@ -87,6 +110,21 @@ public class TriggerDialog extends JDialog {
 		
 		triggerTypeComboBox = new JComboBox<String>();
 		triggerTypeComboBox.setModel(new DefaultComboBoxModel(new String[] {"Value"}));
+		triggerTypeComboBox.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String propertyType = (String)triggerTypeComboBox.getSelectedItem();
+				if(propertyType.equals("Value")){
+					CardLayout layout = (CardLayout) triggerTypeCardLayout.getLayout();
+					layout.show(triggerTypeCardLayout, "value");
+				} else {
+					CardLayout layout = (CardLayout) triggerTypeCardLayout.getLayout();
+					layout.show(triggerTypeCardLayout, "not_value");
+				}
+			}
+		});
+		
 		
 		triggerTypeCardLayout = new JPanel();
 		
@@ -95,6 +133,20 @@ public class TriggerDialog extends JDialog {
 		
 		actionTypeComboBox = new JComboBox();
 		actionTypeComboBox.setModel(new DefaultComboBoxModel(new String[] {"Message"}));
+		actionTypeComboBox.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String propertyType = (String)actionTypeComboBox.getSelectedItem();
+				if(propertyType.equals("Message")){
+					CardLayout layout = (CardLayout) actionTypeCardLayout.getLayout();
+					layout.show(actionTypeCardLayout, "message");
+				}  else{
+					CardLayout layout = (CardLayout) actionTypeCardLayout.getLayout();
+					layout.show(actionTypeCardLayout, "not_message");
+				}
+			}
+		});
 		triggerTypeCardLayout.setLayout(new CardLayout(0, 0));
 		
 		triggerValuePropertyPanel = new JPanel();
@@ -114,20 +166,42 @@ public class TriggerDialog extends JDialog {
 		
 		valueTargetTypeComboBox = new JComboBox();
 		valueTargetTypeComboBox.setModel(new DefaultComboBoxModel(TargetType.values()));
-		valueTargetTypeComboBox.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				String propertyType = (String)valueTargetTypeComboBox.getSelectedItem();
-				if(propertyType.equals("Value")){
-					CardLayout layout = (CardLayout) triggerTypeCardLayout.getLayout();
-					layout.show(triggerTypeCardLayout, "value");
-				} 
-			}
-		});
+		
 		
 		textFieldValueTarget = new JTextField();
 		textFieldValueTarget.setColumns(10);
+		textFieldValueTarget.getDocument().addDocumentListener(new DocumentListener() {
+			
+			@Override
+			public void removeUpdate(DocumentEvent e) {
+				fixInvalidInput();
+			}
+			
+			@Override
+			public void insertUpdate(DocumentEvent e) {
+				fixInvalidInput();
+			}
+			
+			@Override
+			public void changedUpdate(DocumentEvent e) {
+				fixInvalidInput();
+			}
+			
+			public void fixInvalidInput(){
+				try{
+					double value = Double.parseDouble(textFieldValueTarget.getText());
+				} catch(NumberFormatException e){
+					Runnable doHighlight = new Runnable() {
+				        @Override
+				        public void run() {
+				        	textFieldValueTarget.setText("");
+				        }
+				    };       
+				    SwingUtilities.invokeLater(doHighlight);
+					
+				}
+			}
+		});
 		
 		GroupLayout gl_triggerValuePropertyPanel = new GroupLayout(triggerValuePropertyPanel);
 		gl_triggerValuePropertyPanel.setHorizontalGroup(
@@ -169,12 +243,7 @@ public class TriggerDialog extends JDialog {
 		
 		triggerValuePropertyPanel.setLayout(gl_triggerValuePropertyPanel);
 		
-		DefaultComboBoxModel<MISNode> model = new DefaultComboBoxModel<MISNode>();
-		for(int i = 0; i < nodeList.size(); i++){
-			model.addElement(nodeList.get(i));
-		}
-		
-		JPanel actionTypeCardLayout = new JPanel();
+		actionTypeCardLayout = new JPanel();
 		GroupLayout gl_contentPanel = new GroupLayout(contentPanel);
 		gl_contentPanel.setHorizontalGroup(
 			gl_contentPanel.createParallelGroup(Alignment.LEADING)
@@ -213,10 +282,13 @@ public class TriggerDialog extends JDialog {
 					.addComponent(actionTypeCardLayout, GroupLayout.DEFAULT_SIZE, 122, Short.MAX_VALUE)
 					.addContainerGap())
 		);
+		
+		triggerNotValuePropertyPanel = new JPanel();
+		triggerTypeCardLayout.add(triggerNotValuePropertyPanel, "not_value");
 		actionTypeCardLayout.setLayout(new CardLayout(0, 0));
 		
 		actionMessageCardLayout = new JPanel();
-		actionTypeCardLayout.add(actionMessageCardLayout, "name_282500502630713");
+		actionTypeCardLayout.add(actionMessageCardLayout, "message");
 		
 		JLabel lblMessage = new JLabel("Message:");
 		lblMessage.setFont(new Font("Dialog", Font.PLAIN, 17));
@@ -229,6 +301,22 @@ public class TriggerDialog extends JDialog {
 		
 		receiverTypeComboBox = new JComboBox();
 		receiverTypeComboBox.setModel(new DefaultComboBoxModel(new String[] {"All", "Person", "Team", "Not Person", "Not Team"}));
+		receiverTypeComboBox.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String propertyType = (String)receiverTypeComboBox.getSelectedItem();
+				if(!propertyType.equals("All")){
+					updateReceiverOptions();
+					CardLayout layout = (CardLayout) receiverTypeCardLayout.getLayout();
+					layout.show(receiverTypeCardLayout, "value");
+				} else{
+					CardLayout layout = (CardLayout) receiverTypeCardLayout.getLayout();
+					layout.show(receiverTypeCardLayout, "not_value");
+				}
+			}
+		});
+		
 		
 		receiverTypeCardLayout = new JPanel();
 		GroupLayout gl_actionMessageCardLayout = new GroupLayout(actionMessageCardLayout);
@@ -236,18 +324,17 @@ public class TriggerDialog extends JDialog {
 			gl_actionMessageCardLayout.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_actionMessageCardLayout.createSequentialGroup()
 					.addContainerGap()
-					.addGroup(gl_actionMessageCardLayout.createParallelGroup(Alignment.LEADING)
-						.addComponent(receiverTypeCardLayout, GroupLayout.PREFERRED_SIZE, 379, GroupLayout.PREFERRED_SIZE)
-						.addGroup(gl_actionMessageCardLayout.createParallelGroup(Alignment.LEADING, false)
-							.addGroup(gl_actionMessageCardLayout.createSequentialGroup()
-								.addComponent(lblMessage)
-								.addPreferredGap(ComponentPlacement.RELATED)
-								.addComponent(messageTextField, GroupLayout.PREFERRED_SIZE, 303, GroupLayout.PREFERRED_SIZE))
-							.addGroup(gl_actionMessageCardLayout.createSequentialGroup()
-								.addComponent(lblNewLabel)
-								.addPreferredGap(ComponentPlacement.RELATED)
-								.addComponent(receiverTypeComboBox, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-					.addContainerGap(17, Short.MAX_VALUE))
+					.addGroup(gl_actionMessageCardLayout.createParallelGroup(Alignment.LEADING, false)
+						.addGroup(gl_actionMessageCardLayout.createSequentialGroup()
+							.addComponent(lblMessage)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(messageTextField, GroupLayout.PREFERRED_SIZE, 303, GroupLayout.PREFERRED_SIZE))
+						.addGroup(gl_actionMessageCardLayout.createSequentialGroup()
+							.addComponent(lblNewLabel)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(receiverTypeComboBox, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+					.addContainerGap(19, Short.MAX_VALUE))
+				.addComponent(receiverTypeCardLayout, GroupLayout.DEFAULT_SIZE, 406, Short.MAX_VALUE)
 		);
 		gl_actionMessageCardLayout.setVerticalGroup(
 			gl_actionMessageCardLayout.createParallelGroup(Alignment.LEADING)
@@ -260,18 +347,21 @@ public class TriggerDialog extends JDialog {
 					.addGroup(gl_actionMessageCardLayout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lblNewLabel)
 						.addComponent(receiverTypeComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(receiverTypeCardLayout, GroupLayout.DEFAULT_SIZE, 46, Short.MAX_VALUE))
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addComponent(receiverTypeCardLayout, GroupLayout.PREFERRED_SIZE, 41, Short.MAX_VALUE))
 		);
 		receiverTypeCardLayout.setLayout(new CardLayout(0, 0));
 		
 		receiverTypeValue = new JPanel();
-		receiverTypeCardLayout.add(receiverTypeValue, "name_283820807000775");
+		receiverTypeCardLayout.add(receiverTypeValue, "value");
 		
 		JLabel lblReceiverValue = new JLabel("Receiver Value:");
 		lblReceiverValue.setFont(new Font("Dialog", Font.PLAIN, 17));
 		
 		receiverValueComboBox = new JComboBox();
+		
+		
+		
 		GroupLayout gl_receiverTypeValue = new GroupLayout(receiverTypeValue);
 		gl_receiverTypeValue.setHorizontalGroup(
 			gl_receiverTypeValue.createParallelGroup(Alignment.LEADING)
@@ -292,7 +382,13 @@ public class TriggerDialog extends JDialog {
 					.addContainerGap(12, Short.MAX_VALUE))
 		);
 		receiverTypeValue.setLayout(gl_receiverTypeValue);
+		
+		receiverTypeNotValue = new JPanel();
+		receiverTypeCardLayout.add(receiverTypeNotValue, "not_value");
 		actionMessageCardLayout.setLayout(gl_actionMessageCardLayout);
+		
+		actionNotMessageCardLayout = new JPanel();
+		actionTypeCardLayout.add(actionNotMessageCardLayout, "not_message");
 		contentPanel.setLayout(gl_contentPanel);
 		{
 			JPanel buttonPane = new JPanel();
@@ -328,6 +424,63 @@ public class TriggerDialog extends JDialog {
 				
 			}
 		}
+		startOfDialog();
+	}
+	
+	private void startOfDialog(){
+		String propertyType = (String)actionTypeComboBox.getSelectedItem();
+		if(propertyType.equals("Message")){
+			CardLayout layout = (CardLayout) actionTypeCardLayout.getLayout();
+			layout.show(actionTypeCardLayout, "message");
+		}  else{
+			CardLayout layout = (CardLayout) actionTypeCardLayout.getLayout();
+			layout.show(actionTypeCardLayout, "not_message");
+		}
+		String propertyType2 = (String)triggerTypeComboBox.getSelectedItem();
+		if(propertyType2.equals("Value")){
+			CardLayout layout = (CardLayout) triggerTypeCardLayout.getLayout();
+			layout.show(triggerTypeCardLayout, "value");
+			updateReceiverOptions();
+		} else {
+			CardLayout layout = (CardLayout) triggerTypeCardLayout.getLayout();
+			layout.show(triggerTypeCardLayout, "not_value");
+		}
+		if(receiverValueComboBox.getModel().getSize() > 0){
+			String propertyType3 = (String)receiverTypeComboBox.getSelectedItem();
+			if(!propertyType3.equals("All")){
+				CardLayout layout = (CardLayout) receiverTypeCardLayout.getLayout();
+				layout.show(receiverTypeCardLayout, "value");
+			} else{
+				CardLayout layout = (CardLayout) receiverTypeCardLayout.getLayout();
+				layout.show(receiverTypeCardLayout, "not_value");
+			}
+		} else{
+			CardLayout layout = (CardLayout) receiverTypeCardLayout.getLayout();
+			layout.show(receiverTypeCardLayout, "not_value");
+		}
+	}
+	
+	private void updateReceiverOptions(){
+		String propertyType = (String)receiverTypeComboBox.getSelectedItem();
+		DefaultComboBoxModel<Integer> model = new DefaultComboBoxModel<Integer>();
+		if(propertyType.equals("Team")){
+			for(int i = 0; i < MISProject.project.roomSettings.teams; i++){
+				model.addElement(i);
+			}
+		} else if(propertyType.equals("Person")){
+			for(int i = 0; i < MISProject.project.roomSettings.minimumPlayers; i++){
+				model.addElement(i);
+			}
+		} else if(propertyType.equals("Not Person")){
+			for(int i = 0; i < MISProject.project.roomSettings.minimumPlayers; i++){
+				model.addElement(i);
+			}
+		} else if(propertyType.equals("Not Team")){
+			for(int i = 0; i < MISProject.project.roomSettings.teams; i++){
+				model.addElement(i);
+			}
+		}
+		receiverValueComboBox.setModel(model);
 	}
 	
 	public void showDialog(){
@@ -340,7 +493,41 @@ public class TriggerDialog extends JDialog {
 		if(cancel){
 			return null;
 		}
-		
-		return null;
+		MISTrigger trigger;
+		if(triggerTypeComboBox.getSelectedItem().equals("Value")){
+			MISAction action = null;
+			if(actionTypeComboBox.getSelectedItem().equals("Message")){
+				String message = messageTextField.getText();
+				MISReceiver receiver;
+				String receiverString = (String) receiverTypeComboBox.getSelectedItem();
+				if(receiverString.equals("All")){
+					receiver = new MISReceiverAll();
+				} else if(receiverString.equals("Person")){
+					int value = (Integer) receiverValueComboBox.getSelectedItem();
+					receiver = new MISReceiverPerson(value);
+				} else if(receiverString.equals("Team")){
+					int value = (Integer) receiverValueComboBox.getSelectedItem();
+					receiver = new MISReceiverTeam(value);
+				} else if(receiverString.equals("Not Team")){
+					int value = (Integer) receiverValueComboBox.getSelectedItem();
+					receiver = new MISReceiverNotTeam(value);
+				} else if(receiverString.equals("Not Person")){
+					int value = (Integer) receiverValueComboBox.getSelectedItem();
+					receiver = new MISReceiverNotPerson(value);
+				} else{
+					System.out.println("Receiver Bug in TriggerDialog line 480ish");
+					receiver = new MISReceiver();
+				}
+				action = new MISActionMessage(message, receiver);
+			}
+			double valueTarget = Double.parseDouble(textFieldValueTarget.getText());
+			MISTriggerValue.ValueComparer comparer = (MISTriggerValue.ValueComparer)valueComparerComboBox.getSelectedItem();
+			MISTriggerValue.TargetType targetType =( MISTriggerValue.TargetType)valueTargetTypeComboBox.getSelectedItem();
+			trigger = new MISTriggerValue(action, valueTarget, comparer, targetType);
+		} else{
+			System.out.println("Trigger bug in TriggerDialog line 490ish");
+			trigger = new MISTrigger(null);
+		}
+		return trigger;
 	}
 }
