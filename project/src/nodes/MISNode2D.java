@@ -13,6 +13,7 @@ public class MISNode2D extends MISNode{
 	public MIS2DTransform transform;
 	
 	public MISNode2D(MIS2DTransform transform){
+		super();
 		this.transform = transform;
 	}
 	

@@ -14,6 +14,10 @@ public class MISNodeScene extends MISNode{
 	public MISScene scene;
 	public MISNode headNode;
 	
+	public MISNodeScene(){
+		super();
+	}
+	
 	/**
 	 * Some questionable function
 	 * @param scenes

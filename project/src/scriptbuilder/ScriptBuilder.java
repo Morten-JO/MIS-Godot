@@ -9,6 +9,7 @@ import java.util.List;
 
 import javax.swing.JFileChooser;
 
+import actions.MISActionMessage;
 import data_types.MISScene;
 import game_types.MISCompetetiveGameType;
 import nodes.MISControl;
@@ -22,6 +23,8 @@ import receivers.MISReceiverNotPerson;
 import receivers.MISReceiverNotTeam;
 import receivers.MISReceiverPerson;
 import receivers.MISReceiverTeam;
+import triggers.MISTrigger;
+import triggers.MISTriggerValue;
 
 public class ScriptBuilder {
 
@@ -74,6 +77,8 @@ public class ScriptBuilder {
 		scriptString = closeUpServerFunctionGeneration(scriptString);
 		
 		scriptString = nodeControlFunctionsGeneration(scriptString, scene);
+		
+		scriptString = triggerMessageFunctionsGeneration(scriptString, scene);
 		
 		JFileChooser directoryChooser = new JFileChooser();
 		directoryChooser.setCurrentDirectory(new File("."));
@@ -133,6 +138,15 @@ public class ScriptBuilder {
 			scriptString += createIndentations(4)+"var split_messages = "+splittedStringsVariableName+"[i].split(\" \")"+createLineBreaks(1);
 			scriptString += createIndentations(4)+"var winning_team = int(split_messages[1])"+createLineBreaks(1);
 			scriptString += createIndentations(4)+"onReceiveGameWon(winning_team)"+createLineBreaks(2);
+		}
+		
+		for(int i = 0; i < scene.nodeList.size(); i++){
+			MISNode node = scene.nodeList.get(i);
+			for(int j = 0; j < scene.nodeList.get(i).trigger.size(); j++){
+				scriptString += createIndentations(3)+"if(\"trigger_"+node.name+"_"+node.index+"_"+j+"\" in "+splittedStringsVariableName+"[i]):"+createLineBreaks(1);
+				scriptString += createIndentations(4)+"onReceivedTrigger_"+node.name+"_"+node.index+"_"+j+"()"+createLineBreaks(1);
+				scriptString += createIndentations(4)+"pass"+createLineBreaks(2);
+			}
 		}
 		
 		//node message(updates)
@@ -462,6 +476,18 @@ public class ScriptBuilder {
 			scriptString += createIndentations(1)+"pass"+createLineBreaks(2);
 		}
 		
+		return scriptString;
+	}
+	
+	private static String triggerMessageFunctionsGeneration(String scriptString, MISScene scene){
+		for(int i = 0; i < scene.nodeList.size(); i++){
+			for(int j = 0; j < scene.nodeList.get(i).trigger.size(); j++){
+				MISTrigger trigger = scene.nodeList.get(i).trigger.get(j);
+				scriptString += "func onReceivedTrigger_"+scene.nodeList.get(i).name+"_"+scene.nodeList.get(i).index+"_"+j+"():"+createLineBreaks(1);
+				scriptString += createIndentations(1)+"#Custom code can be added here(called when a trigger is called)"+createLineBreaks(1);
+				scriptString += createIndentations(1)+"pass"+createLineBreaks(2);
+			}
+		}
 		return scriptString;
 	}
 	
