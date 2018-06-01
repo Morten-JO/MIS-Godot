@@ -144,7 +144,6 @@ public class ScriptBuilder {
 			MISNode node = scene.nodeList.get(i);
 			for(int j = 0; j < scene.nodeList.get(i).trigger.size(); j++){
 				scriptString += createIndentations(3)+"if(\"trigger_"+node.name+"_"+node.index+"_"+j+"\" in "+splittedStringsVariableName+"[i]):"+createLineBreaks(1);
-				inmplement so the message is sent
 				scriptString += createIndentations(4)+"onReceivedTrigger_"+node.name+"_"+node.index+"_"+j+"()"+createLineBreaks(1);
 				scriptString += createIndentations(4)+"pass"+createLineBreaks(2);
 			}
