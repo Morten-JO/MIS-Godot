@@ -34,13 +34,13 @@ Server - room
 
 UI server log
 
-
-
-
-### Future implementations:
-Fixing up current bugs/issues
+3D control+refresh functionality
 
 Triggers
+
+### Future implementations:
+
+Fixing up current bugs/issues
 
 Multiple networking connections
 
@@ -50,5 +50,5 @@ Multi scene functionality
 
 Multi server functionality
 
-3D control+refresh functionality
+
 
