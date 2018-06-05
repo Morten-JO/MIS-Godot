@@ -23,8 +23,8 @@ public class Client implements Runnable{
 	private Thread writerThread;
 	private Thread readerThread;
 	
-	private List<String> receivedMessages;
-	private List<String> toBeSentMessages;
+	public List<String> receivedMessages;
+	public List<String> toBeSentMessages;
 	
 	private int messagesSent = 0;
 	private int messagesReceived = 0;
@@ -64,27 +64,29 @@ public class Client implements Runnable{
 			public void run() {
 				while(readerRunning){
 					try {
-						for(int i = 0; i < messageLimiter.size(); i++){
+						/*for(int i = 0; i < messageLimiter.size(); i++){
 							if(messageLimiter.get(i) < System.currentTimeMillis()){
 								messageLimiter.remove(i);
 								i--;
 							}
 						}
+						
 						if(messageLimiter.size() < MISProject.project.maxMessagesPerClientPerSecond){
-							String message = reader.readLine();
-							receivedMessages.add(message);
-							messagesReceived++;
-							receivedMessagesDataStorage.add(message);
-							parser.parseMessage(message);
-							lastResponse = System.currentTimeMillis();
-							messageLimiter.add(System.currentTimeMillis() + 1000L);
-						} else{
+						 * */
+						String message = reader.readLine();
+						receivedMessages.add(message);
+						messagesReceived++;
+						receivedMessagesDataStorage.add(message);
+						parser.parseMessage(message);
+						lastResponse = System.currentTimeMillis();
+						messageLimiter.add(System.currentTimeMillis() + 1000L);
+						/*} else{
 							try {
 								Thread.sleep(10);
 							} catch (InterruptedException e) {
 								e.printStackTrace();
 							}
-						}
+						}*/
 					} catch(SocketException e){
 						server.notifyServerOfFailedClient(client);
 						readerRunning = false;

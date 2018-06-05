@@ -245,7 +245,8 @@ public class ScriptBuilder {
 		scriptString += "var "+baseServerIpVariableName+" = "+"\""+ip+"\""+createLineBreaks(1);
 		scriptString += "var "+teamIdVariableName+createLineBreaks(1);
 		scriptString += "var "+roomBegunVariableName+" = false"+createLineBreaks(1);
-		scriptString += "var "+timeCounterVariableName+" = 0";
+		scriptString += "var "+timeCounterVariableName+" = 0"+createLineBreaks(1);
+		scriptString += "var "+playerIdVariableName+createLineBreaks(1);
 		scriptString += createLineBreaks(2);
 				
 		//Create consts
@@ -372,7 +373,7 @@ public class ScriptBuilder {
 		//Create connect function
 		scriptString += "func connectToServer():"+createLineBreaks(1);
 		scriptString += createIndentations(1)+tcpConnectionVariableName+".connect(\""+ip+"\", "+project.basePort.port+")"+createLineBreaks(1);
-		scriptString += createIndentations(1)+tcpConnectionVariableName+".put_utf8_string(\"client_details \"+MINIMUM_BUILD)"+createLineBreaks(1);
+		scriptString += createIndentations(1)+tcpConnectionVariableName+".put_utf8_string(\"client_details \"+str(MINIMUM_BUILD)+\"\\n\")"+createLineBreaks(1);
 		scriptString += createIndentations(1)+"set_process(true)"+createLineBreaks(1);
 		scriptString += createLineBreaks(2);
 		return scriptString;

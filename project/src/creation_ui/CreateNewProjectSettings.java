@@ -60,6 +60,7 @@ public class CreateNewProjectSettings extends JPanel {
 	private JRadioButton rdbtnClientSide;
 	private JTextField textFieldBasePort;
 	private JTextField internetAddressTextField;
+	private JLabel lblProjectNameField;
 	
 	public void putVariables(String projName, String projLoc, String godotLoc){
 		this.projectName = projName;
@@ -90,7 +91,7 @@ public class CreateNewProjectSettings extends JPanel {
 		JLabel lblProjectName = new JLabel("Project Name:");
 		lblProjectName.setFont(new Font("Dialog", Font.PLAIN, 17));
 		
-		JLabel lblProjectNameField = new JLabel("");
+		lblProjectNameField = new JLabel("");
 		lblProjectNameField.setFont(new Font("Dialog", Font.PLAIN, 17));
 		
 		rdbtnClientSide = new JRadioButton("Clientside");
@@ -157,6 +158,12 @@ public class CreateNewProjectSettings extends JPanel {
 		
 		internetAddressTextField = new JTextField();
 		internetAddressTextField.setColumns(10);
+		
+		JLabel lblPersec = new JLabel("per/sec");
+		
+		JLabel lblPersec_1 = new JLabel("per/sec");
+		
+		JLabel lblSeconds = new JLabel("seconds");
 		GroupLayout groupLayout = new GroupLayout(this);
 		groupLayout.setHorizontalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
@@ -175,12 +182,12 @@ public class CreateNewProjectSettings extends JPanel {
 								.addGroup(groupLayout.createSequentialGroup()
 									.addComponent(lblProjectName, GroupLayout.PREFERRED_SIZE, 112, GroupLayout.PREFERRED_SIZE)
 									.addPreferredGap(ComponentPlacement.RELATED)
-									.addComponent(lblProjectNameField, GroupLayout.PREFERRED_SIZE, 215, GroupLayout.PREFERRED_SIZE))
+									.addComponent(lblProjectNameField, GroupLayout.PREFERRED_SIZE, 229, GroupLayout.PREFERRED_SIZE))
 								.addComponent(chckbxEncryption)
 								.addComponent(chckbxUi)
 								.addComponent(lblProtocols)
 								.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-									.addComponent(listProtocols, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+									.addComponent(listProtocols, GroupLayout.DEFAULT_SIZE, 333, Short.MAX_VALUE)
 									.addGroup(groupLayout.createSequentialGroup()
 										.addComponent(lblNewLabel)
 										.addPreferredGap(ComponentPlacement.RELATED)
@@ -193,23 +200,29 @@ public class CreateNewProjectSettings extends JPanel {
 										.addComponent(lblBaseport)
 										.addPreferredGap(ComponentPlacement.RELATED)
 										.addComponent(textFieldBasePort, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
-								.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING, false)
-									.addGroup(groupLayout.createSequentialGroup()
-										.addComponent(lblSessionTimeout)
-										.addPreferredGap(ComponentPlacement.UNRELATED)
-										.addComponent(spinnerSessionTimeout))
-									.addGroup(Alignment.LEADING, groupLayout.createSequentialGroup()
-										.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-											.addComponent(lblRefreshRate)
-											.addComponent(lblMmpspc)
-											.addComponent(lblSavingType))
-										.addPreferredGap(ComponentPlacement.UNRELATED)
-										.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-											.addComponent(comboBoxSavingType, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-											.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING, false)
-												.addComponent(spinnerRefreshRate, Alignment.LEADING)
-												.addComponent(spinnerMMPSPC, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 51, Short.MAX_VALUE))))))
-							.addPreferredGap(ComponentPlacement.RELATED, 307, Short.MAX_VALUE)))
+								.addComponent(lblSessionTimeout)
+								.addGroup(groupLayout.createSequentialGroup()
+									.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+										.addComponent(lblRefreshRate)
+										.addComponent(lblMmpspc)
+										.addComponent(lblSavingType))
+									.addPreferredGap(ComponentPlacement.UNRELATED)
+									.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+										.addGroup(groupLayout.createSequentialGroup()
+											.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
+												.addComponent(spinnerRefreshRate, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+												.addComponent(spinnerMMPSPC, GroupLayout.DEFAULT_SIZE, 51, Short.MAX_VALUE))
+											.addPreferredGap(ComponentPlacement.UNRELATED)
+											.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+												.addComponent(lblPersec_1)
+												.addComponent(lblPersec)))
+										.addGroup(groupLayout.createSequentialGroup()
+											.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
+												.addComponent(spinnerSessionTimeout, GroupLayout.PREFERRED_SIZE, 58, GroupLayout.PREFERRED_SIZE)
+												.addComponent(comboBoxSavingType, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+											.addPreferredGap(ComponentPlacement.RELATED)
+											.addComponent(lblSeconds)))))
+							.addPreferredGap(ComponentPlacement.RELATED, 293, GroupLayout.PREFERRED_SIZE)))
 					.addContainerGap())
 				.addGroup(groupLayout.createSequentialGroup()
 					.addContainerGap()
@@ -224,9 +237,9 @@ public class CreateNewProjectSettings extends JPanel {
 					.addContainerGap()
 					.addComponent(lblTitle, GroupLayout.PREFERRED_SIZE, 119, GroupLayout.PREFERRED_SIZE)
 					.addGap(18)
-					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 						.addComponent(lblProjectName)
-						.addComponent(lblProjectNameField))
+						.addComponent(lblProjectNameField, GroupLayout.PREFERRED_SIZE, 23, GroupLayout.PREFERRED_SIZE))
 					.addGap(18)
 					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(rdbtnClientSide)
@@ -234,11 +247,13 @@ public class CreateNewProjectSettings extends JPanel {
 					.addPreferredGap(ComponentPlacement.UNRELATED)
 					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lblRefreshRate)
-						.addComponent(spinnerRefreshRate, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+						.addComponent(spinnerRefreshRate, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lblPersec))
 					.addPreferredGap(ComponentPlacement.UNRELATED)
 					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lblMmpspc)
-						.addComponent(spinnerMMPSPC, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+						.addComponent(spinnerMMPSPC, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lblPersec_1))
 					.addPreferredGap(ComponentPlacement.UNRELATED)
 					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lblSavingType)
@@ -248,7 +263,8 @@ public class CreateNewProjectSettings extends JPanel {
 					.addPreferredGap(ComponentPlacement.UNRELATED)
 					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lblSessionTimeout)
-						.addComponent(spinnerSessionTimeout, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+						.addComponent(spinnerSessionTimeout, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lblSeconds))
 					.addPreferredGap(ComponentPlacement.UNRELATED)
 					.addComponent(chckbxUi)
 					.addPreferredGap(ComponentPlacement.UNRELATED)
@@ -412,5 +428,9 @@ public class CreateNewProjectSettings extends JPanel {
 		}
 		return true;
 		
+	}
+
+	public void updateVariables() {
+		lblProjectNameField.setText(projectName);
 	}
 }

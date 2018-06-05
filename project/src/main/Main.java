@@ -8,7 +8,7 @@ import creation_ui.ApplicationWindow;
 
 public class Main {
 
-	public static final double MIS_BUILD_VERSION = 0.01;
+	public static final double MIS_BUILD_VERSION = 0.1;
 	
 	/**
 	 * Launch the application.

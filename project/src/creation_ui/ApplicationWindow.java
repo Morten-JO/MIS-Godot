@@ -68,5 +68,6 @@ public class ApplicationWindow {
 		CardLayout layout = (CardLayout) frame.getContentPane().getLayout();
 		layout.show(frame.getContentPane(), "createProjectSettingsPanel");
 		createProjectSettings.putVariables(projName, projLoc, godotLoc);
+		createProjectSettings.updateVariables();
 	}
 }

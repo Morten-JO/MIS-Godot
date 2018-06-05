@@ -323,7 +323,7 @@ public class ServerApplicationWindow extends JFrame {
 			int lastResponseTime = (int)(System.currentTimeMillis() - server.clientList.get(i).getLastResponse()) / 1000;
 			String showString = "#"+(i+1)+" : "+server.clientList.get(i).getSocket().getInetAddress().getHostAddress()+" Last response: "+lastResponseTime+" secs";
 			if(server.clientList.get(i).getRoom() != null){
-				showString += " | In room: "+server.clientList.get(i).getRoom().getRoomID();
+				showString += " | In room: "+server.clientList.get(i).getRoom().getRoomID() + " "+server.clientList.get(i).toBeSentMessages.size()+" - "+server.clientList.get(i).receivedMessages.size();
 			} else{
 				boolean isInQueue = false;
 				for(int j = 0; j < server.queues.size(); j++){
