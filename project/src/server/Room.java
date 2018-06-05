@@ -328,6 +328,11 @@ public class Room {
 		refreshThread.start();
 	}
 	
+	public void startTriggerThread(){
+		triggerRunning = true;
+		triggerThread.start();
+	}
+	
 	public void stopBroadcastThread(){
 		broadcastRunning = false;
 	}

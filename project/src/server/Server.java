@@ -200,6 +200,7 @@ public class Server implements Runnable{
 								Room room = new Room(newScene, playersForRoom, self, roomClients);
 								room.startBroadcastThread();
 								room.startRefreshThread();
+								room.startTriggerThread();
 								rooms.add(room);
 							}
 						}
