@@ -918,6 +918,13 @@ public class MainViewWindow {
 			}
 		});
 		
+		mntmBroadcasts.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				JOptionPane.showMessageDialog(null, "Window for broadcast view is not working.");
+			}
+		});
+		
 		mntmNewProject.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {

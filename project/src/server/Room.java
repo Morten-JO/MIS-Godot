@@ -226,7 +226,6 @@ public class Room {
 			@Override
 			public void run() {
 				while(refreshRunning){
-					System.out.println("Current number: "+((System.currentTimeMillis()/1000)%1000));
 					for(int i = 0; i < scene.nodeList.size(); i++){
 						if(scene.nodeList.get(i).shouldSendInformation){
 							if(scene.nodeList.get(i).informationReceivers != null){
@@ -237,7 +236,7 @@ public class Room {
 								} else if(scene.nodeList.get(i).informationReceivers instanceof MISReceiverTeam){
 									MISReceiverTeam teamReceivers = (MISReceiverTeam)scene.nodeList.get(i).informationReceivers;
 									for(int j = 0; j < teams.get(teamReceivers.team).size(); j++){
-										teams.get(teamReceivers.team).get(j).addMessageToSend(scene.nodeList.get(i).getReadyPacket()+" | "+((System.currentTimeMillis()/1000)%1000));
+										teams.get(teamReceivers.team).get(j).addMessageToSend(scene.nodeList.get(i).getReadyPacket());
 									}
 								} else if(scene.nodeList.get(i).informationReceivers instanceof MISReceiverPerson){
 									MISReceiverPerson personReceiver = (MISReceiverPerson)scene.nodeList.get(i).informationReceivers;

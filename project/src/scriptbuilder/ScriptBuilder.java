@@ -372,7 +372,7 @@ public class ScriptBuilder {
 	private static String connectFunctionGeneration(String scriptString, String ip, MISProject project){
 		//Create connect function
 		scriptString += "func connectToServer():"+createLineBreaks(1);
-		scriptString += createIndentations(1)+tcpConnectionVariableName+".connect(\""+ip+"\", "+project.basePort.port+")"+createLineBreaks(1);
+		scriptString += createIndentations(1)+tcpConnectionVariableName+".connect("+baseServerIpVariableName+", "+project.basePort.port+")"+createLineBreaks(1);
 		scriptString += createIndentations(1)+tcpConnectionVariableName+".put_utf8_string(\"client_details \"+str(MINIMUM_BUILD)+\"\\n\")"+createLineBreaks(1);
 		scriptString += createIndentations(1)+"set_process(true)"+createLineBreaks(1);
 		scriptString += createLineBreaks(2);
@@ -381,6 +381,7 @@ public class ScriptBuilder {
 	
 	private static String customRoomBegunFunctionGeneration(String scriptString, MISScene scene){
 		//Create room_begun function (usermade code, can be called here)
+		scriptString += "#Add custom code here to when the a room begins, such as starting movement of things."+createLineBreaks(1);
 		scriptString += "func roomBegun(data):"+createLineBreaks(1);
 		scriptString += createIndentations(1)+"#Custom code can be added here(called when the game starts)"+createLineBreaks(1);
 		scriptString += createIndentations(1)+roomBegunVariableName+" = true"+createLineBreaks(1);
@@ -396,12 +397,15 @@ public class ScriptBuilder {
 	
 	private static String queueFunctionsGeneration(String scriptString, MISScene scene){
 		//create queue functions
+		scriptString += "#This function will be called when you are added to the queue."+createLineBreaks(1);
 		scriptString += "func onReceiveQueueStart(data):"+createLineBreaks(1);
 		scriptString += createIndentations(1)+"pass"+createLineBreaks(2);
-				
+		
+		scriptString += "#This fucntion will be called when you are removed from the queue."+createLineBreaks(1);
 		scriptString += "func onReceiveQueueEnd(data):"+createLineBreaks(1);
 		scriptString += createIndentations(1)+"pass"+createLineBreaks(2);
-				
+		
+		scriptString += "#Calling this function will add you to the queue if you're connected."+createLineBreaks(1);
 		scriptString += "func sendQueueStartRequest(data):"+createLineBreaks(1);
 		scriptString += createIndentations(1)+"if "+tcpConnectionVariableName+".is_connected():"+createLineBreaks(1);
 		scriptString += createIndentations(2)+tcpConnectionVariableName+".put_utf8_string(\"queuestart "+scene.IDNumber+"\\n\")"+createLineBreaks(1);
@@ -463,6 +467,7 @@ public class ScriptBuilder {
 		scriptString += createIndentations(1)+"gameEnd()"+createLineBreaks(1);
 		scriptString += createIndentations(1)+"pass"+createLineBreaks(2);
 		
+		scriptString += "#Custom code can be added here for when the game ends"+createLineBreaks(1);
 		scriptString += "func gameEnd():"+createLineBreaks(1);
 		scriptString += createIndentations(1)+"#Custom code can be added here(called when the game ends)"+createLineBreaks(1);
 		scriptString += createIndentations(1)+"pass"+createLineBreaks(2);
@@ -472,6 +477,7 @@ public class ScriptBuilder {
 			scriptString += createIndentations(1)+"if "+teamIdVariableName+" == winning_team:"+createLineBreaks(1);
 			scriptString += createIndentations(2)+"gameWon()"+createLineBreaks(2);
 			
+			scriptString += "#This function will be called when the user has won."+createLineBreaks(1);
 			scriptString += "func gameWon():"+createLineBreaks(1);
 			scriptString += createIndentations(1)+"#Custom code can be added here(called when the player won)"+createLineBreaks(1);
 			scriptString += createIndentations(1)+"pass"+createLineBreaks(2);

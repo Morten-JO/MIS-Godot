@@ -74,12 +74,14 @@ public class Client implements Runnable{
 						if(messageLimiter.size() < MISProject.project.maxMessagesPerClientPerSecond){
 						 * */
 						String message = reader.readLine();
-						receivedMessages.add(message);
 						messagesReceived++;
 						receivedMessagesDataStorage.add(message);
+						if(receivedMessagesDataStorage.size() > 200){
+							receivedMessagesDataStorage.remove(0);
+						}
 						parser.parseMessage(message);
 						lastResponse = System.currentTimeMillis();
-						messageLimiter.add(System.currentTimeMillis() + 1000L);
+						//messageLimiter.add(System.currentTimeMillis() + 1000L);
 						/*} else{
 							try {
 								Thread.sleep(10);
@@ -124,6 +126,9 @@ public class Client implements Runnable{
 			if(toBeSentMessages.size() > 0 ){
 				writer.println(toBeSentMessages.get(0));
 				sentMessagesDataStorage.add(toBeSentMessages.get(0));
+				if(sentMessagesDataStorage.size() > 200){
+					sentMessagesDataStorage.remove(0);
+				}
 				toBeSentMessages.remove(0);
 			} else {
 				try {
@@ -195,9 +200,6 @@ public class Client implements Runnable{
 			readerRunning = false;
 			writerRunning = false;
 			reader.close();
-			for(int i = 0; i < toBeSentMessages.size(); i++){
-				writer.println(toBeSentMessages.get(i));
-			}
 			writer.close();
 			socket.close();
 		} catch (IOException e) {

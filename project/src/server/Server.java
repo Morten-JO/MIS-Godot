@@ -49,6 +49,9 @@ public class Server implements Runnable{
 			serverUI = new ServerApplicationWindow(this, autoStart);
 			serverUI.setVisible(true);
 		}
+		if(autoStart){
+			startServer();
+		}
 	}
 	
 	public boolean startServer(){
@@ -60,6 +63,7 @@ public class Server implements Runnable{
 				serverUI.startServerUI();
 			}
 			startQueueHandler();
+			startClientControlHandler();
 		} catch (IOException e) {
 			e.printStackTrace();
 			return false;

@@ -14,7 +14,7 @@ public class DummyClientMain {
 	public static void main(String[] args) {
 		try {
 			DummyClientUI ui = new DummyClientUI();
-			Socket socket = new Socket("localhost", 1234);
+			Socket socket = new Socket("ubuntu4.saluton.dk", 1234);
 			BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
 			List<String> received = new ArrayList<String>();
@@ -61,7 +61,7 @@ public class DummyClientMain {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		} 
 	}
 
 }
