@@ -24,6 +24,7 @@ import javax.swing.JMenuBar;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ActionMap;
+import javax.swing.BorderFactory;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javax.swing.GroupLayout;
@@ -54,6 +55,11 @@ import nodes.MISNodeScene;
 import nodes.MISSpatial;
 import project.MISProject;
 import receivers.MISReceiver;
+import receivers.MISReceiverAll;
+import receivers.MISReceiverNotPerson;
+import receivers.MISReceiverNotTeam;
+import receivers.MISReceiverPerson;
+import receivers.MISReceiverTeam;
 import rules.MISRule;
 import rules.MISRuleNode;
 import rules.MISRuleNodePosition;
@@ -64,6 +70,8 @@ import server.Server;
 import server_ui.ServerApplicationWindow;
 
 import java.awt.Color;
+
+import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
@@ -79,6 +87,7 @@ import java.awt.CardLayout;
 import java.awt.CheckboxMenuItem;
 import java.awt.FlowLayout;
 import javax.swing.JCheckBoxMenuItem;
+import javax.swing.border.EmptyBorder;
 
 public class MainViewWindow {
 	private JFrame frame;
@@ -126,6 +135,14 @@ public class MainViewWindow {
 	private JMenuItem mntmSceneSettings;
 	private DefaultListModel<MISNode> model;
 	private JMenuItem mntmBuildScript;
+	private JLabel lblTriggersNode;
+	private JList<MISTrigger> triggerNodesList;
+	private DefaultListModel<MISTrigger> triggerNodesListModel;
+	private JScrollPane scrollPaneTriggerNodes;
+	private JLabel lblControl;
+	private JLabel lblControlNode;
+	private JLabel lblRefresh;
+	private JLabel lblRefreshNode;
 	
 	/**
 	 * Launch the application.
@@ -364,35 +381,75 @@ public class MainViewWindow {
 		
 		lblUserIndex = new JLabel(" ");
 		lblUserIndex.setFont(new Font("Dialog", Font.PLAIN, 11));
+		
+		lblTriggersNode = new JLabel("Triggers:");
+		lblTriggersNode.setFont(new Font("Dialog", Font.PLAIN, 17));
+		
+		scrollPaneTriggerNodes = new JScrollPane();
+		scrollPaneTriggerNodes.setViewportBorder(null);
+		
+		lblControl = new JLabel("Control:");
+		lblControl.setFont(new Font("Dialog", Font.PLAIN, 17));
+		
+		lblControlNode = new JLabel(" ");
+		lblControlNode.setFont(new Font("Dialog", Font.PLAIN, 14));
+		
+		lblRefresh = new JLabel("Refresh:");
+		lblRefresh.setFont(new Font("Dialog", Font.PLAIN, 17));
+		
+		lblRefreshNode = new JLabel(" ");
+		lblRefreshNode.setFont(new Font("Dialog", Font.PLAIN, 14));
 		GroupLayout gl_nodeInformationPanel = new GroupLayout(nodeInformationPanel);
 		gl_nodeInformationPanel.setHorizontalGroup(
 			gl_nodeInformationPanel.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_nodeInformationPanel.createSequentialGroup()
+					.addContainerGap()
 					.addGroup(gl_nodeInformationPanel.createParallelGroup(Alignment.LEADING)
+						.addGroup(Alignment.TRAILING, gl_nodeInformationPanel.createSequentialGroup()
+							.addGroup(gl_nodeInformationPanel.createParallelGroup(Alignment.TRAILING)
+								.addGroup(gl_nodeInformationPanel.createSequentialGroup()
+									.addGap(10)
+									.addComponent(lblRefreshNode, GroupLayout.DEFAULT_SIZE, 518, Short.MAX_VALUE))
+								.addGroup(Alignment.LEADING, gl_nodeInformationPanel.createSequentialGroup()
+									.addPreferredGap(ComponentPlacement.RELATED)
+									.addComponent(lblNode)
+									.addGap(4)
+									.addComponent(lblUserNode, GroupLayout.PREFERRED_SIZE, 149, GroupLayout.PREFERRED_SIZE)
+									.addGap(13)
+									.addComponent(lblType)
+									.addGap(3)
+									.addComponent(lblUserType, GroupLayout.PREFERRED_SIZE, 119, GroupLayout.PREFERRED_SIZE)
+									.addGap(9)
+									.addComponent(lblIndex)
+									.addGap(6)
+									.addComponent(lblUserIndex, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE))
+								.addGroup(Alignment.LEADING, gl_nodeInformationPanel.createSequentialGroup()
+									.addGap(18)
+									.addComponent(lblScript)
+									.addGap(4)
+									.addComponent(lblUserScript, GroupLayout.PREFERRED_SIZE, 252, GroupLayout.PREFERRED_SIZE))
+								.addGroup(Alignment.LEADING, gl_nodeInformationPanel.createSequentialGroup()
+									.addPreferredGap(ComponentPlacement.RELATED)
+									.addComponent(lblParent)
+									.addGap(3)
+									.addComponent(lblUserParent, GroupLayout.PREFERRED_SIZE, 116, GroupLayout.PREFERRED_SIZE))
+								.addGroup(Alignment.LEADING, gl_nodeInformationPanel.createSequentialGroup()
+									.addPreferredGap(ComponentPlacement.RELATED)
+									.addComponent(lblTriggersNode))
+								.addGroup(Alignment.LEADING, gl_nodeInformationPanel.createSequentialGroup()
+									.addPreferredGap(ComponentPlacement.RELATED)
+									.addComponent(scrollPaneTriggerNodes, GroupLayout.PREFERRED_SIZE, 528, GroupLayout.PREFERRED_SIZE))
+								.addGroup(Alignment.LEADING, gl_nodeInformationPanel.createSequentialGroup()
+									.addPreferredGap(ComponentPlacement.RELATED)
+									.addGroup(gl_nodeInformationPanel.createParallelGroup(Alignment.LEADING)
+										.addGroup(gl_nodeInformationPanel.createSequentialGroup()
+											.addGap(10)
+											.addComponent(lblControlNode, GroupLayout.DEFAULT_SIZE, 518, Short.MAX_VALUE))
+										.addComponent(lblControl))))
+							.addGap(15))
 						.addGroup(gl_nodeInformationPanel.createSequentialGroup()
-							.addContainerGap()
-							.addComponent(lblNode)
-							.addGap(4)
-							.addComponent(lblUserNode, GroupLayout.PREFERRED_SIZE, 149, GroupLayout.PREFERRED_SIZE)
-							.addGap(13)
-							.addComponent(lblType)
-							.addGap(3)
-							.addComponent(lblUserType, GroupLayout.PREFERRED_SIZE, 119, GroupLayout.PREFERRED_SIZE)
-							.addGap(9)
-							.addComponent(lblIndex)
-							.addGap(6)
-							.addComponent(lblUserIndex, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE))
-						.addGroup(gl_nodeInformationPanel.createSequentialGroup()
-							.addGap(18)
-							.addComponent(lblScript)
-							.addGap(4)
-							.addComponent(lblUserScript, GroupLayout.PREFERRED_SIZE, 252, GroupLayout.PREFERRED_SIZE))
-						.addGroup(gl_nodeInformationPanel.createSequentialGroup()
-							.addContainerGap()
-							.addComponent(lblParent)
-							.addGap(3)
-							.addComponent(lblUserParent, GroupLayout.PREFERRED_SIZE, 116, GroupLayout.PREFERRED_SIZE)))
-					.addContainerGap(86, Short.MAX_VALUE))
+							.addComponent(lblRefresh)
+							.addContainerGap(481, Short.MAX_VALUE))))
 		);
 		gl_nodeInformationPanel.setVerticalGroup(
 			gl_nodeInformationPanel.createParallelGroup(Alignment.LEADING)
@@ -432,8 +489,21 @@ public class MainViewWindow {
 						.addGroup(gl_nodeInformationPanel.createSequentialGroup()
 							.addContainerGap()
 							.addComponent(lblUserIndex)))
-					.addContainerGap(596, Short.MAX_VALUE))
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(lblTriggersNode)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(scrollPaneTriggerNodes, GroupLayout.PREFERRED_SIZE, 83, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addComponent(lblControl)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(lblControlNode)
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addComponent(lblRefresh)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(lblRefreshNode)
+					.addContainerGap(360, Short.MAX_VALUE))
 		);
+		createTriggerNodeList();
 		nodeInformationPanel.setLayout(gl_nodeInformationPanel);
 		
 		ruleInformationPanel = new JPanel();
@@ -560,6 +630,37 @@ public class MainViewWindow {
 		frame.getContentPane().setLayout(groupLayout);
 	}
 
+	public void createTriggerNodeList(){
+		triggerNodesListModel = new DefaultListModel<>();
+		triggerNodesList = new JList<MISTrigger>(triggerNodesListModel);
+		triggerNodesList.setBorder(null);
+		scrollPaneTriggerNodes.setViewportView(triggerNodesList);
+		triggerNodesList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		triggerNodesList.setBackground(SystemColor.menu);
+	}
+	
+	public void populateTriggerNodeList(MISNode node){
+		triggerNodesListModel.clear();
+		for(int i = 0; i < node.trigger.size(); i++){
+			triggerNodesListModel.addElement(node.trigger.get(i));
+		}
+		triggerNodesList.setCellRenderer(new DefaultListCellRenderer(){
+			@Override
+			public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected,
+					boolean cellHasFocus) {
+				Component renderer = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+				if(renderer instanceof JLabel && value instanceof MISTrigger){
+					MISTrigger info = (MISTrigger)value;
+					String ruleString = "";
+					ruleString += "Action: "+info.action.getClass().getSimpleName()+" Type: "+info.getClass().getSimpleName();
+					((JLabel)renderer).setText(ruleString);
+				}
+				return renderer;
+			}
+		});
+		
+	}
+	
 	public void createRulesList(MISScene scene){
 		ruleModel = new DefaultListModel<>();
 		rulesList = new JList<MISRule>(ruleModel);
@@ -1201,6 +1302,54 @@ public class MainViewWindow {
 			});
 		} else{
 			lblUserParent.setText("");
+		}
+		populateTriggerNodeList(node);
+		if(node.isControllable && node.controlReceiver != null){
+			String text = "Controllable by ";
+			if(node.controlReceiver instanceof MISReceiverAll){
+				text += "by all";
+			} else if(node.controlReceiver instanceof MISReceiverTeam){
+				int team = ((MISReceiverTeam)node.controlReceiver).team;
+				text += "by team "+team;
+			} else if(node.controlReceiver instanceof MISReceiverPerson){
+				int person = ((MISReceiverPerson)node.controlReceiver).person;
+				text += "by person "+person;
+			} else if(node.controlReceiver instanceof MISReceiverNotTeam){
+				int notTeam = ((MISReceiverNotTeam)node.controlReceiver).team;
+				text += "everybody but team "+notTeam;
+			} else if(node.controlReceiver instanceof MISReceiverNotPerson){
+				int notPerson = ((MISReceiverNotPerson)node.controlReceiver).person;
+				text += "everybody but person "+notPerson;
+			} else {
+				text += "default";
+			}
+			lblControlNode.setText(text);
+		} else {
+			lblControlNode.setText("Not controllable");
+		}
+		
+		if(node.shouldSendInformation && node.informationReceivers != null){
+			String text = "Refreshing to ";
+			if(node.informationReceivers instanceof MISReceiverAll){
+				text += "all";
+			} else if(node.informationReceivers instanceof MISReceiverTeam){
+				int team = ((MISReceiverTeam)node.informationReceivers).team;
+				text += "team "+team;
+			} else if(node.informationReceivers instanceof MISReceiverPerson){
+				int person = ((MISReceiverPerson)node.informationReceivers).person;
+				text += "person "+person;
+			} else if(node.informationReceivers instanceof MISReceiverNotTeam){
+				int notTeam = ((MISReceiverNotTeam)node.informationReceivers).team;
+				text += "everybody but team "+notTeam;
+			} else if(node.informationReceivers instanceof MISReceiverNotPerson){
+				int notPerson = ((MISReceiverNotPerson)node.informationReceivers).person;
+				text += "everybody but person "+notPerson;
+			} else {
+				text += "default";
+			}
+			lblRefreshNode.setText(text);
+		} else {
+			lblRefreshNode.setText("Not refreshing");
 		}
 	}
 	
