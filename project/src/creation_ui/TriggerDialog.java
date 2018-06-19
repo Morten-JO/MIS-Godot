@@ -81,6 +81,13 @@ public class TriggerDialog extends JDialog {
 	private JPanel receiverTypeNotValue;
 	private JPanel actionNotMessageCardLayout;
 	private JPanel triggerNotValuePropertyPanel;
+	private JLabel lblwhatActionHappens;
+	private JLabel lblvalueThatGets;
+	private JLabel lblhowTheValue;
+	private JLabel lblwhatValueOn;
+	private JLabel lblwhatMessageGets;
+	private JLabel lblwhoTheMessage;
+	private JLabel lblwhatTeampersonGets;
 
 	
 	public static void main(String[] args) {
@@ -95,7 +102,7 @@ public class TriggerDialog extends JDialog {
 		super(frame);
 		holder = this;
 		setTitle("Add new trigger");
-		setBounds(100, 100, 454, 416);
+		setBounds(100, 100, 512, 416);
 		setModalityType(ModalityType.APPLICATION_MODAL);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setIconImage(Toolkit.getDefaultToolkit().getImage(ApplicationWindow.class.getResource("/resources/MIS_Icon128.png")));
@@ -203,25 +210,36 @@ public class TriggerDialog extends JDialog {
 			}
 		});
 		
+		lblvalueThatGets = new JLabel("[Value that gets compared]");
+		
+		lblhowTheValue = new JLabel("[How the value gets compared (>,<,=)]");
+		
+		lblwhatValueOn = new JLabel("[What value on the node to compare to]");
+		
 		GroupLayout gl_triggerValuePropertyPanel = new GroupLayout(triggerValuePropertyPanel);
 		gl_triggerValuePropertyPanel.setHorizontalGroup(
 			gl_triggerValuePropertyPanel.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_triggerValuePropertyPanel.createSequentialGroup()
 					.addContainerGap()
-					.addGroup(gl_triggerValuePropertyPanel.createParallelGroup(Alignment.LEADING)
+					.addGroup(gl_triggerValuePropertyPanel.createParallelGroup(Alignment.LEADING, false)
 						.addGroup(gl_triggerValuePropertyPanel.createSequentialGroup()
 							.addComponent(lblValueTarget)
 							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(textFieldValueTarget, GroupLayout.DEFAULT_SIZE, 199, Short.MAX_VALUE))
+							.addComponent(textFieldValueTarget))
+						.addGroup(Alignment.TRAILING, gl_triggerValuePropertyPanel.createSequentialGroup()
+							.addComponent(lblValueTargetType)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(valueTargetTypeComboBox, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
 						.addGroup(gl_triggerValuePropertyPanel.createSequentialGroup()
 							.addComponent(lblValueComparer)
 							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(valueComparerComboBox, 0, 172, Short.MAX_VALUE))
-						.addGroup(gl_triggerValuePropertyPanel.createSequentialGroup()
-							.addComponent(lblValueTargetType)
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(valueTargetTypeComboBox, GroupLayout.PREFERRED_SIZE, 148, GroupLayout.PREFERRED_SIZE)))
-					.addContainerGap(96, GroupLayout.PREFERRED_SIZE))
+							.addComponent(valueComparerComboBox, GroupLayout.PREFERRED_SIZE, 104, GroupLayout.PREFERRED_SIZE)))
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addGroup(gl_triggerValuePropertyPanel.createParallelGroup(Alignment.LEADING)
+						.addComponent(lblhowTheValue)
+						.addComponent(lblvalueThatGets)
+						.addComponent(lblwhatValueOn))
+					.addContainerGap(84, Short.MAX_VALUE))
 		);
 		gl_triggerValuePropertyPanel.setVerticalGroup(
 			gl_triggerValuePropertyPanel.createParallelGroup(Alignment.LEADING)
@@ -229,37 +247,48 @@ public class TriggerDialog extends JDialog {
 					.addContainerGap()
 					.addGroup(gl_triggerValuePropertyPanel.createParallelGroup(Alignment.BASELINE)
 						.addComponent(textFieldValueTarget, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-						.addComponent(lblValueTarget))
+						.addComponent(lblValueTarget)
+						.addComponent(lblvalueThatGets))
 					.addGap(18)
 					.addGroup(gl_triggerValuePropertyPanel.createParallelGroup(Alignment.BASELINE)
 						.addComponent(valueComparerComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-						.addComponent(lblValueComparer))
+						.addComponent(lblValueComparer)
+						.addComponent(lblhowTheValue))
 					.addGap(18)
 					.addGroup(gl_triggerValuePropertyPanel.createParallelGroup(Alignment.BASELINE)
 						.addComponent(valueTargetTypeComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-						.addComponent(lblValueTargetType))
+						.addComponent(lblValueTargetType)
+						.addComponent(lblwhatValueOn))
 					.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
 		);
 		
 		triggerValuePropertyPanel.setLayout(gl_triggerValuePropertyPanel);
 		
 		actionTypeCardLayout = new JPanel();
+		
+		JLabel lbldefinesWhatIt = new JLabel("[What type of data the trigger matches on]");
+		
+		lblwhatActionHappens = new JLabel("[What action happens when the trigger, triggers]");
 		GroupLayout gl_contentPanel = new GroupLayout(contentPanel);
 		gl_contentPanel.setHorizontalGroup(
 			gl_contentPanel.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_contentPanel.createSequentialGroup()
-					.addGroup(gl_contentPanel.createParallelGroup(Alignment.TRAILING)
-						.addComponent(actionTypeCardLayout, Alignment.LEADING, 0, 0, Short.MAX_VALUE)
-						.addGroup(Alignment.LEADING, gl_contentPanel.createParallelGroup(Alignment.TRAILING, false)
-							.addGroup(Alignment.LEADING, gl_contentPanel.createSequentialGroup()
+					.addGroup(gl_contentPanel.createParallelGroup(Alignment.LEADING)
+						.addComponent(actionTypeCardLayout, 0, 0, Short.MAX_VALUE)
+						.addGroup(gl_contentPanel.createParallelGroup(Alignment.LEADING, false)
+							.addGroup(gl_contentPanel.createSequentialGroup()
 								.addComponent(lblTriggerType)
 								.addGap(4)
-								.addComponent(triggerTypeComboBox, GroupLayout.PREFERRED_SIZE, 90, GroupLayout.PREFERRED_SIZE))
-							.addComponent(triggerTypeCardLayout, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-							.addGroup(Alignment.LEADING, gl_contentPanel.createSequentialGroup()
+								.addComponent(triggerTypeComboBox, GroupLayout.PREFERRED_SIZE, 90, GroupLayout.PREFERRED_SIZE)
+								.addPreferredGap(ComponentPlacement.UNRELATED)
+								.addComponent(lbldefinesWhatIt))
+							.addComponent(triggerTypeCardLayout, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+							.addGroup(gl_contentPanel.createSequentialGroup()
 								.addComponent(lblActionType)
 								.addGap(4)
-								.addComponent(actionTypeComboBox, GroupLayout.PREFERRED_SIZE, 142, GroupLayout.PREFERRED_SIZE))))
+								.addComponent(actionTypeComboBox, GroupLayout.PREFERRED_SIZE, 142, GroupLayout.PREFERRED_SIZE)
+								.addPreferredGap(ComponentPlacement.RELATED)
+								.addComponent(lblwhatActionHappens))))
 					.addGap(42))
 		);
 		gl_contentPanel.setVerticalGroup(
@@ -269,7 +298,9 @@ public class TriggerDialog extends JDialog {
 						.addComponent(lblTriggerType)
 						.addGroup(gl_contentPanel.createSequentialGroup()
 							.addGap(4)
-							.addComponent(triggerTypeComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+							.addGroup(gl_contentPanel.createParallelGroup(Alignment.BASELINE)
+								.addComponent(triggerTypeComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+								.addComponent(lbldefinesWhatIt))))
 					.addGap(6)
 					.addComponent(triggerTypeCardLayout, GroupLayout.PREFERRED_SIZE, 130, GroupLayout.PREFERRED_SIZE)
 					.addGap(11)
@@ -277,7 +308,9 @@ public class TriggerDialog extends JDialog {
 						.addComponent(lblActionType)
 						.addGroup(gl_contentPanel.createSequentialGroup()
 							.addGap(4)
-							.addComponent(actionTypeComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+							.addGroup(gl_contentPanel.createParallelGroup(Alignment.BASELINE)
+								.addComponent(actionTypeComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+								.addComponent(lblwhatActionHappens))))
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(actionTypeCardLayout, GroupLayout.DEFAULT_SIZE, 122, Short.MAX_VALUE)
 					.addContainerGap())
@@ -319,22 +352,30 @@ public class TriggerDialog extends JDialog {
 		
 		
 		receiverTypeCardLayout = new JPanel();
+		
+		lblwhatMessageGets = new JLabel("[What message gets sent]");
+		
+		lblwhoTheMessage = new JLabel("[Who the message gets sent to]");
 		GroupLayout gl_actionMessageCardLayout = new GroupLayout(actionMessageCardLayout);
 		gl_actionMessageCardLayout.setHorizontalGroup(
 			gl_actionMessageCardLayout.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_actionMessageCardLayout.createSequentialGroup()
 					.addContainerGap()
-					.addGroup(gl_actionMessageCardLayout.createParallelGroup(Alignment.LEADING, false)
+					.addGroup(gl_actionMessageCardLayout.createParallelGroup(Alignment.LEADING)
 						.addGroup(gl_actionMessageCardLayout.createSequentialGroup()
 							.addComponent(lblMessage)
 							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(messageTextField, GroupLayout.PREFERRED_SIZE, 303, GroupLayout.PREFERRED_SIZE))
+							.addComponent(messageTextField, GroupLayout.PREFERRED_SIZE, 250, GroupLayout.PREFERRED_SIZE)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(lblwhatMessageGets))
 						.addGroup(gl_actionMessageCardLayout.createSequentialGroup()
 							.addComponent(lblNewLabel)
 							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(receiverTypeComboBox, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-					.addContainerGap(19, Short.MAX_VALUE))
-				.addComponent(receiverTypeCardLayout, GroupLayout.DEFAULT_SIZE, 406, Short.MAX_VALUE)
+							.addComponent(receiverTypeComboBox, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(lblwhoTheMessage)))
+					.addContainerGap(140, Short.MAX_VALUE))
+				.addComponent(receiverTypeCardLayout, GroupLayout.DEFAULT_SIZE, 407, Short.MAX_VALUE)
 		);
 		gl_actionMessageCardLayout.setVerticalGroup(
 			gl_actionMessageCardLayout.createParallelGroup(Alignment.LEADING)
@@ -342,11 +383,13 @@ public class TriggerDialog extends JDialog {
 					.addContainerGap()
 					.addGroup(gl_actionMessageCardLayout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lblMessage)
-						.addComponent(messageTextField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+						.addComponent(messageTextField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lblwhatMessageGets))
 					.addPreferredGap(ComponentPlacement.UNRELATED)
 					.addGroup(gl_actionMessageCardLayout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lblNewLabel)
-						.addComponent(receiverTypeComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+						.addComponent(receiverTypeComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lblwhoTheMessage))
 					.addPreferredGap(ComponentPlacement.UNRELATED)
 					.addComponent(receiverTypeCardLayout, GroupLayout.PREFERRED_SIZE, 41, Short.MAX_VALUE))
 		);
@@ -360,6 +403,8 @@ public class TriggerDialog extends JDialog {
 		
 		receiverValueComboBox = new JComboBox();
 		
+		lblwhatTeampersonGets = new JLabel("[What team/person gets the message]");
+		
 		
 		
 		GroupLayout gl_receiverTypeValue = new GroupLayout(receiverTypeValue);
@@ -370,7 +415,9 @@ public class TriggerDialog extends JDialog {
 					.addComponent(lblReceiverValue)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(receiverValueComboBox, GroupLayout.PREFERRED_SIZE, 128, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap(122, Short.MAX_VALUE))
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(lblwhatTeampersonGets)
+					.addContainerGap(217, Short.MAX_VALUE))
 		);
 		gl_receiverTypeValue.setVerticalGroup(
 			gl_receiverTypeValue.createParallelGroup(Alignment.LEADING)
@@ -378,8 +425,9 @@ public class TriggerDialog extends JDialog {
 					.addContainerGap()
 					.addGroup(gl_receiverTypeValue.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lblReceiverValue)
-						.addComponent(receiverValueComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addContainerGap(12, Short.MAX_VALUE))
+						.addComponent(receiverValueComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lblwhatTeampersonGets))
+					.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
 		);
 		receiverTypeValue.setLayout(gl_receiverTypeValue);
 		

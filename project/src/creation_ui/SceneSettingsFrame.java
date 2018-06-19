@@ -55,6 +55,9 @@ public class SceneSettingsFrame extends JDialog {
 	private JSpinner spinnerTeamsInRoom;
 	private JComboBox<String> roomTypeComboBox;
 	private JComboBox<MISScene> sceneComboBox;
+	private JLabel lblaRoomIs;
+	private JLabel lblcompetetivePlaysUntil;
+	private JLabel lblendlessPlaysUntil;
 
 	/**
 	 * Create the dialog.
@@ -93,23 +96,30 @@ public class SceneSettingsFrame extends JDialog {
 		});
 		
 		cardLayoutPanel = new JPanel();
+		
+		lblaRoomIs = new JLabel("[The room is where the players play in]");
 		GroupLayout gl_contentPanel = new GroupLayout(contentPanel);
 		gl_contentPanel.setHorizontalGroup(
-			gl_contentPanel.createParallelGroup(Alignment.LEADING)
-				.addGroup(Alignment.TRAILING, gl_contentPanel.createSequentialGroup()
+			gl_contentPanel.createParallelGroup(Alignment.TRAILING)
+				.addGroup(gl_contentPanel.createSequentialGroup()
 					.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 					.addGroup(gl_contentPanel.createParallelGroup(Alignment.LEADING)
-						.addComponent(chckbxRoomInScene)
-						.addComponent(cardLayoutPanel, GroupLayout.PREFERRED_SIZE, 404, GroupLayout.PREFERRED_SIZE))
+						.addComponent(cardLayoutPanel, GroupLayout.PREFERRED_SIZE, 404, GroupLayout.PREFERRED_SIZE)
+						.addGroup(gl_contentPanel.createSequentialGroup()
+							.addComponent(chckbxRoomInScene)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(lblaRoomIs)))
 					.addContainerGap())
 		);
 		gl_contentPanel.setVerticalGroup(
 			gl_contentPanel.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_contentPanel.createSequentialGroup()
-					.addComponent(chckbxRoomInScene)
+					.addGroup(gl_contentPanel.createParallelGroup(Alignment.BASELINE)
+						.addComponent(chckbxRoomInScene)
+						.addComponent(lblaRoomIs))
 					.addGap(7)
-					.addComponent(cardLayoutPanel, GroupLayout.PREFERRED_SIZE, 119, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap(69, Short.MAX_VALUE))
+					.addComponent(cardLayoutPanel, GroupLayout.DEFAULT_SIZE, 177, Short.MAX_VALUE)
+					.addContainerGap())
 		);
 		cardLayoutPanel.setLayout(new CardLayout(0, 0));
 		
@@ -193,37 +203,47 @@ public class SceneSettingsFrame extends JDialog {
 			    }
 		});
 		
+		lblcompetetivePlaysUntil = new JLabel("[Room type[Competetive]: Plays until somebody wins, or a team leaves]");
+		
+		lblendlessPlaysUntil = new JLabel("[Room type[Endless]: Plays until everybody leaves]");
+		
 		GroupLayout gl_roomCardPanel = new GroupLayout(roomCardPanel);
 		gl_roomCardPanel.setHorizontalGroup(
 			gl_roomCardPanel.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_roomCardPanel.createSequentialGroup()
 					.addContainerGap()
 					.addGroup(gl_roomCardPanel.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_roomCardPanel.createParallelGroup(Alignment.TRAILING, false)
-							.addGroup(Alignment.LEADING, gl_roomCardPanel.createSequentialGroup()
-								.addComponent(lblTeamLayout)
-								.addPreferredGap(ComponentPlacement.RELATED)
-								.addComponent(spinnerTeamsInRoom))
-							.addGroup(Alignment.LEADING, gl_roomCardPanel.createSequentialGroup()
-								.addComponent(lblMinimumPlayers)
-								.addPreferredGap(ComponentPlacement.RELATED)
-								.addComponent(spinnerMinimumPlayers, GroupLayout.PREFERRED_SIZE, 44, GroupLayout.PREFERRED_SIZE)))
-						.addComponent(chckbxAutoQueue))
-					.addGap(27)
-					.addGroup(gl_roomCardPanel.createParallelGroup(Alignment.LEADING)
 						.addGroup(gl_roomCardPanel.createSequentialGroup()
-							.addComponent(lblScene)
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(sceneComboBox, 0, 190, Short.MAX_VALUE))
-						.addGroup(gl_roomCardPanel.createSequentialGroup()
-							.addComponent(lblMaximumPlayers)
-							.addPreferredGap(ComponentPlacement.UNRELATED)
-							.addComponent(spinnerMaximumPlayers, GroupLayout.PREFERRED_SIZE, 46, GroupLayout.PREFERRED_SIZE))
+							.addGroup(gl_roomCardPanel.createParallelGroup(Alignment.LEADING)
+								.addGroup(gl_roomCardPanel.createSequentialGroup()
+									.addGroup(gl_roomCardPanel.createParallelGroup(Alignment.LEADING)
+										.addGroup(gl_roomCardPanel.createSequentialGroup()
+											.addComponent(lblMinimumPlayers)
+											.addPreferredGap(ComponentPlacement.RELATED)
+											.addComponent(spinnerMinimumPlayers, GroupLayout.PREFERRED_SIZE, 44, GroupLayout.PREFERRED_SIZE))
+										.addComponent(chckbxAutoQueue))
+									.addGap(27)
+									.addGroup(gl_roomCardPanel.createParallelGroup(Alignment.LEADING)
+										.addGroup(gl_roomCardPanel.createSequentialGroup()
+											.addComponent(lblScene)
+											.addPreferredGap(ComponentPlacement.RELATED)
+											.addComponent(sceneComboBox, 0, 190, Short.MAX_VALUE))
+										.addGroup(gl_roomCardPanel.createSequentialGroup()
+											.addComponent(lblMaximumPlayers)
+											.addPreferredGap(ComponentPlacement.UNRELATED)
+											.addComponent(spinnerMaximumPlayers, GroupLayout.PREFERRED_SIZE, 46, GroupLayout.PREFERRED_SIZE))))
+								.addComponent(lblcompetetivePlaysUntil)
+								.addComponent(lblendlessPlaysUntil)
+								.addGroup(gl_roomCardPanel.createSequentialGroup()
+									.addComponent(lblTeamLayout)
+									.addPreferredGap(ComponentPlacement.RELATED)
+									.addComponent(spinnerTeamsInRoom, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+							.addContainerGap())
 						.addGroup(gl_roomCardPanel.createSequentialGroup()
 							.addComponent(lblRoomType)
 							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(roomTypeComboBox, 0, 145, Short.MAX_VALUE)))
-					.addContainerGap())
+							.addComponent(roomTypeComboBox, 0, 167, Short.MAX_VALUE)
+							.addGap(167))))
 		);
 		gl_roomCardPanel.setVerticalGroup(
 			gl_roomCardPanel.createParallelGroup(Alignment.LEADING)
@@ -239,13 +259,19 @@ public class SceneSettingsFrame extends JDialog {
 						.addComponent(chckbxAutoQueue)
 						.addComponent(lblScene)
 						.addComponent(sceneComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addPreferredGap(ComponentPlacement.RELATED, 16, Short.MAX_VALUE)
+					.addPreferredGap(ComponentPlacement.UNRELATED)
 					.addGroup(gl_roomCardPanel.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lblTeamLayout)
-						.addComponent(spinnerTeamsInRoom, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(spinnerTeamsInRoom, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+					.addPreferredGap(ComponentPlacement.RELATED, 7, Short.MAX_VALUE)
+					.addGroup(gl_roomCardPanel.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lblRoomType)
 						.addComponent(roomTypeComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addContainerGap())
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(lblcompetetivePlaysUntil)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(lblendlessPlaysUntil)
+					.addGap(9))
 		);
 		roomCardPanel.setLayout(gl_roomCardPanel);
 		

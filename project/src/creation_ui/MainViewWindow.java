@@ -83,6 +83,8 @@ import broadcasts.MISBroadcast;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
+
+import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.CheckboxMenuItem;
 import java.awt.FlowLayout;
@@ -217,7 +219,7 @@ public class MainViewWindow {
 		
 		mnFile.add(mntmRun);
 		
-		mntmBuild = new JMenuItem("Build");
+		mntmBuild = new JMenuItem("Build (Todo)");
 		
 		mnFile.add(mntmBuild);
 		
@@ -231,7 +233,7 @@ public class MainViewWindow {
 		mnEdit = new JMenu("Edit");
 		menuBar.add(mnEdit);
 		
-		mntmUndo = new JMenuItem("Undo");
+		mntmUndo = new JMenuItem("Undo (Todo)");
 		
 		Action undo = new AbstractAction() {
 			@Override
@@ -262,7 +264,7 @@ public class MainViewWindow {
 		
 		mnEdit.add(mntmUndo);
 		
-		mntmRedo = new JMenuItem("Redo");
+		mntmRedo = new JMenuItem("Redo (Todo)");
 		
 		mntmRedo.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_Y, InputEvent.CTRL_MASK), "redo");
 		
@@ -275,7 +277,7 @@ public class MainViewWindow {
 		
 		mnWindow.add(mntmConsole);
 		
-		mntmBroadcasts = new JMenuItem("Broadcasts");
+		mntmBroadcasts = new JMenuItem("Show Broadcasts");
 		mnWindow.add(mntmBroadcasts);
 		
 		mntmAddBroadcast = new JMenuItem("Add Broadcast");
@@ -795,7 +797,7 @@ public class MainViewWindow {
 					});
 					
 					
-					JCheckBoxMenuItem shouldSendInformation = new JCheckBoxMenuItem("Refresh");
+					JCheckBoxMenuItem shouldSendInformation = new JCheckBoxMenuItem("Refreshing");
 					shouldSendInformation.setSelected(nodeList.getSelectedValue().shouldSendInformation);
 					shouldSendInformation.addActionListener(new ActionListener() {
 						
@@ -818,13 +820,6 @@ public class MainViewWindow {
 								
 								@Override
 								public void actionPerformed(ActionEvent e) {
-									System.out.println("Bla start");
-									for(int i = 0; i < nodeScene.scene.nodeList.size(); i++){
-										System.out.println("Node : #"+i+" - "+nodeScene.scene.nodeList.get(i).name);
-									}
-									System.out.println(nodeScene.getClass().getSimpleName());
-									System.out.println("Bla end");
-									
 									remakeNodeList(nodeScene.scene);
 									remakeRuleList(nodeScene.scene);
 									currentScene = nodeScene.scene;
@@ -838,7 +833,7 @@ public class MainViewWindow {
 					
 					menu.add(shouldSendInformation);
 					if(nodeList.getSelectedValue().shouldSendInformation){
-						JMenuItem refreshInformation = new JMenuItem("Refresh info");
+						JMenuItem refreshInformation = new JMenuItem("Refresh data");
 						refreshInformation.addActionListener(new ActionListener() {
 							
 							@Override
@@ -857,7 +852,7 @@ public class MainViewWindow {
 						});
 						menu.add(refreshInformation);
 					}
-					JCheckBoxMenuItem isControllableItem = new JCheckBoxMenuItem("Control");
+					JCheckBoxMenuItem isControllableItem = new JCheckBoxMenuItem("Controllable");
 					isControllableItem.setSelected(nodeList.getSelectedValue().isControllable);
 					isControllableItem.addActionListener(new ActionListener() {
 						
@@ -869,7 +864,7 @@ public class MainViewWindow {
 					});
 					menu.add(isControllableItem);
 					if(nodeList.getSelectedValue().isControllable){
-						JMenuItem controlInfo = new JMenuItem("Control info");
+						JMenuItem controlInfo = new JMenuItem("Control data");
 						controlInfo.addActionListener(new ActionListener() {
 							
 							@Override
@@ -1079,11 +1074,15 @@ public class MainViewWindow {
 			@Override
 			public void mousePressed(MouseEvent e) {
 				mnFile.getPopupMenu().setVisible(false);
-				if(ScriptBuilder.buildScript(MISProject.project, currentScene, currentScene.nodeList.get(0).name, currentScene.nodeList.get(0).type, MISProject.project.ip)){
+				String genereatedText = ScriptBuilder.getGeneratedScript(MISProject.project, currentScene, currentScene.nodeList.get(0).name, currentScene.nodeList.get(0).type, MISProject.project.ip);
+				ScriptGenerationUI scriptGen = new ScriptGenerationUI(genereatedText, currentScene.nodeList.get(0).name);
+				scriptGen.showDialog();
+				if(scriptGen.getGenerated()){
 					addTextToConsole("Generated script.");
 				} else{
-					addTextToConsole("Failed to generate script.");
+					addTextToConsole("Didn't generate script.");
 				}
+				
 			}
 		});
 		

@@ -61,6 +61,14 @@ public class CreateNewProjectSettings extends JPanel {
 	private JTextField textFieldBasePort;
 	private JTextField internetAddressTextField;
 	private JLabel lblProjectNameField;
+	private JLabel lblwhatTypeOf;
+	private JLabel lbldatasavingTypeFor;
+	private JLabel lblencryptionForDatabasetext;
+	private JLabel lblNewLabel_1;
+	private JLabel lblNewLabel_2;
+	private JLabel lblwhichProtocolsTo;
+	private JLabel lblthePortThe;
+	private JLabel lbltheMainServer;
 	
 	public void putVariables(String projName, String projLoc, String godotLoc){
 		this.projectName = projName;
@@ -159,11 +167,27 @@ public class CreateNewProjectSettings extends JPanel {
 		internetAddressTextField = new JTextField();
 		internetAddressTextField.setColumns(10);
 		
-		JLabel lblPersec = new JLabel("per/sec");
+		JLabel lblPersec = new JLabel("[Times a second a node/value should refresh]");
 		
-		JLabel lblPersec_1 = new JLabel("per/sec");
+		JLabel lblPersec_1 = new JLabel("[Maximum messages a client can send a second[flood control]]");
 		
-		JLabel lblSeconds = new JLabel("seconds");
+		JLabel lblSeconds = new JLabel("[Seconds a client can stay idle before getting booted]");
+		
+		lblwhatTypeOf = new JLabel("[What type of infrastructure the server should use[Only clientside available]]");
+		
+		lbldatasavingTypeFor = new JLabel("[Datasaving type for values[Not implemented]]");
+		
+		lblencryptionForDatabasetext = new JLabel("[Encryption for database/text structures]");
+		
+		lblNewLabel_1 = new JLabel("[Should the graphical interface of the server be opened on run]");
+		
+		lblNewLabel_2 = new JLabel("[Required minimum clientbuild for the client to use this server]");
+		
+		lblwhichProtocolsTo = new JLabel("[Which protocols to use to transmit data[TCP only atm]]");
+		
+		lblthePortThe = new JLabel("[The port the clients connect through]");
+		
+		lbltheMainServer = new JLabel("[The main server the clients connect to]");
 		GroupLayout groupLayout = new GroupLayout(this);
 		groupLayout.setHorizontalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
@@ -178,28 +202,45 @@ public class CreateNewProjectSettings extends JPanel {
 								.addGroup(groupLayout.createSequentialGroup()
 									.addComponent(rdbtnClientSide)
 									.addPreferredGap(ComponentPlacement.UNRELATED)
-									.addComponent(rdbtnServerside, GroupLayout.PREFERRED_SIZE, 86, GroupLayout.PREFERRED_SIZE))
+									.addComponent(rdbtnServerside, GroupLayout.PREFERRED_SIZE, 86, GroupLayout.PREFERRED_SIZE)
+									.addPreferredGap(ComponentPlacement.RELATED)
+									.addComponent(lblwhatTypeOf))
 								.addGroup(groupLayout.createSequentialGroup()
 									.addComponent(lblProjectName, GroupLayout.PREFERRED_SIZE, 112, GroupLayout.PREFERRED_SIZE)
 									.addPreferredGap(ComponentPlacement.RELATED)
 									.addComponent(lblProjectNameField, GroupLayout.PREFERRED_SIZE, 229, GroupLayout.PREFERRED_SIZE))
-								.addComponent(chckbxEncryption)
-								.addComponent(chckbxUi)
-								.addComponent(lblProtocols)
+								.addGroup(groupLayout.createSequentialGroup()
+									.addComponent(chckbxEncryption)
+									.addPreferredGap(ComponentPlacement.RELATED)
+									.addComponent(lblencryptionForDatabasetext))
+								.addGroup(groupLayout.createSequentialGroup()
+									.addComponent(chckbxUi)
+									.addPreferredGap(ComponentPlacement.RELATED)
+									.addComponent(lblNewLabel_1))
+								.addGroup(groupLayout.createSequentialGroup()
+									.addComponent(lblProtocols)
+									.addPreferredGap(ComponentPlacement.RELATED)
+									.addComponent(lblwhichProtocolsTo))
 								.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 									.addComponent(listProtocols, GroupLayout.DEFAULT_SIZE, 347, Short.MAX_VALUE)
 									.addGroup(groupLayout.createSequentialGroup()
 										.addComponent(lblNewLabel)
 										.addPreferredGap(ComponentPlacement.RELATED)
-										.addComponent(textFieldClientBuild, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+										.addComponent(textFieldClientBuild, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+										.addPreferredGap(ComponentPlacement.RELATED)
+										.addComponent(lblNewLabel_2))
 									.addGroup(groupLayout.createSequentialGroup()
 										.addComponent(lblIp)
 										.addPreferredGap(ComponentPlacement.RELATED)
-										.addComponent(internetAddressTextField, GroupLayout.PREFERRED_SIZE, 134, GroupLayout.PREFERRED_SIZE))
+										.addComponent(internetAddressTextField, GroupLayout.PREFERRED_SIZE, 134, GroupLayout.PREFERRED_SIZE)
+										.addPreferredGap(ComponentPlacement.RELATED)
+										.addComponent(lbltheMainServer))
 									.addGroup(groupLayout.createSequentialGroup()
 										.addComponent(lblBaseport)
 										.addPreferredGap(ComponentPlacement.RELATED)
-										.addComponent(textFieldBasePort, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+										.addComponent(textFieldBasePort, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+										.addPreferredGap(ComponentPlacement.RELATED)
+										.addComponent(lblthePortThe)))
 								.addComponent(lblSessionTimeout)
 								.addGroup(groupLayout.createSequentialGroup()
 									.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
@@ -221,7 +262,9 @@ public class CreateNewProjectSettings extends JPanel {
 												.addComponent(spinnerSessionTimeout, GroupLayout.PREFERRED_SIZE, 58, GroupLayout.PREFERRED_SIZE)
 												.addComponent(comboBoxSavingType, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
 											.addPreferredGap(ComponentPlacement.RELATED)
-											.addComponent(lblSeconds)))))
+											.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+												.addComponent(lbldatasavingTypeFor)
+												.addComponent(lblSeconds))))))
 							.addPreferredGap(ComponentPlacement.RELATED, 293, GroupLayout.PREFERRED_SIZE)))
 					.addContainerGap())
 				.addGroup(groupLayout.createSequentialGroup()
@@ -243,7 +286,8 @@ public class CreateNewProjectSettings extends JPanel {
 					.addGap(18)
 					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(rdbtnClientSide)
-						.addComponent(rdbtnServerside))
+						.addComponent(rdbtnServerside)
+						.addComponent(lblwhatTypeOf))
 					.addPreferredGap(ComponentPlacement.UNRELATED)
 					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lblRefreshRate)
@@ -257,32 +301,42 @@ public class CreateNewProjectSettings extends JPanel {
 					.addPreferredGap(ComponentPlacement.UNRELATED)
 					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lblSavingType)
-						.addComponent(comboBoxSavingType, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+						.addComponent(comboBoxSavingType, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lbldatasavingTypeFor))
 					.addPreferredGap(ComponentPlacement.UNRELATED)
-					.addComponent(chckbxEncryption)
+					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+						.addComponent(chckbxEncryption)
+						.addComponent(lblencryptionForDatabasetext))
 					.addPreferredGap(ComponentPlacement.UNRELATED)
 					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lblSessionTimeout)
 						.addComponent(spinnerSessionTimeout, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 						.addComponent(lblSeconds))
 					.addPreferredGap(ComponentPlacement.UNRELATED)
-					.addComponent(chckbxUi)
+					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+						.addComponent(chckbxUi)
+						.addComponent(lblNewLabel_1))
 					.addPreferredGap(ComponentPlacement.UNRELATED)
 					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lblNewLabel)
-						.addComponent(textFieldClientBuild, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+						.addComponent(textFieldClientBuild, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lblNewLabel_2))
 					.addGap(18)
-					.addComponent(lblProtocols)
+					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+						.addComponent(lblProtocols)
+						.addComponent(lblwhichProtocolsTo))
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(listProtocols)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lblBaseport)
-						.addComponent(textFieldBasePort, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+						.addComponent(textFieldBasePort, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lblthePortThe))
 					.addPreferredGap(ComponentPlacement.UNRELATED)
 					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lblIp)
-						.addComponent(internetAddressTextField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+						.addComponent(internetAddressTextField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lbltheMainServer))
 					.addPreferredGap(ComponentPlacement.RELATED, 116, Short.MAX_VALUE)
 					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(btnBack)

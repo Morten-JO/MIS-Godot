@@ -44,7 +44,7 @@ public class ScriptBuilder {
 	public static void main(String[] args) {
 	}
 	
-	public static  boolean buildScript(MISProject project, MISScene scene, String name, String nodeType, String ip){
+	public static String getGeneratedScript(MISProject project, MISScene scene, String name, String nodeType, String ip){
 		minimumClientBuild = "MINIMUM_BUILD = "+project.minimumBuildVersion;
 		String scriptString = "";
 		
@@ -79,7 +79,10 @@ public class ScriptBuilder {
 		scriptString = nodeControlFunctionsGeneration(scriptString, scene);
 		
 		scriptString = triggerMessageFunctionsGeneration(scriptString, scene);
-		
+		return scriptString;
+	}
+	
+	public static boolean buildScript(String text, String name){
 		JFileChooser directoryChooser = new JFileChooser();
 		directoryChooser.setCurrentDirectory(new File("."));
 		directoryChooser.setDialogTitle("Choose a directory for generation");
@@ -89,7 +92,7 @@ public class ScriptBuilder {
 		if(directoryChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION){
 			try {
 				PrintWriter writer = new PrintWriter(directoryChooser.getSelectedFile()+"\\"+name+".gd", "UTF-8");
-				writer.println(scriptString);
+				writer.println(text);
 				writer.close();
 				return true;
 			} catch (FileNotFoundException e) {

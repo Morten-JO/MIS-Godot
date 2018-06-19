@@ -58,6 +58,12 @@ public class BroadcastDialog extends JDialog {
 	private JComboBox<Integer> comboBoxReceiverTeam;
 	private JLabel lblPerson;
 	private JComboBox<Integer> comboBoxReceiverPerson;
+	private JLabel lblnameOfBroadcast;
+	private JLabel lbltypeOfBroadcastvalue;
+	private JLabel lblwhoReceivesBroadcast;
+	private JLabel lbltheTeamThat;
+	private JLabel lblthePersonThat;
+	private JLabel lblallPlayersAre;
 
 	/**
 	 * Create the dialog.
@@ -139,27 +145,40 @@ public class BroadcastDialog extends JDialog {
 		textFieldFrequency = new JTextField();
 		textFieldFrequency.setColumns(10);
 		
-		JLabel lblTimesPerMinute = new JLabel("Times per minute");
+		JLabel lblTimesPerMinute = new JLabel("[Send times per minute]");
 		
 		receiverCardPanel = new JPanel();
+		
+		lblnameOfBroadcast = new JLabel("[Name of broadcast]");
+		
+		lbltypeOfBroadcastvalue = new JLabel("[Type of broadcast(value)]");
+		
+		lblwhoReceivesBroadcast = new JLabel("[Who receives broadcast]");
 		GroupLayout gl_contentPanel = new GroupLayout(contentPanel);
 		gl_contentPanel.setHorizontalGroup(
 			gl_contentPanel.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_contentPanel.createSequentialGroup()
 					.addGroup(gl_contentPanel.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_contentPanel.createParallelGroup(Alignment.LEADING, false)
-							.addGroup(gl_contentPanel.createSequentialGroup()
-								.addGroup(gl_contentPanel.createParallelGroup(Alignment.TRAILING, false)
-									.addComponent(lblBroadcastType, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-									.addComponent(lblBroadcastName, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-								.addPreferredGap(ComponentPlacement.RELATED)
-								.addGroup(gl_contentPanel.createParallelGroup(Alignment.LEADING, false)
-									.addComponent(comboBoxBroadcastType, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-									.addComponent(textFieldBroadcastName, GroupLayout.DEFAULT_SIZE, 240, Short.MAX_VALUE)))
-							.addGroup(gl_contentPanel.createSequentialGroup()
-								.addComponent(lblBroadcastReceivers)
-								.addPreferredGap(ComponentPlacement.RELATED)
-								.addComponent(comboBoxBroadcastReceivers, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+						.addGroup(gl_contentPanel.createSequentialGroup()
+							.addGroup(gl_contentPanel.createParallelGroup(Alignment.LEADING)
+								.addGroup(gl_contentPanel.createSequentialGroup()
+									.addGroup(gl_contentPanel.createParallelGroup(Alignment.TRAILING, false)
+										.addComponent(lblBroadcastType, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+										.addComponent(lblBroadcastName, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+									.addPreferredGap(ComponentPlacement.RELATED)
+									.addGroup(gl_contentPanel.createParallelGroup(Alignment.LEADING)
+										.addComponent(textFieldBroadcastName, GroupLayout.DEFAULT_SIZE, 142, Short.MAX_VALUE)
+										.addComponent(comboBoxBroadcastType, 0, 142, Short.MAX_VALUE)))
+								.addGroup(gl_contentPanel.createSequentialGroup()
+									.addComponent(lblBroadcastReceivers)
+									.addPreferredGap(ComponentPlacement.RELATED)
+									.addComponent(comboBoxBroadcastReceivers, GroupLayout.PREFERRED_SIZE, 115, GroupLayout.PREFERRED_SIZE)))
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addGroup(gl_contentPanel.createParallelGroup(Alignment.LEADING)
+								.addComponent(lblnameOfBroadcast)
+								.addComponent(lbltypeOfBroadcastvalue)
+								.addComponent(lblwhoReceivesBroadcast))
+							.addGap(103))
 						.addGroup(gl_contentPanel.createSequentialGroup()
 							.addComponent(lblBroadcastFrequency)
 							.addPreferredGap(ComponentPlacement.RELATED)
@@ -168,22 +187,25 @@ public class BroadcastDialog extends JDialog {
 							.addComponent(lblTimesPerMinute))
 						.addComponent(typeCardPanel, GroupLayout.PREFERRED_SIZE, 423, GroupLayout.PREFERRED_SIZE)
 						.addComponent(receiverCardPanel, GroupLayout.PREFERRED_SIZE, 423, GroupLayout.PREFERRED_SIZE))
-					.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+					.addContainerGap())
 		);
 		gl_contentPanel.setVerticalGroup(
 			gl_contentPanel.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_contentPanel.createSequentialGroup()
 					.addGroup(gl_contentPanel.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lblBroadcastName)
-						.addComponent(textFieldBroadcastName, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+						.addComponent(textFieldBroadcastName, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lblnameOfBroadcast))
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addGroup(gl_contentPanel.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lblBroadcastType)
-						.addComponent(comboBoxBroadcastType, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+						.addComponent(comboBoxBroadcastType, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lbltypeOfBroadcastvalue))
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addGroup(gl_contentPanel.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lblBroadcastReceivers)
-						.addComponent(comboBoxBroadcastReceivers, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+						.addComponent(comboBoxBroadcastReceivers, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lblwhoReceivesBroadcast))
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addGroup(gl_contentPanel.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lblBroadcastFrequency)
@@ -198,14 +220,22 @@ public class BroadcastDialog extends JDialog {
 		
 		receiverAllPanel = new JPanel();
 		receiverCardPanel.add(receiverAllPanel, "receiverAll");
+		
+		lblallPlayersAre = new JLabel("[All players are receiving this broadcast]");
 		GroupLayout gl_receiverAllPanel = new GroupLayout(receiverAllPanel);
 		gl_receiverAllPanel.setHorizontalGroup(
 			gl_receiverAllPanel.createParallelGroup(Alignment.LEADING)
-				.addGap(0, 423, Short.MAX_VALUE)
+				.addGroup(gl_receiverAllPanel.createSequentialGroup()
+					.addContainerGap()
+					.addComponent(lblallPlayersAre)
+					.addContainerGap(367, Short.MAX_VALUE))
 		);
 		gl_receiverAllPanel.setVerticalGroup(
 			gl_receiverAllPanel.createParallelGroup(Alignment.LEADING)
-				.addGap(0, 43, Short.MAX_VALUE)
+				.addGroup(gl_receiverAllPanel.createSequentialGroup()
+					.addContainerGap()
+					.addComponent(lblallPlayersAre)
+					.addContainerGap(18, Short.MAX_VALUE))
 		);
 		receiverAllPanel.setLayout(gl_receiverAllPanel);
 		
@@ -222,6 +252,8 @@ public class BroadcastDialog extends JDialog {
 			}
 			comboBoxReceiverTeam.setModel(boxModel);
 		}
+		
+		lbltheTeamThat = new JLabel("[The team that receives the broadcast]");
 		GroupLayout gl_receiverTeamPanel = new GroupLayout(receiverTeamPanel);
 		gl_receiverTeamPanel.setHorizontalGroup(
 			gl_receiverTeamPanel.createParallelGroup(Alignment.LEADING)
@@ -230,7 +262,9 @@ public class BroadcastDialog extends JDialog {
 					.addComponent(lblTeam)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(comboBoxReceiverTeam, GroupLayout.PREFERRED_SIZE, 107, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap(272, Short.MAX_VALUE))
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(lbltheTeamThat)
+					.addContainerGap(222, Short.MAX_VALUE))
 		);
 		gl_receiverTeamPanel.setVerticalGroup(
 			gl_receiverTeamPanel.createParallelGroup(Alignment.LEADING)
@@ -238,8 +272,9 @@ public class BroadcastDialog extends JDialog {
 					.addContainerGap()
 					.addGroup(gl_receiverTeamPanel.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lblTeam)
-						.addComponent(comboBoxReceiverTeam, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addContainerGap(18, Short.MAX_VALUE))
+						.addComponent(comboBoxReceiverTeam, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lbltheTeamThat))
+					.addContainerGap(12, Short.MAX_VALUE))
 		);
 		receiverTeamPanel.setLayout(gl_receiverTeamPanel);
 		
@@ -259,6 +294,8 @@ public class BroadcastDialog extends JDialog {
 			}
 			comboBoxReceiverPerson.setModel(boxModel);
 		}
+		
+		lblthePersonThat = new JLabel("[The person that receives this broadcast]");
 		GroupLayout gl_receiverPersonPanel = new GroupLayout(receiverPersonPanel);
 		gl_receiverPersonPanel.setHorizontalGroup(
 			gl_receiverPersonPanel.createParallelGroup(Alignment.LEADING)
@@ -267,7 +304,9 @@ public class BroadcastDialog extends JDialog {
 					.addComponent(lblPerson)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(comboBoxReceiverPerson, GroupLayout.PREFERRED_SIZE, 110, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap(262, Short.MAX_VALUE))
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(lblthePersonThat)
+					.addContainerGap(212, Short.MAX_VALUE))
 		);
 		gl_receiverPersonPanel.setVerticalGroup(
 			gl_receiverPersonPanel.createParallelGroup(Alignment.LEADING)
@@ -275,8 +314,9 @@ public class BroadcastDialog extends JDialog {
 					.addContainerGap()
 					.addGroup(gl_receiverPersonPanel.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lblPerson)
-						.addComponent(comboBoxReceiverPerson, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addContainerGap(18, Short.MAX_VALUE))
+						.addComponent(comboBoxReceiverPerson, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lblthePersonThat))
+					.addContainerGap(12, Short.MAX_VALUE))
 		);
 		receiverPersonPanel.setLayout(gl_receiverPersonPanel);
 		typeCardPanel.setLayout(new CardLayout(0, 0));
