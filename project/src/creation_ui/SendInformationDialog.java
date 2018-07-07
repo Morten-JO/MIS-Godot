@@ -91,14 +91,18 @@ public class SendInformationDialog extends JDialog {
 		});
 		
 		cardPanelReceivers = new JPanel();
+		
+		JLabel lblwhoReceivesThe = new JLabel("[Who receives the data]");
 		GroupLayout gl_contentPanel = new GroupLayout(contentPanel);
 		gl_contentPanel.setHorizontalGroup(
 			gl_contentPanel.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_contentPanel.createSequentialGroup()
 					.addComponent(lblReceivers)
 					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(comboBoxReceiverType, GroupLayout.PREFERRED_SIZE, 172, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap(197, Short.MAX_VALUE))
+					.addComponent(comboBoxReceiverType, GroupLayout.PREFERRED_SIZE, 129, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(lblwhoReceivesThe)
+					.addContainerGap(190, Short.MAX_VALUE))
 				.addComponent(cardPanelReceivers, GroupLayout.DEFAULT_SIZE, 424, Short.MAX_VALUE)
 		);
 		gl_contentPanel.setVerticalGroup(
@@ -106,7 +110,8 @@ public class SendInformationDialog extends JDialog {
 				.addGroup(gl_contentPanel.createSequentialGroup()
 					.addGroup(gl_contentPanel.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lblReceivers)
-						.addComponent(comboBoxReceiverType, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+						.addComponent(comboBoxReceiverType, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lblwhoReceivesThe))
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(cardPanelReceivers, GroupLayout.PREFERRED_SIZE, 153, GroupLayout.PREFERRED_SIZE)
 					.addContainerGap(39, Short.MAX_VALUE))
@@ -115,14 +120,22 @@ public class SendInformationDialog extends JDialog {
 		
 		JPanel cardPanelReceiversAll = new JPanel();
 		cardPanelReceivers.add(cardPanelReceiversAll, "receiverAll");
+		
+		JLabel lbleverybodyInThe = new JLabel("[Everybody in the room receives the data]");
 		GroupLayout gl_cardPanelReceiversAll = new GroupLayout(cardPanelReceiversAll);
 		gl_cardPanelReceiversAll.setHorizontalGroup(
 			gl_cardPanelReceiversAll.createParallelGroup(Alignment.LEADING)
-				.addGap(0, 424, Short.MAX_VALUE)
+				.addGroup(gl_cardPanelReceiversAll.createSequentialGroup()
+					.addContainerGap()
+					.addComponent(lbleverybodyInThe)
+					.addContainerGap(368, Short.MAX_VALUE))
 		);
 		gl_cardPanelReceiversAll.setVerticalGroup(
 			gl_cardPanelReceiversAll.createParallelGroup(Alignment.LEADING)
-				.addGap(0, 153, Short.MAX_VALUE)
+				.addGroup(gl_cardPanelReceiversAll.createSequentialGroup()
+					.addContainerGap()
+					.addComponent(lbleverybodyInThe)
+					.addContainerGap(128, Short.MAX_VALUE))
 		);
 		cardPanelReceiversAll.setLayout(gl_cardPanelReceiversAll);
 		
@@ -137,6 +150,8 @@ public class SendInformationDialog extends JDialog {
 			teamBoxModel.addElement(i);
 		}
 		comboBoxTeam.setModel(teamBoxModel);
+		
+		JLabel lblwhatTeamReceives = new JLabel("[What team receives the data]");
 		GroupLayout gl_cardPanelReceiversTeam = new GroupLayout(cardPanelReceiversTeam);
 		gl_cardPanelReceiversTeam.setHorizontalGroup(
 			gl_cardPanelReceiversTeam.createParallelGroup(Alignment.LEADING)
@@ -145,7 +160,9 @@ public class SendInformationDialog extends JDialog {
 					.addComponent(lblTeam)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(comboBoxTeam, GroupLayout.PREFERRED_SIZE, 83, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap(297, Short.MAX_VALUE))
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(lblwhatTeamReceives)
+					.addContainerGap(247, Short.MAX_VALUE))
 		);
 		gl_cardPanelReceiversTeam.setVerticalGroup(
 			gl_cardPanelReceiversTeam.createParallelGroup(Alignment.LEADING)
@@ -153,8 +170,9 @@ public class SendInformationDialog extends JDialog {
 					.addContainerGap()
 					.addGroup(gl_cardPanelReceiversTeam.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lblTeam)
-						.addComponent(comboBoxTeam, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addContainerGap(128, Short.MAX_VALUE))
+						.addComponent(comboBoxTeam, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lblwhatTeamReceives))
+					.addContainerGap(122, Short.MAX_VALUE))
 		);
 		cardPanelReceiversTeam.setLayout(gl_cardPanelReceiversTeam);
 		
@@ -169,6 +187,8 @@ public class SendInformationDialog extends JDialog {
 			personBoxModel.addElement(i);
 		}
 		comboBoxPerson.setModel(personBoxModel);
+		
+		JLabel lblwhatPersonReceives = new JLabel("[What person receives the data]");
 		GroupLayout gl_cardPanelReceiversPerson = new GroupLayout(cardPanelReceiversPerson);
 		gl_cardPanelReceiversPerson.setHorizontalGroup(
 			gl_cardPanelReceiversPerson.createParallelGroup(Alignment.LEADING)
@@ -177,7 +197,9 @@ public class SendInformationDialog extends JDialog {
 					.addComponent(lblPerson)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(comboBoxPerson, GroupLayout.PREFERRED_SIZE, 51, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap(322, Short.MAX_VALUE))
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(lblwhatPersonReceives)
+					.addContainerGap(272, Short.MAX_VALUE))
 		);
 		gl_cardPanelReceiversPerson.setVerticalGroup(
 			gl_cardPanelReceiversPerson.createParallelGroup(Alignment.LEADING)
@@ -185,8 +207,9 @@ public class SendInformationDialog extends JDialog {
 					.addContainerGap()
 					.addGroup(gl_cardPanelReceiversPerson.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lblPerson)
-						.addComponent(comboBoxPerson, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addContainerGap(128, Short.MAX_VALUE))
+						.addComponent(comboBoxPerson, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lblwhatPersonReceives))
+					.addContainerGap(122, Short.MAX_VALUE))
 		);
 		cardPanelReceiversPerson.setLayout(gl_cardPanelReceiversPerson);
 		
@@ -201,25 +224,28 @@ public class SendInformationDialog extends JDialog {
 			notPersonBoxModel.addElement(i);
 		}
 		comboBoxNotPerson.setModel(notPersonBoxModel);
+		
+		JLabel lbleverybodyOtherThan = new JLabel("[Everybody other than this person receives the data]");
 		GroupLayout gl_cardPanelReceiversNotPerson = new GroupLayout(cardPanelReceiversNotPerson);
 		gl_cardPanelReceiversNotPerson.setHorizontalGroup(
 			gl_cardPanelReceiversNotPerson.createParallelGroup(Alignment.LEADING)
-				.addGap(0, 424, Short.MAX_VALUE)
 				.addGroup(gl_cardPanelReceiversNotPerson.createSequentialGroup()
 					.addContainerGap()
 					.addComponent(label)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(comboBoxNotPerson, GroupLayout.PREFERRED_SIZE, 51, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap(322, Short.MAX_VALUE))
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(lbleverybodyOtherThan)
+					.addContainerGap(272, Short.MAX_VALUE))
 		);
 		gl_cardPanelReceiversNotPerson.setVerticalGroup(
 			gl_cardPanelReceiversNotPerson.createParallelGroup(Alignment.LEADING)
-				.addGap(0, 153, Short.MAX_VALUE)
 				.addGroup(gl_cardPanelReceiversNotPerson.createSequentialGroup()
 					.addContainerGap()
 					.addGroup(gl_cardPanelReceiversNotPerson.createParallelGroup(Alignment.BASELINE)
 						.addComponent(label)
-						.addComponent(comboBoxNotPerson, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+						.addComponent(comboBoxNotPerson, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lbleverybodyOtherThan))
 					.addContainerGap(122, Short.MAX_VALUE))
 		);
 		cardPanelReceiversNotPerson.setLayout(gl_cardPanelReceiversNotPerson);
@@ -235,25 +261,28 @@ public class SendInformationDialog extends JDialog {
 			notTeamBoxModel.addElement(i);
 		}
 		comboBoxNotTeam.setModel(notTeamBoxModel);
+		
+		JLabel lbleverybodyButThis = new JLabel("[Everybody but this team receives the data]");
 		GroupLayout gl_cardPanelReceiversNotTeam = new GroupLayout(cardPanelReceiversNotTeam);
 		gl_cardPanelReceiversNotTeam.setHorizontalGroup(
 			gl_cardPanelReceiversNotTeam.createParallelGroup(Alignment.LEADING)
-				.addGap(0, 424, Short.MAX_VALUE)
 				.addGroup(gl_cardPanelReceiversNotTeam.createSequentialGroup()
 					.addContainerGap()
 					.addComponent(label_1)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(comboBoxNotTeam, GroupLayout.PREFERRED_SIZE, 83, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap(297, Short.MAX_VALUE))
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(lbleverybodyButThis)
+					.addContainerGap(247, Short.MAX_VALUE))
 		);
 		gl_cardPanelReceiversNotTeam.setVerticalGroup(
 			gl_cardPanelReceiversNotTeam.createParallelGroup(Alignment.LEADING)
-				.addGap(0, 153, Short.MAX_VALUE)
 				.addGroup(gl_cardPanelReceiversNotTeam.createSequentialGroup()
 					.addContainerGap()
 					.addGroup(gl_cardPanelReceiversNotTeam.createParallelGroup(Alignment.BASELINE)
 						.addComponent(label_1)
-						.addComponent(comboBoxNotTeam, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+						.addComponent(comboBoxNotTeam, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lbleverybodyButThis))
 					.addContainerGap(122, Short.MAX_VALUE))
 		);
 		cardPanelReceiversNotTeam.setLayout(gl_cardPanelReceiversNotTeam);

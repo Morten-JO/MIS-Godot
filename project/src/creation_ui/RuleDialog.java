@@ -70,6 +70,12 @@ public class RuleDialog extends JDialog {
 	private JPanel clUserBoundsRotation;
 	private JPanel clUserBoundsScale;
 	private boolean cancel = false;
+	private JLabel lblnameOfRule;
+	private JLabel lbltheTypeThe;
+	private JLabel lblwhatNodeHas;
+	private JLabel lblwhatPartOf;
+	private JLabel lblwhatValuesOn;
+	private JLabel lblminmaxRanges;
 
 	/**
 	 * Create the dialog.
@@ -78,7 +84,7 @@ public class RuleDialog extends JDialog {
 		super(frame);
 		holder = this;
 		setTitle("Add new rule");
-		setBounds(100, 100, 450, 300);
+		setBounds(100, 100, 496, 300);
 		setModalityType(ModalityType.APPLICATION_MODAL);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setIconImage(Toolkit.getDefaultToolkit().getImage(ApplicationWindow.class.getResource("/resources/MIS_Icon128.png")));
@@ -101,6 +107,10 @@ public class RuleDialog extends JDialog {
 		propertyComboBox.setModel(new DefaultComboBoxModel<String>(new String[] {"NodeProperty", "NodeStructure", "General", "Instantiation", "Custom"}));
 		
 		ruleMainCardLayout = new JPanel();
+		
+		lblnameOfRule = new JLabel("[Name of rule]");
+		
+		lbltheTypeThe = new JLabel("[The type the rule is attached to]");
 		GroupLayout gl_contentPanel = new GroupLayout(contentPanel);
 		gl_contentPanel.setHorizontalGroup(
 			gl_contentPanel.createParallelGroup(Alignment.LEADING)
@@ -113,20 +123,26 @@ public class RuleDialog extends JDialog {
 							.addPreferredGap(ComponentPlacement.RELATED)
 							.addGroup(gl_contentPanel.createParallelGroup(Alignment.LEADING, false)
 								.addComponent(propertyComboBox, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-								.addComponent(nameTextField, GroupLayout.DEFAULT_SIZE, 165, Short.MAX_VALUE)))
-						.addComponent(ruleMainCardLayout, GroupLayout.PREFERRED_SIZE, 386, GroupLayout.PREFERRED_SIZE))
-					.addContainerGap(38, Short.MAX_VALUE))
+								.addComponent(nameTextField, GroupLayout.DEFAULT_SIZE, 165, Short.MAX_VALUE))
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addGroup(gl_contentPanel.createParallelGroup(Alignment.LEADING)
+								.addComponent(lbltheTypeThe)
+								.addComponent(lblnameOfRule)))
+						.addComponent(ruleMainCardLayout, GroupLayout.PREFERRED_SIZE, 450, GroupLayout.PREFERRED_SIZE))
+					.addContainerGap(20, Short.MAX_VALUE))
 		);
 		gl_contentPanel.setVerticalGroup(
 			gl_contentPanel.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_contentPanel.createSequentialGroup()
 					.addGroup(gl_contentPanel.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lblRuleName)
-						.addComponent(nameTextField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+						.addComponent(nameTextField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lblnameOfRule))
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addGroup(gl_contentPanel.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lblRuleType)
-						.addComponent(propertyComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+						.addComponent(propertyComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lbltheTypeThe))
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(ruleMainCardLayout, GroupLayout.PREFERRED_SIZE, 164, GroupLayout.PREFERRED_SIZE)
 					.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -194,24 +210,36 @@ public class RuleDialog extends JDialog {
 		
 		cardLayoutUserBounds = new JPanel();
 		
+		lblwhatNodeHas = new JLabel("[What node has the rule]");
+		
+		lblwhatPartOf = new JLabel("[What part of the node has the rule]");
+		
+		lblwhatValuesOn = new JLabel("[What values on the node]");
+		
 		GroupLayout gl_ruleNodePropertyPanel = new GroupLayout(ruleNodePropertyPanel);
 		gl_ruleNodePropertyPanel.setHorizontalGroup(
 			gl_ruleNodePropertyPanel.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_ruleNodePropertyPanel.createSequentialGroup()
 					.addGroup(gl_ruleNodePropertyPanel.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_ruleNodePropertyPanel.createParallelGroup(Alignment.LEADING, false)
-							.addGroup(gl_ruleNodePropertyPanel.createSequentialGroup()
-								.addComponent(lblNodeNameProperty)
-								.addPreferredGap(ComponentPlacement.RELATED)
-								.addComponent(nodeComboBox, GroupLayout.PREFERRED_SIZE, 204, GroupLayout.PREFERRED_SIZE))
-							.addGroup(gl_ruleNodePropertyPanel.createSequentialGroup()
-								.addComponent(lblNodeRuleType)
-								.addPreferredGap(ComponentPlacement.RELATED)
-								.addComponent(nodeRuleTypeComboBox, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-							.addGroup(gl_ruleNodePropertyPanel.createSequentialGroup()
-								.addComponent(lblNodeProperty)
-								.addPreferredGap(ComponentPlacement.RELATED)
-								.addComponent(nodePropertyComboBox, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+						.addGroup(gl_ruleNodePropertyPanel.createSequentialGroup()
+							.addGroup(gl_ruleNodePropertyPanel.createParallelGroup(Alignment.LEADING, false)
+								.addGroup(gl_ruleNodePropertyPanel.createSequentialGroup()
+									.addComponent(lblNodeNameProperty)
+									.addPreferredGap(ComponentPlacement.RELATED)
+									.addComponent(nodeComboBox, GroupLayout.PREFERRED_SIZE, 204, GroupLayout.PREFERRED_SIZE))
+								.addGroup(gl_ruleNodePropertyPanel.createSequentialGroup()
+									.addComponent(lblNodeRuleType)
+									.addPreferredGap(ComponentPlacement.RELATED)
+									.addComponent(nodeRuleTypeComboBox, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+								.addGroup(gl_ruleNodePropertyPanel.createSequentialGroup()
+									.addComponent(lblNodeProperty)
+									.addPreferredGap(ComponentPlacement.RELATED)
+									.addComponent(nodePropertyComboBox, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addGroup(gl_ruleNodePropertyPanel.createParallelGroup(Alignment.LEADING)
+								.addComponent(lblwhatValuesOn)
+								.addComponent(lblwhatPartOf)
+								.addComponent(lblwhatNodeHas)))
 						.addComponent(cardLayoutUserBounds, GroupLayout.PREFERRED_SIZE, 386, GroupLayout.PREFERRED_SIZE))
 					.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
 		);
@@ -221,15 +249,18 @@ public class RuleDialog extends JDialog {
 					.addContainerGap()
 					.addGroup(gl_ruleNodePropertyPanel.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lblNodeNameProperty)
-						.addComponent(nodeComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+						.addComponent(nodeComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lblwhatNodeHas))
 					.addGap(18)
 					.addGroup(gl_ruleNodePropertyPanel.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lblNodeRuleType)
-						.addComponent(nodeRuleTypeComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+						.addComponent(nodeRuleTypeComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lblwhatPartOf))
 					.addGap(18)
 					.addGroup(gl_ruleNodePropertyPanel.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lblNodeProperty)
-						.addComponent(nodePropertyComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+						.addComponent(nodePropertyComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lblwhatValuesOn))
 					.addPreferredGap(ComponentPlacement.RELATED, 9, Short.MAX_VALUE)
 					.addComponent(cardLayoutUserBounds, GroupLayout.PREFERRED_SIZE, 36, GroupLayout.PREFERRED_SIZE))
 		);
@@ -261,6 +292,8 @@ public class RuleDialog extends JDialog {
 		
 		userBoundsZMax = new JTextField();
 		userBoundsZMax.setColumns(10);
+		
+		lblminmaxRanges = new JLabel("[min,max ranges]");
 		GroupLayout gl_clUserBoundsPosition = new GroupLayout(clUserBoundsPosition);
 		gl_clUserBoundsPosition.setHorizontalGroup(
 			gl_clUserBoundsPosition.createParallelGroup(Alignment.LEADING)
@@ -283,7 +316,9 @@ public class RuleDialog extends JDialog {
 					.addComponent(userBoundsZMin, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(userBoundsZMax, GroupLayout.PREFERRED_SIZE, 34, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap(127, Short.MAX_VALUE))
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(lblminmaxRanges)
+					.addContainerGap(77, Short.MAX_VALUE))
 		);
 		gl_clUserBoundsPosition.setVerticalGroup(
 			gl_clUserBoundsPosition.createParallelGroup(Alignment.LEADING)
@@ -298,7 +333,8 @@ public class RuleDialog extends JDialog {
 						.addComponent(userBoundsYMax, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 						.addComponent(lblNewLabel_2)
 						.addComponent(userBoundsZMin, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-						.addComponent(userBoundsZMax, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+						.addComponent(userBoundsZMax, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lblminmaxRanges))
 					.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
 		);
 		clUserBoundsPosition.setLayout(gl_clUserBoundsPosition);

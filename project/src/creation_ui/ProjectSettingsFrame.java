@@ -45,6 +45,12 @@ public class ProjectSettingsFrame extends JDialog {
 	private boolean wasAnythingChanged = false;
 	private JLabel lblIp;
 	private JTextField textFieldInternetAddress;
+	private JLabel lbltheMinimumThe;
+	private JLabel lblhowManyTimes;
+	private JLabel lblmaximumLimitOf;
+	private JLabel lblportTheClient;
+	private JLabel lblidleTimeIn;
+	private JLabel lblipTheClients;
 
 	/**
 	 * Create the frame.
@@ -193,6 +199,18 @@ public class ProjectSettingsFrame extends JDialog {
 		
 		textFieldInternetAddress = new JTextField();
 		textFieldInternetAddress.setColumns(10);
+		
+		lbltheMinimumThe = new JLabel("[The minimum the client should match to play]");
+		
+		lblhowManyTimes = new JLabel("[How many times per second a node should refresh]");
+		
+		lblmaximumLimitOf = new JLabel("[Maximum limit of message a client can send per second]");
+		
+		lblportTheClient = new JLabel("[Port the client connects through]");
+		
+		lblidleTimeIn = new JLabel("[Idle time in seconds for a client before he gets booted]");
+		
+		lblipTheClients = new JLabel("[Ip the clients connect to]");
 		GroupLayout gl_contentPane = new GroupLayout(contentPane);
 		gl_contentPane.setHorizontalGroup(
 			gl_contentPane.createParallelGroup(Alignment.LEADING)
@@ -203,58 +221,73 @@ public class ProjectSettingsFrame extends JDialog {
 					.addComponent(btnCancel)
 					.addContainerGap())
 				.addGroup(gl_contentPane.createSequentialGroup()
-					.addGroup(gl_contentPane.createParallelGroup(Alignment.TRAILING)
-						.addGroup(gl_contentPane.createSequentialGroup()
-							.addComponent(lblListType)
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(comboBoxListType, 0, 245, Short.MAX_VALUE))
-						.addGroup(Alignment.LEADING, gl_contentPane.createSequentialGroup()
-							.addComponent(lblProjectMinimumVersion)
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(textFieldProjectMinimumVersion, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE))
+					.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
 						.addGroup(gl_contentPane.createSequentialGroup()
 							.addComponent(lblProjectName)
-							.addPreferredGap(ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
+							.addPreferredGap(ComponentPlacement.RELATED)
 							.addComponent(textFieldProjectName, GroupLayout.PREFERRED_SIZE, 213, GroupLayout.PREFERRED_SIZE))
-						.addGroup(Alignment.LEADING, gl_contentPane.createSequentialGroup()
+						.addGroup(gl_contentPane.createSequentialGroup()
 							.addComponent(lblSessionTimeout)
 							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(spinnerSessionTimeout, GroupLayout.PREFERRED_SIZE, 74, GroupLayout.PREFERRED_SIZE)))
+							.addComponent(spinnerSessionTimeout, GroupLayout.PREFERRED_SIZE, 74, GroupLayout.PREFERRED_SIZE)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(lblidleTimeIn))
+						.addGroup(gl_contentPane.createSequentialGroup()
+							.addGroup(gl_contentPane.createParallelGroup(Alignment.TRAILING, false)
+								.addGroup(gl_contentPane.createSequentialGroup()
+									.addComponent(lblListType)
+									.addPreferredGap(ComponentPlacement.RELATED)
+									.addComponent(comboBoxListType, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+								.addGroup(Alignment.LEADING, gl_contentPane.createSequentialGroup()
+									.addComponent(lblProjectMinimumVersion)
+									.addPreferredGap(ComponentPlacement.RELATED)
+									.addComponent(textFieldProjectMinimumVersion, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)))
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(lbltheMinimumThe)))
 					.addGap(140))
 				.addGroup(gl_contentPane.createSequentialGroup()
 					.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING, false)
 						.addGroup(gl_contentPane.createSequentialGroup()
 							.addComponent(lblBasePort)
 							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(textFieldBasePort, GroupLayout.PREFERRED_SIZE, 65, GroupLayout.PREFERRED_SIZE))
+							.addComponent(textFieldBasePort, GroupLayout.PREFERRED_SIZE, 65, GroupLayout.PREFERRED_SIZE)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(lblportTheClient))
 						.addGroup(gl_contentPane.createSequentialGroup()
 							.addGap(2)
 							.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
 								.addGroup(gl_contentPane.createSequentialGroup()
 									.addComponent(lblRefreshRate)
 									.addGap(10)
-									.addComponent(spinnerRefreshRate, GroupLayout.PREFERRED_SIZE, 55, GroupLayout.PREFERRED_SIZE))
+									.addComponent(spinnerRefreshRate, GroupLayout.PREFERRED_SIZE, 55, GroupLayout.PREFERRED_SIZE)
+									.addPreferredGap(ComponentPlacement.RELATED)
+									.addComponent(lblhowManyTimes))
 								.addGroup(gl_contentPane.createSequentialGroup()
 									.addComponent(lblMm)
 									.addPreferredGap(ComponentPlacement.RELATED)
-									.addComponent(spinnerMMPCPS, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)))))
-					.addContainerGap(302, Short.MAX_VALUE))
+									.addComponent(spinnerMMPCPS, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
+									.addPreferredGap(ComponentPlacement.RELATED)
+									.addComponent(lblmaximumLimitOf)))))
+					.addContainerGap(353, Short.MAX_VALUE))
 				.addGroup(gl_contentPane.createSequentialGroup()
 					.addComponent(lblIp)
 					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(textFieldInternetAddress, GroupLayout.DEFAULT_SIZE, 149, Short.MAX_VALUE)
-					.addGap(267))
+					.addComponent(textFieldInternetAddress, GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(lblipTheClients)
+					.addGap(217))
 		);
 		gl_contentPane.setVerticalGroup(
-			gl_contentPane.createParallelGroup(Alignment.LEADING)
+			gl_contentPane.createParallelGroup(Alignment.TRAILING)
 				.addGroup(gl_contentPane.createSequentialGroup()
 					.addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
-						.addComponent(textFieldProjectName, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-						.addComponent(lblProjectName))
+						.addComponent(lblProjectName)
+						.addComponent(textFieldProjectName, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
 					.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 					.addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lblProjectMinimumVersion)
-						.addComponent(textFieldProjectMinimumVersion, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+						.addComponent(textFieldProjectMinimumVersion, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lbltheMinimumThe))
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lblListType)
@@ -266,23 +299,29 @@ public class ProjectSettingsFrame extends JDialog {
 							.addPreferredGap(ComponentPlacement.UNRELATED)
 							.addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
 								.addComponent(spinnerMMPCPS, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-								.addComponent(lblMm)))
-						.addComponent(spinnerRefreshRate, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+								.addComponent(lblMm)
+								.addComponent(lblmaximumLimitOf)))
+						.addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
+							.addComponent(spinnerRefreshRate, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+							.addComponent(lblhowManyTimes)))
 					.addPreferredGap(ComponentPlacement.UNRELATED)
 					.addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lblBasePort)
-						.addComponent(textFieldBasePort, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+						.addComponent(textFieldBasePort, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lblportTheClient))
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lblSessionTimeout)
-						.addComponent(spinnerSessionTimeout, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+						.addComponent(spinnerSessionTimeout, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lblidleTimeIn))
 					.addPreferredGap(ComponentPlacement.UNRELATED)
 					.addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lblIp)
-						.addComponent(textFieldInternetAddress, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+						.addComponent(textFieldInternetAddress, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lblipTheClients))
 					.addGap(50))
-				.addGroup(Alignment.TRAILING, gl_contentPane.createSequentialGroup()
-					.addContainerGap(225, Short.MAX_VALUE)
+				.addGroup(gl_contentPane.createSequentialGroup()
+					.addContainerGap(219, Short.MAX_VALUE)
 					.addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
 						.addComponent(btnSave)
 						.addComponent(btnCancel))
