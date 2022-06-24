@@ -47,7 +47,6 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 
 import data_types.MISRoomSettings;
 import data_types.MISScene;
-import jdk.nashorn.internal.ir.JoinPredecessorExpression;
 import main.Main;
 import nodes.MISNode;
 import nodes.MISNode2D;

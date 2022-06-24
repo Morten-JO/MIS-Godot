@@ -19,7 +19,6 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.filechooser.FileFilter;
 
-import com.sun.org.apache.xalan.internal.xsltc.compiler.sym;
 
 import loaders.MISLoader;
 import project.MISProjectInformation;
